@@ -1,0 +1,10 @@
+{
+  "name": "rl-agents-n-skills",
+  "description": "Shared persona agents, reusable skills, and Claude Code subagents for rloisell BC Gov .NET/React/OpenShift projects.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Ryan Loiselle"
+  },
+  "homepage": "https://github.com/rloisell/rl-agents-n-skills",
+  "repository": "https://github.com/rloisell/rl-agents-n-skills"
+}
