@@ -1,16 +1,18 @@
 ---
 name: bc-gov-emerald
-description: BC Government Emerald OpenShift platform standards: namespace conventions, AVI InfraSettings route annotations, DataClass pod labels, NetworkPolicy default-deny model, and StorageClass requirements. Use when creating or reviewing Helm charts, Routes, NetworkPolicies, or any deployment manifest for BC Gov Emerald OpenShift.
+description: BC Government Emerald OpenShift platform mechanics: namespace conventions, AVI InfraSettings route annotations, DataClass pod labels, Helm openshift mode, StorageClass, and DNS split-tunneling. Use when creating or reviewing Helm charts, Routes, or deployment manifests targeting Emerald specifically. For zone/classification decisions see bc-gov-sdn-zones; for NetworkPolicy YAML patterns see bc-gov-networkpolicy.
 metadata:
   author: Ryan Loiselle
-  version: "1.0"
+  version: "2.0"
 compatibility: BC Gov Emerald OpenShift cluster. Projects in bcgov-c/ and rloisell/ namespaces (be808f family).
 ---
 
 # BC Gov Emerald Platform Standards
 
-Shared skill — referenced by `bc-gov-devops` and `ci-cd-pipeline`. Contains
-platform-level rules that apply to every workload deployed to BC Gov Emerald.
+Emerald-specific mechanics only. Platform-independent concepts live in companion skills:
+- Zone model, ISCF classification, internet egress constraints → `bc-gov-sdn-zones`
+- NetworkPolicy YAML patterns and two-policy rule → `bc-gov-networkpolicy`
+- End-to-end network architecture reasoning → `bc-gov-network-architect` agent
 
 ---
 
@@ -65,11 +67,16 @@ podLabels:
   # Internet-Ingress: "ALLOW" # only if reachable from public internet via Public VIP
 ```
 
+For the full ISCF → DataClass mapping and zone egress constraints, see `bc-gov-sdn-zones`.
+
 ---
 
 ## NetworkPolicy Model
 
-Emerald default-denies **both Ingress AND Egress**. Every traffic flow needs two policies.
+Emerald default-denies **both Ingress AND Egress**. See `bc-gov-networkpolicy` for full YAML
+patterns, the two-policy rule, DNS egress, CIDR egress, and the debugging checklist.
+
+Quick reminder of the flows that need policies on Emerald:
 
 | Flow | Policy needed |
 |------|--------------|
@@ -78,11 +85,6 @@ Emerald default-denies **both Ingress AND Egress**. Every traffic flow needs two
 | Frontend → API | Ingress on API **+** Egress from Frontend |
 | API → DB | Ingress on DB **+** Egress from API |
 | Any pod → DNS | Egress UDP+TCP 53 on every pod |
-
-**Common mistake**: defining only Ingress `api-to-db` but forgetting the API Egress rule →
-TCP connect timeout at startup.
-
-See `bc-gov-devops/references/networkpolicy-patterns.md` for full YAML examples.
 
 ---
 
@@ -119,64 +121,3 @@ storageClassName: netapp-file-standard   # ✅ correct for Emerald PVCs
 Route hostnames (`*.apps.emerald.devops.gov.bc.ca`) resolve only via BC Gov VPN DNS.
 Local / home DNS returns NXDOMAIN. Ensure VPN client routes this domain through VPN DNS
 before debugging route connectivity issues.
-
----
-
-## OCIO Security Classification & Zone Model
-
-### ISCF → DataClass Pod Label Mapping
-
-BC Gov Information Security Classification Framework (ISCF) defines three data sensitivity levels.
-The OpenShift `DataClass` pod label **must match** the ISCF classification of data the workload handles:
-
-| ISCF Classification | DataClass label | SDN zone | Zone (historic) | Internet access |
-|---------------------|-----------------|----------|-----------------|-----------------|
-| Public / unclassified | `Low` | Low (DMZ-equiv) | DMZ | Direct ✅ |
-| Protected A / lower Protected B | `Medium` | Medium | Zone B | Via Forward Proxy only |
-| Protected B-C / Classified | `High` | High | Zone A | MISO exemption required |
-
-Source: *OCIO SDN Security Classification Model v1.0 (2022)* and *IMIT Standard 6.13 — Network Security Zones*.
-
-### Zone A / B / C / DMZ (Historic IMIT 6.13 Model)
-
-| Zone | Trust level | ISCF data | Notes |
-|------|-------------|-----------|-------|
-| Zone A (Restricted High Security) | Highest | Protected B-C | Server-to-server only; no user devices |
-| Zone B (High Security) | High | Protected A – low Prot. B | Internal application tier |
-| Zone C (Trusted Client) | Medium | Protected A | IDIR-managed workstations |
-| DMZ | Low | Public | Internet-facing proxies/reverse proxies |
-| ExtraNet / 3PG | External partner | Varies | Third Party Gateway (3PG) for cross-ministry/Crown corp/health authority |
-| SPAN / BC | Shared services | Varies | BC Government shared network segment |
-
-### 2022 SDN Model — Internet Egress Rules
-
-- **Low workloads**: direct internet access permitted (tagged as DMZ-equivalent)
-- **Medium workloads**: **cannot reach internet directly** — must use SSBC SDN Forward Proxy (HTTP 80 / HTTPS 443)
-- **High workloads**: internet access **fully blocked at guardrail** — requires Ministry ISO (MISO) exemption
-
-> This means a `DataClass: Medium` pod writing a NetworkPolicy to egress directly to an internet IP
-> will be silently dropped at the guardrail even if the NetworkPolicy object is applied.
-> Use the Forward Proxy endpoint instead.
-
-### Zone Adjacency Rule — No Zone Hopping
-
-Traffic may only traverse **adjacent** zones. Permitted path:
-
-```
-Internet → DMZ/Low → Medium → High
-```
-
-A session cannot be initiated from the internet directly into Medium or High.
-A High workload cannot be reached in one hop from the internet.
-NetworkPolicy rules cannot override this adjacency enforcement.
-
-### Third Party Gateway (3PG) / ExtraNet
-
-Any connection to an external government partner (other ministries, Crown corporations, health
-authorities, municipalities) must traverse the ExtraNet zone via a **Third Party Gateway (3PG)**.
-This requires:
-1. Formal SSBC approval / connection request
-2. A dedicated egress NetworkPolicy targeting the 3PG CIDR (not the final destination directly)
-3. Corresponding ingress at the receiving end
-
-Do **not** attempt to route external-partner traffic through the regular internet egress path.
