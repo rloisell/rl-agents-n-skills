@@ -82,17 +82,18 @@ import { Footer, FooterLinks } from '@bcgov/design-system-react-components';
       key="about"
       title="BC Government"
       links={[
-        { label: 'Disclaimer',   href: 'https://www2.gov.bc.ca/gov/content/home/disclaimer' },
-        { label: 'Privacy',      href: 'https://www2.gov.bc.ca/gov/content/home/privacy' },
-        { label: 'Accessibility',href: 'https://www2.gov.bc.ca/gov/content/home/accessibility' },
-        { label: 'Copyright',    href: 'https://www2.gov.bc.ca/gov/content/home/copyright' },
+        <a key="disclaimer"    href="https://www2.gov.bc.ca/gov/content/home/disclaimer">Disclaimer</a>,
+        <a key="privacy"       href="https://www2.gov.bc.ca/gov/content/home/privacy">Privacy</a>,
+        <a key="accessibility" href="https://www2.gov.bc.ca/gov/content/home/accessibility">Accessibility</a>,
+        <a key="copyright"     href="https://www2.gov.bc.ca/gov/content/home/copyright">Copyright</a>,
       ]}
     />,
   ]}
 />
 ```
 
-`FooterLinks` props: `title` (string), `links` (array of `{ label, href }`).
+`FooterLinks` props: `title` (string), `links` (**array of React elements** — `<a>` nodes, NOT `{ label, href }` objects).
+Passing plain objects to `links` causes *"Objects are not valid as a React child"* and a blank page.
 `Footer` also accepts `acknowledgement` (string), `hideCopyright` (bool), `contact` (ReactNode).
 
 ---
