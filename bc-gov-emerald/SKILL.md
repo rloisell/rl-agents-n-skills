@@ -119,3 +119,64 @@ storageClassName: netapp-file-standard   # ✅ correct for Emerald PVCs
 Route hostnames (`*.apps.emerald.devops.gov.bc.ca`) resolve only via BC Gov VPN DNS.
 Local / home DNS returns NXDOMAIN. Ensure VPN client routes this domain through VPN DNS
 before debugging route connectivity issues.
+
+---
+
+## OCIO Security Classification & Zone Model
+
+### ISCF → DataClass Pod Label Mapping
+
+BC Gov Information Security Classification Framework (ISCF) defines three data sensitivity levels.
+The OpenShift `DataClass` pod label **must match** the ISCF classification of data the workload handles:
+
+| ISCF Classification | DataClass label | SDN zone | Zone (historic) | Internet access |
+|---------------------|-----------------|----------|-----------------|-----------------|
+| Public / unclassified | `Low` | Low (DMZ-equiv) | DMZ | Direct ✅ |
+| Protected A / lower Protected B | `Medium` | Medium | Zone B | Via Forward Proxy only |
+| Protected B-C / Classified | `High` | High | Zone A | MISO exemption required |
+
+Source: *OCIO SDN Security Classification Model v1.0 (2022)* and *IMIT Standard 6.13 — Network Security Zones*.
+
+### Zone A / B / C / DMZ (Historic IMIT 6.13 Model)
+
+| Zone | Trust level | ISCF data | Notes |
+|------|-------------|-----------|-------|
+| Zone A (Restricted High Security) | Highest | Protected B-C | Server-to-server only; no user devices |
+| Zone B (High Security) | High | Protected A – low Prot. B | Internal application tier |
+| Zone C (Trusted Client) | Medium | Protected A | IDIR-managed workstations |
+| DMZ | Low | Public | Internet-facing proxies/reverse proxies |
+| ExtraNet / 3PG | External partner | Varies | Third Party Gateway (3PG) for cross-ministry/Crown corp/health authority |
+| SPAN / BC | Shared services | Varies | BC Government shared network segment |
+
+### 2022 SDN Model — Internet Egress Rules
+
+- **Low workloads**: direct internet access permitted (tagged as DMZ-equivalent)
+- **Medium workloads**: **cannot reach internet directly** — must use SSBC SDN Forward Proxy (HTTP 80 / HTTPS 443)
+- **High workloads**: internet access **fully blocked at guardrail** — requires Ministry ISO (MISO) exemption
+
+> This means a `DataClass: Medium` pod writing a NetworkPolicy to egress directly to an internet IP
+> will be silently dropped at the guardrail even if the NetworkPolicy object is applied.
+> Use the Forward Proxy endpoint instead.
+
+### Zone Adjacency Rule — No Zone Hopping
+
+Traffic may only traverse **adjacent** zones. Permitted path:
+
+```
+Internet → DMZ/Low → Medium → High
+```
+
+A session cannot be initiated from the internet directly into Medium or High.
+A High workload cannot be reached in one hop from the internet.
+NetworkPolicy rules cannot override this adjacency enforcement.
+
+### Third Party Gateway (3PG) / ExtraNet
+
+Any connection to an external government partner (other ministries, Crown corporations, health
+authorities, municipalities) must traverse the ExtraNet zone via a **Third Party Gateway (3PG)**.
+This requires:
+1. Formal SSBC approval / connection request
+2. A dedicated egress NetworkPolicy targeting the 3PG CIDR (not the final destination directly)
+3. Corresponding ingress at the receiving end
+
+Do **not** attempt to route external-partner traffic through the regular internet egress path.
