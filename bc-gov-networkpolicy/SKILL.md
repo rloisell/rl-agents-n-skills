@@ -1,6 +1,7 @@
 ---
 name: bc-gov-networkpolicy
 description: Kubernetes / OpenShift NetworkPolicy authoring for BC Gov Private Cloud (Silver, Gold, Emerald). Use when writing, reviewing, or debugging NetworkPolicy YAML — two-policy rule, DNS egress, CIDR-based egress to external systems, inter-namespace flows, and common port patterns. Applies across all BC Gov OCP clusters; Emerald-specific enforcement is in bc-gov-emerald.
+tools: Read, Grep, Glob
 metadata:
   author: Ryan Loiselle
   version: "1.0"

@@ -1,6 +1,8 @@
 ---
 name: local-dev
 description: Sets up, runs, and troubleshoots the local development environment — podman-compose multi-container stack, EF Core migrations, MariaDB socket and TCP connection patterns, port conventions, admin token seeding, and test execution. Use when setting up local dev, running migrations, debugging connection errors, or troubleshooting the local stack.
+tools: Read, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.0"

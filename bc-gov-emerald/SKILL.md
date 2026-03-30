@@ -1,6 +1,7 @@
 ---
 name: bc-gov-emerald
 description: BC Government Emerald OpenShift platform mechanics: namespace conventions, AVI InfraSettings route annotations, DataClass pod labels, Helm openshift mode, StorageClass, and DNS split-tunneling. Use when creating or reviewing Helm charts, Routes, or deployment manifests targeting Emerald specifically. For zone/classification decisions see bc-gov-sdn-zones; for NetworkPolicy YAML patterns see bc-gov-networkpolicy.
+tools: Read, Grep, Glob
 metadata:
   author: Ryan Loiselle
   version: "2.0"

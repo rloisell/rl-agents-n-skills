@@ -1,6 +1,8 @@
 ---
 name: ci-cd-pipeline
 description: Configures and troubleshoots GitHub Actions CI/CD pipelines for BC Government OpenShift projects following ISB EA Option 2 — five-workflow pattern, image tag strategy, yq GitOps updates, Trivy scanning, and pipeline failure triage. Use when creating workflows, diagnosing failures, setting up branch protection, or updating the OpenShift GitOps image tag after a successful build.
+tools: Read, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.0"

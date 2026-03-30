@@ -1,6 +1,8 @@
 ---
 name: security-architect
 description: Security architecture and analysis for BC Gov .NET / React / OpenShift projects — OWASP Top 10 mitigations, SAST/DAST toolchain, secrets management with Vault, container security baseline, input validation, audit logging, OIDC session management, STRA/PIA process, and security hardening roadmap. Use when designing security controls, reviewing code for vulnerabilities, setting up scanning workflows, or completing the AI/securityNextSteps.md hardening plan.
+tools: Read, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.0"

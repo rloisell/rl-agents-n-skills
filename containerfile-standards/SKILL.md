@@ -1,6 +1,7 @@
 ---
 name: containerfile-standards
 description: Standard Containerfile patterns for .NET API and React/Vite frontend images used in BC Gov projects: port 8080, non-root appuser, HEALTHCHECK, and runtime config.json for frontend API URL. Use when creating or modifying any Containerfile or Dockerfile for a BC Gov project.
+tools: Read, Grep, Glob
 metadata:
   author: Ryan Loiselle
   version: "1.0"

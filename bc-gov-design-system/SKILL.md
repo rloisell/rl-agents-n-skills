@@ -1,6 +1,7 @@
 ---
 name: bc-gov-design-system
 description: BC Government Design System for React/Vite applications — npm packages, component usage (Header, Footer, Button), BC Sans font loading, design token CSS variables, and colour scheme. Use when building or reviewing BC Gov React frontends, replacing manual header/footer markup, or applying correct colour tokens instead of hard-coded hex values.
+tools: Read, Grep, Glob
 metadata:
   author: Ryan Loiselle
   version: "1.0"

@@ -1,6 +1,8 @@
 ---
 name: diagram-generation
 description: Creates and exports architecture diagrams for every project using draw.io, PlantUML, and Mermaid — manages the 10-diagram standard suite required by CODING_STANDARDS.md §7, file organisation, VS Code extension setup, and CLI export commands. Use when creating, updating, or exporting any architecture, sequence, class, state, ERD, or deployment diagram.
+tools: Read, Write, Bash, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.0"

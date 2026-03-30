@@ -1,6 +1,7 @@
 ---
 name: git-conventions
 description: Enforces branch naming, commit message format, and conventional commit types across all rloisell/ and bcgov-c/ repositories. Use when creating branches, writing commit messages, reviewing PR titles, or answering questions about git workflow conventions.
+tools: Read, Grep, Glob
 metadata:
   author: Ryan Loiselle
   version: "1.0"

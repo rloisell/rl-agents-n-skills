@@ -1,6 +1,7 @@
 ---
 name: vault-secrets
 description: HashiCorp Vault secrets management on BC Gov Emerald OpenShift — Vault path conventions, External Secrets Operator CRD patterns, Vault Agent Injector annotations, GitHub Actions Vault integration for CI build-time secrets, and Helm shape-only Secret templates. Use when bootstrapping Vault for a new project, reading or writing secrets in CI, or configuring pod-level secret injection.
+tools: Read, Grep, Glob
 metadata:
   author: Ryan Loiselle
   version: "1.0"

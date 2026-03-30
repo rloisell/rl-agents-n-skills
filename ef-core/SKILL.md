@@ -1,6 +1,8 @@
 ---
 name: ef-core
 description: Entity Framework Core patterns for .NET projects using Pomelo MariaDB provider — migration workflow, startup auto-migrate, primary constructors, service layer structure, and the Linux LINQ ReadOnlySpan overload bug. Use when adding migrations, setting up DbContext, structuring services, writing LINQ queries, or troubleshooting EF Core issues.
+tools: Read, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.0"

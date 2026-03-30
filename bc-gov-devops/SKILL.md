@@ -1,6 +1,8 @@
 ---
 name: bc-gov-devops
 description: BC Government Emerald OpenShift deployment patterns — Artifactory image registry setup, Helm chart requirements, health check standards, Common SSO authentication integration, OpenShift oc command reference, secrets management, and ArgoCD GitOps CRDs. Use when deploying, configuring, or troubleshooting services on the Emerald OpenShift platform.
+tools: Read, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.0"

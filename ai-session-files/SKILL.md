@@ -1,6 +1,7 @@
 ---
 name: ai-session-files
 description: Maintains the AI collaboration audit trail in every project — WORKLOG.md, CHANGES.csv, COMMANDS.sh, and COMMIT_INFO.txt. Use when ending a session, writing session logs, or when any of the files under AI/ need to be created or updated.
+tools: Read, Write, Bash, Grep, Glob
 metadata:
   author: Ryan Loiselle
   version: "1.0"

@@ -1,6 +1,8 @@
 ---
 name: spec-kitty
 description: Drives spec-first feature development using the spec-kitty framework — enforces spec.md before implementation, creates WP task files with correct YAML frontmatter, runs validate-tasks, and tracks lanes through the planned→done lifecycle. Use when starting a new feature, writing spec or plan files, creating WP task files, or validating the spec-kitty task board.
+tools: Bash, Read, Write, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.0"

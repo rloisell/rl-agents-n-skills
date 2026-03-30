@@ -1,6 +1,8 @@
 ---
 name: bc-gov-iam
 description: BC Government Identity and Access Management — DIAM/Keycloak OIDC PKCE integration, realm selection, React oidc-client-ts setup, token lifecycle, backchannel logout, Common SSO vs DIAM comparison, and user attribute mapping. Use when implementing authentication, configuring an OIDC client, troubleshooting token refresh, or choosing between identity providers.
+tools: Read, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.0"

@@ -1,6 +1,8 @@
 ---
 name: session-workflow
 description: Governs session startup and shutdown discipline for AI-assisted development — reads orientation files, checks git state, reviews Dependabot PRs, updates session logs, and commits work. Use at the start and end of every development session, or when asked about session process and AI collaboration protocol.
+tools: Read, Bash, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.0"

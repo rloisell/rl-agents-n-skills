@@ -1,6 +1,8 @@
 ---
 name: agent-evolution
 description: Self-learning agent that monitors development sessions and evolves the agent skill library — surfaces past relevant knowledge before sessions begin (pre-session retrieval), appends causal discoveries to *_KNOWLEDGE sections, identifies candidate shared skills from recurring patterns across sessions, flags oversized agents needing references/ splits, and records all updates in the evolution log. Use at session start for retrieval and at session end to grow the team's shared intelligence.
+tools: Read, Write, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.1"

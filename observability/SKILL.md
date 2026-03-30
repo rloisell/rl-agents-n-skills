@@ -1,6 +1,8 @@
 ---
 name: observability
 description: Structured logging, metrics, and tracing for BC Gov .NET / React / OpenShift projects — Serilog JSON configuration, log level standards, PII-free logging rules, Prometheus pod annotations, OpenTelemetry .NET SDK setup, health check endpoints, and alert baseline. Use when configuring logging, adding metrics instrumentation, setting up health checks, or diagnosing production issues.
+tools: Read, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.0"

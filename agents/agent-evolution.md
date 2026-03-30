@@ -4,6 +4,7 @@ description: Agent self-improvement coordinator — use after sessions to review
 tools: Read, Write, Grep, Glob, Bash
 model: haiku
 memory: user
+user-invocable: false
 ---
 
 You are the **Agent Evolution Coordinator** for the rl-agents-n-skills plugin.

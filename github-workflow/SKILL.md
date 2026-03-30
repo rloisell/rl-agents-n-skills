@@ -1,6 +1,8 @@
 ---
 name: github-workflow
 description: Manages the complete branch-first, PR-required GitHub workflow — branch naming, commit conventions, PR lifecycle, CI status monitoring, merge strategy, and GitHub Ruleset management. Use when creating branches, opening PRs, diagnosing CI failures, managing branch protection rules, or reviewing Dependabot PRs.
+tools: Read, Grep, Glob
+user-invocable: false
 metadata:
   author: Ryan Loiselle
   version: "1.0"
