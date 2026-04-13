@@ -53,6 +53,10 @@ Delegate to them when the task matches their domain:
 | `observability` | Serilog, health checks, Prometheus |
 | `local-dev` | podman-compose, local troubleshooting |
 | `agent-evolution` | End-of-session knowledge updates |
+| `zero-trust-architect` | ZTA design, SASE architecture, ZTNA/CASB/SWG evaluation |
+| `network-architect` | Routing/switching design, WAN, BGP/OSPF, topology review |
+| `cisco-ios` | Cisco IOS/IOS-XE/NX-OS config, home lab, troubleshooting, password recovery |
+| `sysadmin` | *nix admin tasks, Solaris 9/10/11 SPARC (LDoms), RHEL, storage, boot issues |
 
 ## Deployment platform
 
