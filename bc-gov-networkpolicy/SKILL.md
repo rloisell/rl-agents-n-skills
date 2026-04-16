@@ -1,10 +1,10 @@
 ---
 name: bc-gov-networkpolicy
-description: Kubernetes / OpenShift NetworkPolicy authoring for BC Gov Private Cloud (Silver, Gold, Emerald). Use when writing, reviewing, or debugging NetworkPolicy YAML — two-policy rule, DNS egress, CIDR-based egress to external systems, inter-namespace flows, and common port patterns. Applies across all BC Gov OCP clusters; Emerald-specific enforcement is in bc-gov-emerald.
+description: Kubernetes / OpenShift NetworkPolicy authoring for BC Gov Private Cloud (Silver, Gold, Emerald). Use when writing, reviewing, or debugging NetworkPolicy YAML — two-policy rule, ag-helm intent API, DNS egress, CIDR-based egress to external systems, inter-namespace flows, and common port patterns. Applies across all BC Gov OCP clusters; Emerald-specific enforcement is in bc-gov-emerald.
 tools: Read, Grep, Glob
 metadata:
   author: Ryan Loiselle
-  version: "1.0"
+  version: "1.1"
 compatibility: All BC Gov Private Cloud clusters (Silver, Gold, Emerald). Emerald is the strictest — default-deny both ingress AND egress.
 ---
 
@@ -203,6 +203,66 @@ spec:
 - Use `ipBlock` only for traffic leaving the cluster
 - Never create a wildcard egress policy unless explicitly required (e.g., monitoring agents)
 - Prefer named ports listed explicitly over port ranges
+
+> ⚠️ **ag-devops Conftest hard-denies** NetworkPolicy manifests that have: `ingress/egress: - {}` (allow-all rule), rules missing `from`/`to`, rules missing `ports`, or empty `podSelector: {}` peers. These shapes pass `kubectl apply` but will be rejected by the policy gate.
+
+---
+
+## Preferred Authoring: ag-helm Intent API
+
+When using the `ag-helm-templates` library chart, use `ag-template.networkpolicy` with the intent inputs `AllowIngressFrom` and `AllowEgressTo` rather than writing raw YAML. The intent API produces correctly-shaped rules that pass all ag-devops Conftest checks.
+
+```yaml
+# In your Helm template (e.g. templates/networkpolicy.yaml)
+{{- $np := dict "Values" .Values -}}
+{{- $_ := set $np "ApplicationGroup" .Values.project -}}
+{{- $_ := set $np "Name" "jrcc-loader" -}}
+{{- $_ := set $np "Namespace" $.Release.Namespace -}}
+{{- $_ := set $np "PolicyTypes" (list "Ingress" "Egress") -}}
+
+{{/* Allow ingress from RabbitMQ (same namespace) */}}
+{{- $_ := set $np "AllowIngressFrom" (dict
+  "ports" (list 8080)
+  "apps" (list (dict "name" "rabbitmq"))
+) -}}
+
+{{/* Allow egress to ORDS API (specific CIDR) */}}
+{{- $_ := set $np "AllowEgressTo" (dict
+  "ipBlocks" (list (dict
+    "cidr" "142.34.X.X/24"
+    "ports" (list 443)
+  ))
+) -}}
+
+{{ include "ag-template.networkpolicy" $np }}
+```
+
+### Internet-wide egress (requires approval annotations)
+
+If egress to `0.0.0.0/0` is unavoidable, Conftest requires both annotations or it hard-denies:
+
+```yaml
+{{- $_ := set $np "Annotations" (dict
+  "justification" "Reason this service needs internet-wide egress"
+  "approvedBy"    "Ticket reference or approver name"
+) -}}
+{{- $_ := set $np "AllowEgressTo" (dict
+  "internet" (dict "enabled" true "cidrs" (list "0.0.0.0/0") "ports" (list 443))
+) -}}
+```
+
+Prefer a specific CIDR (`ipBlock`) over `0.0.0.0/0` — specific CIDRs do not require the approval annotations.
+
+### AllowIngressFrom / AllowEgressTo intent schema summary
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `apps` | list of `{name, ports?}` | Same-namespace pods by `app` label |
+| `namespaces` | list of `{name, podSelector?}` | Cross-namespace (e.g. openshift-ingress router) |
+| `ipBlocks` | list of `{cidr, ports}` | CIDR-based (on-prem systems, external APIs) |
+| `internet` | `{enabled, cidrs, ports}` | Internet-wide egress — requires approval annotations |
+
+For full schema and examples: [bcgov/ag-devops cd/shared-lib/ag-helm/docs/SIMPLE-API.md](https://github.com/bcgov/ag-devops/blob/main/cd/shared-lib/ag-helm/docs/SIMPLE-API.md)
 
 ---
 

@@ -5,7 +5,7 @@ tools: Read, Grep, Glob
 user-invocable: false
 metadata:
   author: Ryan Loiselle
-  version: "1.0"
+  version: "1.1"
 compatibility: Emerald OpenShift 4.x. BC Gov GitHub Actions. Requires Artifactory account from BC Gov DevExchange.
 ---
 
@@ -98,31 +98,87 @@ registry: artifacts.developer.gov.bc.ca
 
 ---
 
-## Policy-as-Code Gate
+## Policy-as-Code Gate (Required — bcgov/ag-devops standard)
 
-Before deploying to any environment, validate rendered Helm output against policy tools.
+Before deploying to **any** environment, render Helm output and pass all four tools.
+Failing any tool must block the pipeline. Source configs: [bcgov/ag-devops cd/policies/](https://github.com/bcgov/ag-devops/tree/main/cd/policies).
 
 ```bash
-# 1. Render Helm to a single YAML file
+# 1. Render Helm to a single YAML file (all resources together — cross-resource checks need them)
 helm template myapp ./charts/<app> --values ./deploy/dev_values.yaml --debug > rendered.yaml
 
-# 2. Run policy checks
+# 2. Run all four policy checks — all must pass before deploy
 datree test rendered.yaml --policy-config cd/policies/datree-policies.yaml
 polaris audit --config cd/policies/polaris.yaml --format pretty rendered.yaml
 kube-linter lint rendered.yaml --config cd/policies/kube-linter.yaml
 conftest test rendered.yaml --policy cd/policies --all-namespaces --fail-on-warn
 ```
 
-Policy check sources (bcgov/ag-devops):
-- Rego rules: `cd/policies/network-policies.rego` — denies accidental allow-all NetworkPolicy shapes
-- Datree config: `cd/policies/datree-policies.yaml`
-- Polaris config: `cd/policies/polaris.yaml`
-- kube-linter config: `cd/policies/kube-linter.yaml`
+### What each tool checks
 
-Key Rego denials (from `cd/policies/network-policies.rego`):
-- Egress rules without `to` (would allow all destinations)
-- Egress rules without `ports` (would allow all ports)
-- Wildcard peers inside `from/to` (empty objects or `podSelector: {}`)
+| Tool | Key checks relevant to AG/Emerald workloads |
+|------|--------------------------------------------|
+| **Datree** | `DataClass` label present and `Low\|Medium\|High`; `owner` label required; `environment` label must be `production\|test\|development`; Route must have `aviinfrasetting.ako.vmware.com/name`; image tag required (no floating); resource requests/limits required; probes required; `imagePullPolicy: Always` |
+| **Polaris** | `hostIPC/PID/Network: false`; `allowPrivilegeEscalation: false`; `runAsNonRoot: true`; `readOnlyRootFilesystem: true`; no secrets in env vars or ConfigMaps; `missingNetworkPolicy` custom check; `deploymentMissingReplicas`; `priorityClassNotSet`; `dataClassLabelRequired`; `routeAviAnnotationRequired` |
+| **kube-linter** | `run-as-non-root`; `privilege-escalation-container`; `default-service-account`; `latest-tag`; `env-var-secret`; selector mismatches; PDB min/max |
+| **Conftest (OPA/Rego)** | Hard-deny: Deployment without matching NetworkPolicy; Deployment without `DataClass`; NP without `policyTypes`; NP empty `podSelector: {}`; allow-all ingress/egress (`- {}`); missing `from/to`; missing `ports`; internet egress without `justification` + `approvedBy` annotations; edge-terminated Route without `app.kubernetes.io/component=frontend` label or `isb.gov.bc.ca/edge-termination-approval` annotation |
+
+### Required pod labels (enforced by Datree + Conftest)
+
+Every Deployment/StatefulSet pod template must include **all three**:
+
+```yaml
+podLabels:
+  DataClass: "Medium"          # Low | Medium | High — must match AVI annotation suffix
+  owner: "<team-or-ticket>"    # team name or Jira ticket reference
+  environment: "development"   # production | test | development
+```
+
+When using `ag-template.deployment`, set these via `ModuleValues.dataClass` (renders `DataClass`) plus explicit `LabelData` fragment for `owner` and `environment`.
+
+### PriorityClass (required — Polaris `priorityClassNotSet`)
+
+Every Deployment and StatefulSet must reference a PriorityClass. Define one per app (or use a shared cluster class):
+
+```yaml
+# priorityclass.yaml
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: <app>-priority
+value: 1000000
+globalDefault: false
+description: "<app> workloads"
+```
+
+```yaml
+# In pod spec
+spec:
+  template:
+    spec:
+      priorityClassName: <app>-priority
+```
+
+### Internet egress approval annotations (Conftest hard-deny)
+
+If a NetworkPolicy has egress to `0.0.0.0/0` or `::/0`, Conftest **denies** it unless both annotations are present:
+
+```yaml
+metadata:
+  annotations:
+    justification: "Why this service requires internet-wide egress"
+    approvedBy: "Ticket reference or approver name"
+```
+
+Prefer specific CIDRs (`ipBlock.cidr`) over internet-wide egress — specific CIDRs do not require the annotations.
+
+### Route edge termination approval (Conftest hard-deny)
+
+Edge-terminated Routes are denied unless the Route has either:
+- Label `app.kubernetes.io/component: frontend`, **or**
+- Annotation `isb.gov.bc.ca/edge-termination-approval: "<ticket>"`
+
+Passthrough (`spec.tls.termination: passthrough`) and re-encrypt termination are not affected.
 
 ---
 
@@ -320,9 +376,14 @@ spec:
 - [ ] Port 8080 used throughout
 - [ ] Non-root `USER 1001` in Containerfile
 - [ ] Health probes configured (`/health/live`, `/health/ready`)
-- [ ] AVI InfraSettings set (haproxy.router.openshift.io annotations)
-- [ ] DataClass label present (`app.kubernetes.io/part-of`)
-- [ ] NetworkPolicy: default-deny + targeted allow rules committed
+- [ ] AVI InfraSettings annotation on every Route (`aviinfrasetting.ako.vmware.com/name`)
+- [ ] Pod labels: `DataClass`, `owner`, `environment` on every Deployment/StatefulSet
+- [ ] `Internet-Ingress: DENY` label on all internal workloads
+- [ ] PriorityClass defined and referenced in every Deployment/StatefulSet
+- [ ] NetworkPolicy: intent-based via `ag-template.networkpolicy` — no allow-all shapes
+- [ ] Policy-as-code gate passes: Datree + Polaris + kube-linter + Conftest (rendered.yaml)
+- [ ] Image pinned by tag or digest (no floating `latest`)
+- [ ] `imagePullPolicy: Always` set on all containers
 - [ ] Artifactory secrets in namespace
 - [ ] ArgoCD Application CRD syncing
 
@@ -333,11 +394,8 @@ spec:
 > Append new Emerald / OpenShift / Helm discoveries here.
 > Format: `YYYY-MM-DD: <discovery>`
 
-- 2026-02-27: ArgoCD auto-sync prune=true removes orphaned resources when Helm chart is updated — confirm before enabling in prod.
-- 2026-02-27: OpenShift Routes require `haproxy.router.openshift.io/timeout` annotation if API calls can exceed 30s default.
-- 2026-02-27: ServiceAccount needs `anyuid` SCC waiver if running as non-root UID not in OpenShift's allowed range — prefer `nonroot-v2` SCC to `anyuid`.
-- 2026-02-28: `global.openshift: true` must be set in Helm values for Emerald — prevents SC UID/GID mismatch with SCC and suppresses false Checkov CKV_K8S_40 warnings.
-- 2026-02-28: ag-helm library chart OCI path is `oci://ghcr.io/bcgov-c/helm` (bcgov-c org, not bcgov). Auth via `helm registry login ghcr.io`.
-- 2026-02-28: Router NetworkPolicy label should be `ingresscontroller.operator.openshift.io/deployment-ingresscontroller: default` for specificity — broader `network.openshift.io/policy-group: ingress` may also work but confirm with cluster operator.
-- 2026-02-28: `dataclass-public` is the correct AVI annotation value for internet-facing Routes (public VIP). Only medium/high/public have registered VIPs on Emerald.
-- 2026-02-28: Prod image references should use SHA digest (`image.digest: sha256:...`) rather than mutable tags to ensure pinned deployments.
+- 2026-04-16: ag-devops Conftest hard-denies Deployments without a matching NetworkPolicy — render all resources into one YAML file so cross-resource checks work.
+- 2026-04-16: Required pod labels are DataClass + owner + environment (all three enforced by Datree/Conftest). owner = team name or ticket; environment = production|test|development.
+- 2026-04-16: Polaris priorityClassNotSet check requires every Deployment/StatefulSet to set spec.template.spec.priorityClassName.
+- 2026-04-16: Edge-terminated Routes need label app.kubernetes.io/component=frontend OR annotation isb.gov.bc.ca/edge-termination-approval — else Conftest denies.
+- 2026-04-16: Internet-wide egress (0.0.0.0/0) in NetworkPolicy requires justification + approvedBy annotations or Conftest denies. Prefer specific CIDRs to avoid this requirement.

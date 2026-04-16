@@ -4,7 +4,7 @@ description: BC Government Emerald OpenShift platform mechanics: namespace conve
 tools: Read, Grep, Glob
 metadata:
   author: Ryan Loiselle
-  version: "2.0"
+  version: "2.1"
 compatibility: BC Gov Emerald OpenShift cluster. Projects in bcgov-c/ and rloisell/ namespaces (be808f family).
 ---
 
@@ -61,6 +61,27 @@ podLabels:
 
 Mismatch rule: `DataClass: Low` + `dataclass-medium` route → SDN silently drops traffic.
 
+### Required pod labels (enforced by ag-devops Datree + Conftest)
+
+Every Deployment/StatefulSet pod template must carry **all three** labels. Missing any will cause the ag-devops policy gate to deny the manifest.
+
+```yaml
+podLabels:
+  DataClass: "Medium"          # Low | Medium | High
+  owner: "<team-or-ticket>"    # team name or Jira ticket reference
+  environment: "development"   # production | test | development (exact values)
+```
+
+When using `ag-template.deployment`, set `ModuleValues.dataClass` (renders `DataClass`) and add `owner`/`environment` via a `LabelData` fragment:
+
+```yaml
+{{- define "myapp.labels" -}}
+owner: jag-pssg-team
+environment: development
+{{- end }}
+# ... in dict: set $p "LabelData" "myapp.labels"
+```
+
 ### Internet-Ingress label
 ```yaml
 podLabels:
@@ -86,6 +107,48 @@ Quick reminder of the flows that need policies on Emerald:
 | Frontend → API | Ingress on API **+** Egress from Frontend |
 | API → DB | Ingress on DB **+** Egress from API |
 | Any pod → DNS | Egress UDP+TCP 53 on every pod |
+
+---
+
+## Route Edge Termination (Conftest hard-deny)
+
+ag-devops Conftest denies **edge-terminated** Routes unless the Route has either:
+- Label `app.kubernetes.io/component: frontend`, **or**
+- Annotation `isb.gov.bc.ca/edge-termination-approval: "<ticket>"`
+
+Passthrough (`spec.tls.termination: passthrough`) and re-encrypt termination are not affected.
+
+```yaml
+# If edge termination is approved:
+metadata:
+  labels:
+    app.kubernetes.io/component: frontend   # OR:
+  annotations:
+    isb.gov.bc.ca/edge-termination-approval: "ISB-12345"
+```
+
+---
+
+## PriorityClass (Polaris `priorityClassNotSet` check)
+
+Every Deployment and StatefulSet must reference a `PriorityClass`. Polaris issues a failure if `spec.template.spec.priorityClassName` is unset. Define one PriorityClass per application group in the chart:
+
+```yaml
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: <app>-priority
+value: 1000000
+globalDefault: false
+```
+
+Then in each workload:
+```yaml
+spec:
+  template:
+    spec:
+      priorityClassName: <app>-priority
+```
 
 ---
 
