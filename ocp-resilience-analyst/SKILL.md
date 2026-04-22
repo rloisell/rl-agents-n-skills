@@ -16,9 +16,8 @@ for teams preparing to migrate to Emerald (pre-migration baseline).
 
 | Tier | Name | What it is |
 |------|------|------------|
-| 1 | ocp-resilience-analyst (this skill) | VS Code / Copilot Chat prompt |
-| 2 | ocp-resilience-toolkit | CLI scripts + GitHub Composite Action |
-| 3 | bc-resilience-service | `@bc-resilience` Copilot Extension on Emerald |
+| 1 | ocp-resilience-analyst (this skill) | VS Code / Copilot Chat agent + skills — **primary method** |
+| 2 | ocp-resilience-toolkit | CLI data collection + GitHub Composite Action + VS Code prompt template |
 
 ---
 
@@ -172,23 +171,25 @@ Assign a **grade (A/B/C/D/F)** and **severity (⛔ CRITICAL / ⚠ HIGH / ℹ LOW
 
 ### Resilience Check Categories
 
-| ID | Category | Failing Condition | Severity |
-|----|----------|-------------------|----------|
-| R01 | PodDisruptionBudget missing | No PDB for a Deployment/StatefulSet with replicas > 1 | ⛔ CRITICAL |
-| R02 | PDB misconfigured | `minAvailable: 0` OR `maxUnavailable: 100%` OR PDB blocks ALL disruptions (`minAvailable == replicas`) | ⛔ CRITICAL |
-| R03 | Single replica | `replicas: 1` with no HPA min ≥ 2 | ⛔ CRITICAL |
-| R04 | No liveness probe | Missing `livenessProbe` on any container | ⚠ HIGH |
-| R05 | No readiness probe | Missing `readinessProbe` on any container | ⚠ HIGH |
-| R06 | No HPA / scaling | No HPA and `replicas` is static (not StatefulSet with known single-instance requirement) | ⚠ HIGH |
-| R07 | No pod anti-affinity | No `podAntiAffinity` or `topologySpreadConstraints` on multi-replica workloads | ⚠ HIGH |
-| R08 | No graceful termination | `terminationGracePeriodSeconds` < 10 OR no `preStop` hook where needed | ⚠ HIGH |
-| R09 | BestEffort QoS | Missing `resources.requests` → QoS class BestEffort → first evicted under pressure | ⚠ HIGH |
-| R10 | RWO PVC on replicated workload | `ReadWriteOnce` PVC on a Deployment with `replicas > 1` (prevents multi-node scheduling) | ⛔ CRITICAL |
-| R11 | No startup probe | Long-starting container without `startupProbe` → killed by liveness before ready | ℹ LOW |
-| R12 | Recreate strategy | `strategy: Recreate` on a user-facing Deployment → full downtime on update | ⚠ HIGH |
-| R13 | No PriorityClass | Missing `priorityClassName` → random eviction order during node pressure | ℹ LOW |
-| R14 | Recent OOMKill / Eviction events | Events show OOMKilled or Evicted in last 72h | ⚠ HIGH |
-| R15 | PDB disruption budgets violated | `disruptionsAllowed: 0` AND `currentHealthy < desiredHealthy` | ⛔ CRITICAL |
+Each check maps to one or more standards in the [Sources and References](#sources-and-references) section at the end of this file.
+
+| ID | Category | Failing Condition | Severity | Standard / Source |
+|----|----------|-------------------|----------|-------------------|
+| R01 | PodDisruptionBudget missing | No PDB for a Deployment/StatefulSet with replicas > 1 | ⛔ CRITICAL | K8S-01; OCP-02 |
+| R02 | PDB misconfigured | `minAvailable: 0` OR `maxUnavailable: 100%` OR PDB blocks ALL disruptions (`minAvailable == replicas`) | ⛔ CRITICAL | K8S-01 |
+| R03 | Single replica | `replicas: 1` with no HPA min ≥ 2 | ⛔ CRITICAL | K8S-03 |
+| R04 | No liveness probe | Missing `livenessProbe` on any container | ⚠ HIGH | K8S-02; PS-03 |
+| R05 | No readiness probe | Missing `readinessProbe` on any container | ⚠ HIGH | K8S-02; PS-03 |
+| R06 | No HPA / scaling | No HPA and `replicas` is static (not StatefulSet with known single-instance requirement) | ⚠ HIGH | K8S-03 |
+| R07 | No pod anti-affinity | No `podAntiAffinity` or `topologySpreadConstraints` on multi-replica workloads | ⚠ HIGH | K8S-04; K8S-10 |
+| R08 | No graceful termination | `terminationGracePeriodSeconds` < 10 OR no `preStop` hook where needed | ⚠ HIGH | K8S-05 |
+| R09 | BestEffort QoS | Missing `resources.requests` → QoS class BestEffort → first evicted under pressure | ⚠ HIGH | K8S-06; AD-02 |
+| R10 | RWO PVC on replicated workload | `ReadWriteOnce` PVC on a Deployment with `replicas > 1` (prevents multi-node scheduling) | ⛔ CRITICAL | K8S-07 |
+| R11 | No startup probe | Long-starting container without `startupProbe` → killed by liveness before ready | ℹ LOW | K8S-02 |
+| R12 | Recreate strategy | `strategy: Recreate` on a user-facing Deployment → full downtime on update | ⚠ HIGH | K8S-09 |
+| R13 | No PriorityClass | Missing `priorityClassName` → random eviction order during node pressure | ℹ LOW | K8S-08; AD-01 |
+| R14 | Recent OOMKill / Eviction events | Events show OOMKilled or Evicted in last 72h | ⚠ HIGH | OCP-01 |
+| R15 | PDB disruption budgets violated | `disruptionsAllowed: 0` AND `currentHealthy < desiredHealthy` | ⛔ CRITICAL | K8S-01; OCP-02 |
 
 ### Gap scoring
 
@@ -338,3 +339,48 @@ During a **rolling OCP upgrade** (4.x minor version):
 - Nodes are drained one at a time by the Machine Config Operator
 - Each node drain is a PDB check point
 - All workloads without PDBs are evicted without constraint
+
+---
+
+## Sources and References
+
+Every check (R01–R15) and remediation recommendation must cite the applicable standard ID
+so readers can trace guidance back to its authoritative source.
+
+### Kubernetes Documentation
+
+| ID | Standard | Reference |
+|----|----------|-----------|
+| K8S-01 | Configure Pod Disruption Budgets | [kubernetes.io](https://kubernetes.io/docs/tasks/run-application/configure-pdb/) |
+| K8S-02 | Configure Liveness, Readiness, and Startup Probes | [kubernetes.io](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) |
+| K8S-03 | Horizontal Pod Autoscaling | [kubernetes.io](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) |
+| K8S-04 | Assigning Pods to Nodes — Affinity and Anti-Affinity | [kubernetes.io](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/) |
+| K8S-05 | Pod Lifecycle — Termination and preStop hooks | [kubernetes.io](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-termination) |
+| K8S-06 | Pod Quality of Service Classes (Guaranteed / Burstable / BestEffort) | [kubernetes.io](https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/) |
+| K8S-07 | Persistent Volumes — Access Modes (RWO vs RWX) | [kubernetes.io](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes) |
+| K8S-08 | Pod Priority and Preemption | [kubernetes.io](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/) |
+| K8S-09 | Deployment Update Strategy (RollingUpdate vs Recreate) | [kubernetes.io](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy) |
+| K8S-10 | Topology Spread Constraints (zone-level HA) | [kubernetes.io](https://kubernetes.io/docs/concepts/scheduling-eviction/topology-spread-constraints/) |
+
+### OpenShift Platform
+
+| ID | Standard | Reference |
+|----|----------|-----------|
+| OCP-01 | OpenShift — Node Management, Events, and OOMKill detection | [OCP Node Docs](https://docs.openshift.com/container-platform/4.14/nodes/nodes/nodes-nodes-working.html) |
+| OCP-02 | OpenShift — Machine Config Operator: rolling node upgrade drains pods one node at a time | [OCP MCO Docs](https://docs.openshift.com/container-platform/4.14/post_installation_configuration/machine-configuration-tasks.html) |
+| OCP-03 | OpenShift — PodDisruptionBudget support during node drain | [OCP PDB Docs](https://docs.openshift.com/container-platform/4.14/nodes/pods/nodes-pods-configuring.html) |
+
+### BC Gov Platform Services
+
+| ID | Standard | Reference |
+|----|----------|-----------|
+| PS-01 | Platform Services — PriorityClass requirement | [docs.developer.gov.bc.ca](https://docs.developer.gov.bc.ca/) |
+| PS-02 | Platform Services — Resource Requests (Burstable QoS minimum) | [docs.developer.gov.bc.ca](https://docs.developer.gov.bc.ca/) |
+| PS-03 | Platform Services — Health Probes and Deployment Readiness | [docs.developer.gov.bc.ca](https://docs.developer.gov.bc.ca/) |
+
+### ag-devops Policy Standards
+
+| ID | Standard | Enforcement |
+|----|----------|-------------|
+| AD-01 | PriorityClass required on all workloads | Polaris `priorityClassNotSet` audit |
+| AD-02 | Resource requests required on all containers | Polaris `requestsNotSet` audit |

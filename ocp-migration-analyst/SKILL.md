@@ -136,20 +136,22 @@ Apply the following skill knowledge bases when interpreting collected data:
 
 ### Critical gap categories (always evaluate)
 
-| # | Category | Source indicator | Gap test |
-|---|----------|-----------------|----------|
-| G1 | No egress NetworkPolicies | `networkpolicies.yaml` has no egress rules | Emerald default-denies all egress |
-| G2 | DeploymentConfig used | `workloads.yaml` has `kind: DeploymentConfig` | DC deprecated in OCP 4.14+; must convert |
-| G3 | No Helm charts | No `Chart.yaml` in repo | ag-helm-templates required on Emerald |
-| G4 | Internal image registry | `image-refs.txt` shows `image-registry.openshift-image-registry.svc` | Must migrate to Artifactory |
-| G5 | No health probes | No `livenessProbe/readinessProbe` in workload YAML | Required on Emerald for proper rollout |
-| G6 | Plain Secrets | `secret-names.txt` shows non-system secrets | Must migrate to Vault + ESO |
-| G7 | Missing pod labels | No `DataClass/owner/environment` in pod templates | Datree/Conftest enforced on Emerald |
-| G8 | Wrong StorageClass | `storage.yaml` shows `netapp-file-standard` for database PVCs | Should be `netapp-block-standard` |
-| G9 | No PriorityClass | No `kind: PriorityClass` in repo | Polaris `priorityClassNotSet` check |
-| G10 | CI uses SierraSystems workflows | Workflow imports `SierraSystems/reusable-workflows` | Replace with first-party GitOps |
-| G11 | No policy-as-code gate | No Datree/Polaris/kube-linter/Conftest in CI | Required by ag-devops standard |
-| G12 | Image tag not pinned | `latest` or mutable tag in image refs | Use digest pinning in prod |
+Each gap maps to one or more standards in the [Sources and References](#sources-and-references) section below.
+
+| # | Category | Source indicator | Gap test | Standard / Source |
+|---|----------|-----------------|----------|-------------------|
+| G1 | No egress NetworkPolicies | `networkpolicies.yaml` has no egress rules | Emerald default-denies all egress | PS-01 |
+| G2 | DeploymentConfig used | `workloads.yaml` has `kind: DeploymentConfig` | DC deprecated in OCP 4.14+; must convert | OCP-01 |
+| G3 | No Helm charts | No `Chart.yaml` in repo | ag-helm-templates required on Emerald | AD-01 |
+| G4 | Internal image registry | `image-refs.txt` shows `image-registry.openshift-image-registry.svc` | Must migrate to Artifactory | ISB-03 |
+| G5 | No health probes | No `livenessProbe/readinessProbe` in workload YAML | Required on Emerald for proper rollout | K8S-01; PS-04 |
+| G6 | Plain Secrets | `secret-names.txt` shows non-system secrets | Must migrate to Vault + ESO | ISB-01 |
+| G7 | Missing pod labels | No `DataClass/owner/environment` in pod templates | Datree/Conftest enforced on Emerald | AD-02 |
+| G8 | Wrong StorageClass | `storage.yaml` shows `netapp-file-standard` for database PVCs | Should be `netapp-block-standard` | PS-02 |
+| G9 | No PriorityClass | No `kind: PriorityClass` in repo | Polaris `priorityClassNotSet` check | AD-04 |
+| G10 | CI uses SierraSystems workflows | Workflow imports `SierraSystems/reusable-workflows` | Replace with first-party GitOps | ISB-02 |
+| G11 | No policy-as-code gate | No Datree/Polaris/kube-linter/Conftest in CI | Required by ag-devops standard | AD-03 |
+| G12 | Image tag not pinned | `latest` or mutable tag in image refs | Use digest pinning in prod | SEC-01; SEC-02 |
 
 ---
 
@@ -306,3 +308,59 @@ diagrams/
 - 2026-04-16: [JUSTINRCC] DeploymentConfig → Deployment conversion is always task HELM-01. It is prerequisite for all other Helm tasks.
 - 2026-04-16: [JUSTINRCC] Zone B external services (SFTP, ORDS) always require CSBC FWCRs — create `ARCH-01 CSBC FWCR request` as the first blocking task whenever these flows are present.
 - 2026-04-16: Report PDF rendering must run from the report directory (not workspace root) so relative image paths in markdown resolve correctly.
+
+---
+
+## Sources and References
+
+Every gap finding (G1–G12) and recommendation must cite the applicable standard ID so
+readers can trace guidance back to its authoritative source. This is what distinguishes
+an evidence-based analysis from a generic checklist.
+
+### BC Gov Platform Services
+
+| ID | Standard | Reference |
+|----|----------|-----------|
+| PS-01 | Emerald Landing Zone — default-deny egress NetworkPolicy requirement | [docs.developer.gov.bc.ca](https://docs.developer.gov.bc.ca/) |
+| PS-02 | Platform Services — Storage Guide (`netapp-block-standard` for block storage workloads) | [docs.developer.gov.bc.ca](https://docs.developer.gov.bc.ca/) |
+| PS-03 | Platform Services — Artifactory as mandatory image registry on Emerald | [docs.developer.gov.bc.ca](https://docs.developer.gov.bc.ca/) |
+| PS-04 | Platform Services — Health Probes and Deployment Readiness requirements | [docs.developer.gov.bc.ca](https://docs.developer.gov.bc.ca/) |
+
+### ag-devops Policy Standards
+
+| ID | Standard | Enforcement |
+|----|----------|-------------|
+| AD-01 | ag-helm-templates — mandatory Helm scaffolding for all Emerald workloads | Datree policy rule |
+| AD-02 | Pod labels: `DataClass`, `owner`, `environment` — all three required on every pod template | Datree + Conftest hard-deny |
+| AD-03 | Policy-as-code gate: Datree + Polaris + kube-linter + Conftest must run in every CI pipeline | CI workflow requirement |
+| AD-04 | PriorityClass required on all workloads | Polaris `priorityClassNotSet` check |
+
+### BC Gov Information Security and ISB EA
+
+| ID | Standard | Reference |
+|----|----------|-----------|
+| ISB-01 | BC Gov Information Security Policy — plain Kubernetes Secrets prohibited for sensitive values; Vault + ESO mandatory | [BC Gov IS Policy](https://www2.gov.bc.ca/gov/content/governments/services-for-government/information-management-technology/information-security/information-security-policy-and-guidelines/core-policy) |
+| ISB-02 | ISB Enterprise Architecture — Option 2 CI/CD standard (first-party GitOps pipelines; no third-party reusable workflow vendors) | Internal ISB EA documentation |
+| ISB-03 | ISB Enterprise Architecture — Artifact Management (Artifactory as single source of truth for images) | Internal ISB EA documentation |
+
+### OpenShift Platform
+
+| ID | Standard | Reference |
+|----|----------|-----------|
+| OCP-01 | OpenShift 4.14 — DeploymentConfig deprecation | [OCP 4.14 Docs](https://docs.openshift.com/container-platform/4.14/applications/deployments/what-deployments-are.html) |
+| OCP-02 | OpenShift — Node Drain and Machine Config Operator (rolling upgrade behaviour) | [OCP Node Docs](https://docs.openshift.com/container-platform/4.14/nodes/) |
+
+### Kubernetes Documentation
+
+| ID | Standard | Reference |
+|----|----------|-----------|
+| K8S-01 | Configure Liveness, Readiness, and Startup Probes | [kubernetes.io](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) |
+| K8S-02 | Persistent Volumes — Access Modes (RWO vs RWX) | [kubernetes.io](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes) |
+| K8S-03 | Network Policies | [kubernetes.io](https://kubernetes.io/docs/concepts/services-networking/network-policies/) |
+
+### Security
+
+| ID | Standard | Reference |
+|----|----------|-----------|
+| SEC-01 | OWASP A06:2021 — Vulnerable and Outdated Components (mutable image tags allow silent dependency drift) | [owasp.org](https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/) |
+| SEC-02 | GitHub Actions — SHA pinning for third-party actions | [GitHub Security Hardening](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions) |
