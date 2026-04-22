@@ -147,6 +147,25 @@ done
 For flagged files: review which sections are reference content (templates, long
 YAML, large tables) and split them to `references/<file>.md`.
 
+### Step 5b — Capture external references
+
+For any external standard, framework, RFC, or named project cited or applied this session, check whether it is already in `README.md`'s References table. If not, add a row.
+
+**Format:**
+```markdown
+| [Name — Title](url) (license if open-source) | `skill-name` | One sentence on how it shapes the skill |
+```
+
+**Triggers for adding a row:**
+- A named standard was followed (OWASP, NIST, CIS, ISO, BC Gov IMIT)
+- An RFC governed a decision (format, protocol, address range)
+- An open-source project's pattern was adopted (link to repo)
+- A vendor's documented architecture was used as a reference model
+
+Do **not** add rows for: general tooling docs (e.g. Kubernetes docs), BC Gov internal wikis without stable URLs, or passing mentions that did not influence skill content.
+
+---
+
 ### Step 6 — Write evolution log entry
 
 Append to [`references/evolution-log.md`](references/evolution-log.md):

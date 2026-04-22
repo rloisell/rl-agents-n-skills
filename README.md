@@ -111,6 +111,23 @@ consuming project — not in this repo.
 
 ---
 
+## References
+
+Standards, frameworks, and projects that shaped the skills in this library:
+
+| Reference | Used in | Notes |
+|-----------|---------|-------|
+| [NousResearch Hermes Agent](https://github.com/NousResearch/hermes-function-calling) (MIT) | `agent-evolution` | Retain/recall/reflect pattern — mid-session knowledge capture, pre-session retrieval, USER_MODEL section |
+| [NIST SP 800-207 — Zero Trust Architecture](https://csrc.nist.gov/publications/detail/sp/800-207/final) | `zero-trust-architect` | Authoritative ZTA definition and design principles |
+| [OWASP Top 10](https://owasp.org/Top10/) | `security-architect`, `ocp-migration-analyst` | Web application security risk taxonomy |
+| [RFC 1918 — Private Address Space](https://datatracker.ietf.org/doc/html/rfc1918) | `network-architect`, `network-security`, `dns-tools` | Private IPv4 address range conventions |
+| [RFC 5798 — VRRP](https://datatracker.ietf.org/doc/html/rfc5798) | `network-architect` | Virtual Router Redundancy Protocol |
+| [RFC 7807 — Problem Details for HTTP APIs](https://datatracker.ietf.org/doc/html/rfc7807) | `ef-core` | Standard error response envelope for domain exceptions |
+| [BC Gov IMIT Standard 6.13 — Network Security Zones (2012)](https://www2.gov.bc.ca/gov/content/governments/services-for-government/policies-procedures/im-it-standards) | `bc-gov-sdn-zones` | BC Government SDN zone classification and connectivity rules |
+| [BC Gov N2N Connectivity Standard (2008)](https://www2.gov.bc.ca/gov/content/governments/services-for-government/policies-procedures/im-it-standards) | `bc-gov-sdn-zones` | Node-to-node connectivity rules within BC Gov SDN |
+
+---
+
 ## Contributing
 
 All changes go through PRs on `main`. After merging, consuming projects update
