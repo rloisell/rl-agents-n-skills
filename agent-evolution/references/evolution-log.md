@@ -18,6 +18,19 @@ Maintained by `agent-evolution` at session end.
 
 ---
 
+## 2026-04-22 — Session: agent-evolution-hermes-improvements
+
+**Skills updated:** CLAUDE.md, agent-evolution/SKILL.md, session-workflow/SKILL.md, agents/agent-evolution.md, agents/ocp-resilience-analyst.md, README.md
+**Shared skills created/updated:** bc-gov-network-architect/SKILL.md (new), sysadmin/SKILL.md (new)
+**Agents split:** none
+**Summary:** Applied Hermes Agent-inspired improvements to agent-evolution (mid-session retain nudges,
+[CONTEXT: type] tags, USER_MODEL section, evolution-log in Step 0 recall, push verification in shutdown).
+Fixed critical gaps: ocp-resilience-analyst YAML frontmatter, 3 missing agents in CLAUDE.md dispatch
+table, agent-evolution made user-invocable. Propagated all changes to 6 consuming projects via submodule
+update. README updated to reflect actual 19 agents / 14 shared skills.
+
+---
+
 ## 2026-02-27 — Session: agent-skills-migration
 
 **Skills updated:** all

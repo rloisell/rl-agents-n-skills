@@ -216,6 +216,8 @@ Project codes: `HNW`, `DSC`, `DSCM`, `TEMPLATE`, or feature branch name.
 - 2026-02-27: [TEMPLATE] [CONTEXT: agent-system] Initial agent team migrated from flat .agent.md format to Agent Skills SKILL.md directory format. 4 shared skills extracted: ai-session-files, git-conventions, bc-gov-emerald, containerfile-standards.
 - 2026-03-04: [TEMPLATE] [CONTEXT: agent-system] Added AgentEvolver-inspired improvements: pre-session knowledge retrieval (Step 0), causal CAUSE/FIX annotation format, and cross-session pattern scanning in Step 4.
 - 2026-04-22: [TEMPLATE] [CONTEXT: agent-system] Adopted Hermes-inspired improvements: mid-session inline retain nudges (<!-- evolution-candidate -->), [CONTEXT: type] tags on all KNOWLEDGE entries, USER_MODEL section, evolution-log.md included in Step 0 recall.
+- 2026-04-22: [rl-agents-n-skills] [CONTEXT: agent-system] When a submodule appears in .gitmodules but `git submodule status` returns nothing and the directory doesn't exist, the submodule was never committed to the git index — CAUSE: `git submodule add` was never run, only .gitmodules was edited — FIX: `git submodule add --force <url> <path>` re-registers it properly.
+- 2026-04-22: [rl-project-template] [CONTEXT: config] Branch protection rule "Changes must be made through a pull request" is bypassed silently by admin pushes — CAUSE: "Restrict who can bypass required pull requests" is unchecked in repo settings — FIX: Check that setting in GitHub repo Settings → Rules to enforce PR discipline for all actors including admins.
 
 ---
 
