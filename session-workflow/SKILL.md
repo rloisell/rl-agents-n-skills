@@ -63,6 +63,30 @@ If on `main` and there is in-progress work noted in `nextSteps.md`, create or
 switch to the appropriate feature branch before making any changes.
 `main` is always protected — no direct commits.
 
+### Step 5 — Surface relevant past KNOWLEDGE
+
+Before any implementation work begins, recall past causal entries relevant to the
+current session topic. This runs every session — it is the low-cost guard against
+re-diagnosing problems already solved.
+
+```bash
+# Derive a keyword from the branch name or feature described in nextSteps.md
+TOPIC="<branch-name-or-feature-keyword>"
+
+# Find SKILL.md files whose KNOWLEDGE sections mention the topic
+grep -ril "$TOPIC" .github/agents/ --include="SKILL.md"
+
+# Print matching KNOWLEDGE entries
+grep -h "^- " .github/agents/*/SKILL.md | grep -i "$TOPIC"
+
+# Also scan the evolution log for cross-session patterns
+grep -i "$TOPIC" .github/agents/agent-evolution/references/evolution-log.md
+```
+
+Summarise any matches in one sentence before proceeding to implementation.
+If no matches are found, proceed directly. Step 5 adds 30 seconds; it saves
+hours the first time it catches a repeat.
+
 ---
 
 ## Session Shutdown Protocol
@@ -97,6 +121,18 @@ Never commit directly to `main`. Use `github-workflow` agent for PR management.
 - Mark completed rows `✅` with strikethrough
 - Add any newly discovered tasks
 - Confirm the "next session start" state is accurate
+
+### Step 4 — Invoke agent-evolution (mandatory)
+
+After COMMIT_INFO is written, **always** invoke the `agent-evolution` agent:
+
+```
+Invoke agent-evolution to capture session discoveries and update KNOWLEDGE sections.
+```
+
+This step is **not optional**. If no new patterns were discovered, `agent-evolution`
+will record that explicitly in the evolution log. The log entry cost is negligible;
+the cost of skipping accumulation is not.
 
 ---
 

@@ -1,8 +1,15 @@
-# Agent: ocp-resilience-analyst
+---
+name: ocp-resilience-analyst
+description: OCP Resilience Analyst — produces evidence-based resilience posture reports for BC Gov OpenShift namespaces, grading workloads against 15 resilience categories (R01–R15) and generating prioritised remediation tasks. Use when asked to assess, analyse, or report on OpenShift namespace resilience, PDB coverage, HPA configuration, or replica availability.
+model: claude-sonnet-4-5
+tools: Bash, Read, Write, Grep, Glob
+user-invocable: true
+metadata:
+  author: Ryan Loiselle
+  version: "1.1"
+---
 # Ryan Loisell — Developer / Architect | GitHub Copilot | April 2026
-#
 # Claude Code subagent — orchestrates the full OCP resilience analysis pipeline.
-# Run with: claude --agent ocp-resilience-analyst
 
 ## Identity
 

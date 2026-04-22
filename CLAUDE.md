@@ -18,6 +18,20 @@ AI pair programmer.
 - Follow the service-layer pattern — no business logic in controllers
 - Update `AI/WORKLOG.md`, `AI/CHANGES.csv`, `AI/COMMANDS.sh` at session end
 
+## Mid-session knowledge capture
+
+When any of these events occur **during a session**, record the finding immediately
+— do not defer to session end:
+
+- A non-obvious bug fix required diagnosis (root cause identified)
+- A platform quirk or undocumented behaviour was discovered
+- A workaround for a toolchain limitation was found
+- A previously failing approach is confirmed to not work
+
+Mark the candidate inline with `<!-- evolution-candidate -->` immediately after
+the relevant code change or command, then include it verbatim in the end-of-session
+agent-evolution invocation. Do not rely on end-of-session memory to reconstruct it.
+
 ## Never
 
 - Add academic metadata (student IDs, course names)
@@ -52,11 +66,14 @@ Delegate to them when the task matches their domain:
 | `ef-core` | EF Core, MariaDB/Pomelo, migrations |
 | `observability` | Serilog, health checks, Prometheus |
 | `local-dev` | podman-compose, local troubleshooting |
-| `agent-evolution` | End-of-session knowledge updates |
+| `agent-evolution` | **Always invoke at session end** after COMMIT_INFO is written — updates KNOWLEDGE sections, promotes shared skills, logs discoveries |
 | `zero-trust-architect` | ZTA design, SASE architecture, ZTNA/CASB/SWG evaluation |
 | `network-architect` | Routing/switching design, WAN, BGP/OSPF, topology review |
 | `cisco-ios` | Cisco IOS/IOS-XE/NX-OS config, home lab, troubleshooting, password recovery |
 | `sysadmin` | *nix admin tasks, Solaris 9/10/11 SPARC (LDoms), RHEL, storage, boot issues |
+| `bc-gov-network-architect` | BC Gov workload connectivity, NetworkPolicy authoring, SDN zone classification, cross-zone failure diagnosis |
+| `ocp-migration-analyst` | Full OCP migration analysis pipeline — namespace discovery, gap analysis, network mapping, report generation |
+| `ocp-resilience-analyst` | OpenShift namespace resilience posture — R01–R15 grading, PDB/HPA/replica analysis, prioritised remediation |
 
 ## Deployment platform
 

@@ -58,9 +58,12 @@ grep -ril "$TOPIC" .github/agents/ --include="SKILL.md"
 
 # Print matching KNOWLEDGE entries from those files
 grep -h "^- " .github/agents/*/SKILL.md | grep -i "$TOPIC"
+
+# Also scan the evolution log for cross-session recurrences
+grep -i "$TOPIC" .github/agents/agent-evolution/references/evolution-log.md
 ```
 
-Surface any matches as context before proceeding. If no matches are found, proceed directly to Step 1.
+Surface any matches from both sources as context before proceeding. If no matches are found, proceed directly to Step 1.
 
 ---
 
@@ -93,15 +96,18 @@ At the bottom of each relevant SKILL.md, append to the `*_KNOWLEDGE` block.
 
 **Standard format** (discoveries, patterns):
 ```markdown
-- YYYY-MM-DD: [ProjectName] <imperative statement of what was learned>
+- YYYY-MM-DD: [ProjectName] [CONTEXT: type] <imperative statement of what was learned>
 ```
 
 **Causal format** (failures, debugging sessions — preferred for high-signal entries):
 ```markdown
-- YYYY-MM-DD: [ProjectName] <what happened> — CAUSE: <root cause> — FIX: <resolution>
+- YYYY-MM-DD: [ProjectName] [CONTEXT: type] <what happened> — CAUSE: <root cause> — FIX: <resolution>
 ```
 
+Context types: `deployment`, `bug-fix`, `migration`, `config`, `auth`, `networking`, `ci-cd`, `toolchain`, `agent-system`
+
 Include `CAUSE:` / `FIX:` whenever a fix required diagnosis — this attributes the causal step, not just the outcome, making the entry actionable for future sessions.
+Include `[CONTEXT: type]` on every entry so that pre-session recall can filter by session type rather than scanning all entries.
 
 Maximum 3 bullet points per session per agent. Keep entries concise (< 150 chars total).
 
@@ -205,7 +211,22 @@ Project codes: `HNW`, `DSC`, `DSCM`, `TEMPLATE`, or feature branch name.
 ## EVOLUTION_KNOWLEDGE
 
 > Append new meta-learnings about the agent system itself here.
-> Format: `YYYY-MM-DD: <discovery>`
+> Format: `YYYY-MM-DD: [CONTEXT: agent-system] <discovery>`
 
-- 2026-02-27: [TEMPLATE] Initial agent team migrated from flat .agent.md format to Agent Skills SKILL.md directory format. 4 shared skills extracted: ai-session-files, git-conventions, bc-gov-emerald, containerfile-standards.
-- 2026-03-04: [TEMPLATE] Added AgentEvolver-inspired improvements: pre-session knowledge retrieval (Step 0), causal CAUSE/FIX annotation format, and cross-session pattern scanning in Step 4.
+- 2026-02-27: [TEMPLATE] [CONTEXT: agent-system] Initial agent team migrated from flat .agent.md format to Agent Skills SKILL.md directory format. 4 shared skills extracted: ai-session-files, git-conventions, bc-gov-emerald, containerfile-standards.
+- 2026-03-04: [TEMPLATE] [CONTEXT: agent-system] Added AgentEvolver-inspired improvements: pre-session knowledge retrieval (Step 0), causal CAUSE/FIX annotation format, and cross-session pattern scanning in Step 4.
+- 2026-04-22: [TEMPLATE] [CONTEXT: agent-system] Adopted Hermes-inspired improvements: mid-session inline retain nudges (<!-- evolution-candidate -->), [CONTEXT: type] tags on all KNOWLEDGE entries, USER_MODEL section, evolution-log.md included in Step 0 recall.
+
+---
+
+## USER_MODEL
+
+> Persistent model of Ryan Loiselle's working patterns, preferences, and known failure modes.
+> Updated at session end when new preferences or patterns are confirmed.
+> Format: `YYYY-MM-DD: <pattern or preference observed>`
+
+- 2026-04-22: Prefers squash-merge PRs with a detailed commit body (bullet points), not one-liners.
+- 2026-04-22: Runs EF Core migrations before any test run — never `EnsureCreated()`.
+- 2026-04-22: Serves runtime config from `/config.json` via Nginx; never bakes `VITE_API_URL` at build time.
+- 2026-04-22: Expects `AI/nextSteps.md` to be the authoritative session state — always consult before acting.
+- 2026-04-22: Wants agent-evolution invoked at **session end** and immediate inline `<!-- evolution-candidate -->` markers during session, not deferred recall.
