@@ -16,7 +16,7 @@ This repo serves two toolchains from a single source:
 
 ---
 
-## Agents (19) — VS Code SKILL.md + Claude Code subagent
+## Agents (20) — VS Code SKILL.md + Claude Code subagent
 
 Each agent has two artefacts: a VS Code `SKILL.md` at the repo root (auto-discovered when
 this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `agents/`.
@@ -29,6 +29,7 @@ this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `ag
 | `ci-cd-pipeline/` | 5-workflow pattern, ISB EA Option 2, image tags, yq GitOps, Trivy, failure triage |
 | `local-dev/` | podman-compose, EF Core migration commands, MariaDB, port conventions, troubleshooting |
 | `spec-kitty/` | Spec-first development, WP YAML format, spec.md/plan.md sections, validate-tasks |
+| `spec-kit/` | GitHub Spec-Kit SDD lifecycle — constitution→specify→plan→tasks→implement, extensions, presets |
 | `ef-core/` | Pomelo/MariaDB patterns, migration workflow, startup Migrate(), Linux LINQ gotcha, service layer |
 | `bc-gov-devops/` | Emerald OpenShift, Artifactory, Helm, health checks, Common SSO, oc commands, ArgoCD |
 | `agent-evolution/` | Self-learning — monitors sessions, updates KNOWLEDGE sections, promotes shared skills |
@@ -118,6 +119,7 @@ Standards, frameworks, and projects that shaped the skills in this library:
 | Reference | Used in | Notes |
 |-----------|---------|-------|
 | [NousResearch Hermes Agent](https://github.com/NousResearch/hermes-function-calling) (MIT) | `agent-evolution` | Retain/recall/reflect pattern — mid-session knowledge capture, pre-session retrieval, USER_MODEL section |
+| [GitHub Spec-Kit](https://github.com/github/spec-kit) (MIT) | `spec-kit` | Spec-Driven Development lifecycle — specify-cli commands, extensions/presets model, SDD phases |
 | [NIST SP 800-207 — Zero Trust Architecture](https://csrc.nist.gov/publications/detail/sp/800-207/final) | `zero-trust-architect` | Authoritative ZTA definition and design principles |
 | [OWASP Top 10](https://owasp.org/Top10/) | `security-architect`, `ocp-migration-analyst` | Web application security risk taxonomy |
 | [RFC 1918 — Private Address Space](https://datatracker.ietf.org/doc/html/rfc1918) | `network-architect`, `network-security`, `dns-tools` | Private IPv4 address range conventions |
