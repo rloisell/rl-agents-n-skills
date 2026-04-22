@@ -211,5 +211,5 @@ Both tools implement Spec-Driven Development. Choose based on team/project prefe
 > Append new spec-kit discoveries here.
 > Format: `YYYY-MM-DD: [project] <discovery>`
 
-- 2026-04-22: [rl-agents-n-skills] GitHub Spec-Kit (`github/spec-kit`) is sometimes referred to as "Microsoft Spec-Kit" in community docs and MCP bridge projects — technically accurate since Microsoft owns GitHub. Canonical repo: https://github.com/github/spec-kit (MIT).
+- 2026-04-22: [rl-agents-n-skills] "GitHub Spec-Kit" and "Microsoft Spec-Kit" are the same tool — canonical repo is `github/spec-kit` (https://github.com/github/spec-kit, MIT). Both names are in use: "GitHub Spec-Kit" follows the repo org; "Microsoft Spec-Kit" is used in some community docs and MCP bridge projects because Microsoft owns GitHub. If you encounter either name, they refer to the same `specify` CLI and SDD workflow.
 - 2026-04-22: [rl-agents-n-skills] `--ai copilot` creates `.github/prompts/speckit.*` files (slash commands for Copilot Chat). `--ai copilot --ai-skills` creates SKILL.md files for VS Code auto-discovery instead.
