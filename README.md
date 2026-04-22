@@ -2,7 +2,7 @@
 
 **Author**: Ryan Loiselle — Developer / Architect  
 **AI tool**: GitHub Copilot — AI pair programmer / code generation  
-**Updated**: March 2026
+**Updated**: April 2026
 
 Shared **Claude Code plugin** containing persona agents, reusable skills, and
 Claude Code subagents for rloisell BC Gov .NET/React/OpenShift projects.
@@ -16,9 +16,9 @@ This repo serves two toolchains from a single source:
 
 ---
 
-## Personas (12) — VS Code SKILL.md + Claude Code subagent
+## Agents (19) — VS Code SKILL.md + Claude Code subagent
 
-Each persona has two artefacts: a VS Code `SKILL.md` at the repo root (auto-discovered when
+Each agent has two artefacts: a VS Code `SKILL.md` at the repo root (auto-discovered when
 this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `agents/`.
 
 | Directory | Scope |
@@ -35,10 +35,17 @@ this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `ag
 | `security-architect/` | OWASP Top 10, SAST/DAST toolchain, input validation, audit logging, container security, STRA/PIA |
 | `bc-gov-iam/` | DIAM/Keycloak OIDC PKCE, realm selection, React oidc-client-ts, token lifecycle, backchannel logout |
 | `observability/` | Serilog structured logging, health checks, Prometheus pod annotations, OpenTelemetry .NET SDK |
+| `zero-trust-architect/` | ZTA design, SASE architecture, ZTNA/CASB/SWG evaluation |
+| `network-architect/` | Routing/switching design, WAN, BGP/OSPF, topology review |
+| `cisco-ios/` | Cisco IOS/IOS-XE/NX-OS config, home lab, troubleshooting, password recovery |
+| `sysadmin/` | *nix admin, Solaris 9/10/11 SPARC (LDoms), RHEL, storage, boot issues |
+| `bc-gov-network-architect/` | BC Gov workload connectivity, NetworkPolicy authoring, SDN zone classification, cross-zone failure diagnosis |
+| `ocp-migration-analyst/` | Full OCP migration analysis pipeline — namespace discovery, gap analysis, network mapping, report generation |
+| `ocp-resilience-analyst/` | OpenShift namespace resilience posture — R01–R15 grading, PDB/HPA/replica analysis, prioritised remediation |
 
 ---
 
-## Shared Skills (5) — reusable reference libraries
+## Shared Skills (14) — reusable reference libraries
 
 | Directory | Consumed by |
 |-----------|-------------|
@@ -47,6 +54,15 @@ this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `ag
 | `bc-gov-emerald/` | bc-gov-devops, ci-cd-pipeline |
 | `containerfile-standards/` | bc-gov-devops, ci-cd-pipeline |
 | `vault-secrets/` | security-architect, bc-gov-devops, ci-cd-pipeline |
+| `bc-gov-networkpolicy/` | bc-gov-network-architect, bc-gov-devops |
+| `bc-gov-sdn-zones/` | bc-gov-network-architect |
+| `bc-gov-design-system/` | bc-gov-devops, local-dev |
+| `network-security/` | security-architect, network-architect, zero-trust-architect |
+| `dns-tools/` | network-architect, sysadmin |
+| `solaris/` | sysadmin |
+| `linux-rhel/` | sysadmin |
+| `bc-migrate-service/` | ocp-migration-analyst |
+| `bc-resilience-service/` | ocp-resilience-analyst |
 
 ---
 

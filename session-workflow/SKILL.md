@@ -134,6 +134,28 @@ This step is **not optional**. If no new patterns were discovered, `agent-evolut
 will record that explicitly in the evolution log. The log entry cost is negligible;
 the cost of skipping accumulation is not.
 
+### Step 5 — Confirm remote is up to date (push verification)
+
+After agent-evolution runs and any evolution-log commits are made, verify nothing
+remains local-only:
+
+```bash
+# Show commits that exist locally but have not been pushed
+git log --oneline origin/$(git branch --show-current)..HEAD
+
+# If output is non-empty, push is incomplete — push now:
+git push origin $(git branch --show-current)
+```
+
+If the remote tracking branch does not exist yet (new branch), push with `-u`:
+
+```bash
+git push -u origin $(git branch --show-current)
+```
+
+This is the final guard. A session is only complete when `git log origin/<branch>..HEAD`
+returns empty output.
+
 ---
 
 ## Process Rules
