@@ -166,6 +166,31 @@ Do **not** add rows for: general tooling docs (e.g. Kubernetes docs), BC Gov int
 
 ---
 
+### Step 5c — Wire new agents into VS Code user profile
+
+Whenever a new file is added to `agents/` this session, it must be symlinked into the VS Code user prompts folder so it is globally available in all workspaces — including work repos where the submodule is not present.
+
+```bash
+PROMPTS_DIR="$HOME/Library/Application Support/Code/User/prompts"
+AGENTS_DIR=".github/agents/agents"   # adjust path if running from repo root
+
+# For each new agent added this session:
+for f in "$AGENTS_DIR"/*.md; do
+  name=$(basename "$f" .md)
+  target="$PROMPTS_DIR/${name}.agent.md"
+  if [ ! -e "$target" ]; then
+    ln -s "$f" "$target"
+    echo "linked: ${name}.agent.md"
+  fi
+done
+```
+
+**When to run:** Any session where `agents/*.md` files were created or the `agents/` directory was inventoried.
+**On Linux / other OS:** Adjust `PROMPTS_DIR` to the equivalent VS Code user data path (e.g. `~/.config/Code/User/prompts` on Linux).
+**Idempotent:** The `[ ! -e ]` guard skips already-linked agents — safe to re-run any time.
+
+---
+
 ### Step 6 — Write evolution log entry
 
 Append to [`references/evolution-log.md`](references/evolution-log.md):

@@ -36,6 +36,24 @@ Promote a pattern to a new shared skill when:
 - It has no project-specific coupling
 - It would meaningfully reduce maintenance surface
 
+## New agent checklist
+
+Whenever a new `agents/*.md` file is created this session, run:
+
+```bash
+PROMPTS_DIR="$HOME/Library/Application Support/Code/User/prompts"
+# Symlink new agent into VS Code user profile (global, all workspaces)
+for f in agents/*.md; do
+  name=$(basename "$f" .md)
+  target="$PROMPTS_DIR/${name}.agent.md"
+  [ ! -e "$target" ] && ln -s "$(pwd)/$f" "$target" && echo "linked: ${name}.agent.md"
+done
+```
+
+This makes the agent available in every VS Code workspace — including work repos that do not have the submodule — without modifying those repos.
+
+Also update `README.md`: bump the agents count and add a row to the agents table.
+
 ## Evolution log
 
 After any update, append to `agent-evolution/references/evolution-log.md`:
