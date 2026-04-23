@@ -136,3 +136,39 @@ Standards, frameworks, and projects that shaped the skills in this library:
 All changes go through PRs on `main`. After merging, consuming projects update
 their submodule reference.
 
+### Contributing BC Gov skills upstream
+
+This repo is the **primary development home** — all work happens here first.
+
+Selected BC Gov platform skills are candidates for upstream contribution to
+[`bcgov/copilot-instructions`](https://github.com/bcgov/copilot-instructions),
+which is the org-level shared skills library used across BC Gov projects.
+
+**Candidate skills for bcgov/copilot-instructions:**
+
+| Skill | Notes |
+|-------|-------|
+| `bc-gov-devops/` | Emerald deployment patterns — broadly applicable |
+| `bc-gov-iam/` | DIAM / Common SSO OIDC — applicable to all BC Gov apps |
+| `bc-gov-emerald/` | Emerald platform mechanics |
+| `bc-gov-networkpolicy/` | NetworkPolicy patterns — applicable to all OCP clusters |
+| `bc-gov-sdn-zones/` | SDN zone model — org-wide reference |
+| `bc-gov-network-architect/` | BC Gov network architecture reasoning |
+| `ocp-migration-analyst/` | OCP migration analysis pipeline |
+| `ocp-resilience-analyst/` | Namespace resilience posture reporting |
+
+**Skills that stay in this repo only** (personal workflow, project-specific):
+`session-workflow`, `agent-evolution`, `spec-kitty`, `spec-kit`, `ef-core`,
+`doc-versioning`, `solaris`, `cisco-ios`, `local-dev`, `dns-tools`.
+
+**Contribution process:**
+1. Develop and validate the skill here as normal
+2. Fork `bcgov/copilot-instructions`
+3. Copy the skill to `.github/skills/<name>/SKILL.md` — strip personal
+   references (`metadata.author`, project-specific `compatibility` notes,
+   cross-refs to personal skills)
+4. Submit PR with a clear description of what the skill does and what it targets
+
+Sources in this repo and `bcgov/copilot-instructions` are intentionally separate.
+The BCGov version is a trimmed, generic copy — not a symlink.
+
