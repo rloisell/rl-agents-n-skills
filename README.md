@@ -46,7 +46,7 @@ this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `ag
 
 ---
 
-## Shared Skills (14) — reusable reference libraries
+## Shared Skills (15) — reusable reference libraries
 
 | Directory | Consumed by |
 |-----------|-------------|
@@ -64,6 +64,7 @@ this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `ag
 | `linux-rhel/` | sysadmin |
 | `bc-migrate-service/` | ocp-migration-analyst |
 | `bc-resilience-service/` | ocp-resilience-analyst |
+| `doc-versioning/` | session-workflow, any agent working with versioned documents/reports |
 
 ---
 

@@ -18,6 +18,21 @@ Maintained by `agent-evolution` at session end.
 
 ---
 
+## 2026-04-22 — Session: justinrcc-migration-analysis-versioning
+
+**Skills updated:** none
+**Shared skills created/updated:** doc-versioning/SKILL.md (new)
+**Agents split:** none
+**Summary:** Discovered copy-first versioning failure mode while producing JUSTINRCC Migration
+Analysis v6 — v5.md was edited in-place before being copied, silently overwriting the archival
+source. The un-numbered `JUSTINRCC-Migration-Analysis.md` (true v4 content) was the only
+surviving copy of that version. Resolved by renaming the full v1–v6 chain to correct sequence,
+re-rendering missing PDFs, and creating `doc-versioning/SKILL.md` encoding copy-first rule,
+header-filename consistency, un-numbered file classification, PDF parity, and version chain
+integrity as enforceable rules with a pre-operation inventory checklist.
+
+---
+
 ## 2026-04-22 — Session: agent-evolution-hermes-improvements
 
 **Skills updated:** CLAUDE.md, agent-evolution/SKILL.md, session-workflow/SKILL.md, agents/agent-evolution.md, agents/ocp-resilience-analyst.md, README.md
