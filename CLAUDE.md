@@ -1,6 +1,6 @@
-# CLAUDE.md — ocp-migration-toolkit
+# CLAUDE.md — ocp-resilience-toolkit
 
-This toolkit manages OpenShift migration analysis and reporting.
+This toolkit analyzes and grades OpenShift namespace resilience (R01–R15).
 
 ## Governance hierarchy
 
@@ -18,12 +18,12 @@ complete subagent registry.
 
 ## Project context
 
-- **Domain**: OpenShift 4 namespace discovery and gap analysis
+- **Domain**: OpenShift resilience posture and prioritised remediation
 - **Stack**: Multi-repo orchestrator (Bash/Python/yq)
-- **Primary Subagent**: `ocp-migration-analyst`
+- **Primary Subagent**: `ocp-resilience-analyst`
 
 ## Toolkit rules
 
-- Path context: Scripts often run against multiple local repo clones.
-- Data integrity: JSON/YAML outputs must follow schema in `specs/`.
-- Report generation: Use `jinja2` templates for markdown outputs.
+- Resilience Scoring: Always include R-code (e.g., R07) in remediation advice.
+- PDB Analysis: Check for 0-budget PDBs as high-priority failures.
+- HPA/VPA: Verify that replicas > 1 for all production-labeled workloads.
