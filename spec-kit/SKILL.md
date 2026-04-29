@@ -87,6 +87,7 @@ __pycache__/
 | `/speckit.clarify` | After `/speckit.specify` — surfaces underspecified areas before planning |
 | `/speckit.analyze` | After `/speckit.tasks`, before `/speckit.implement` — cross-artifact consistency check |
 | `/speckit.checklist` | Generate custom quality checklists for requirements completeness and clarity |
+| `/speckit.optimize.run` | Audit constitution for token bloat, stale rules, ambiguity, and governance echo — see [`sakitA/spec-kit-optimize`](https://github.com/sakitA/spec-kit-optimize) |
 
 ---
 

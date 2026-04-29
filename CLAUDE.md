@@ -9,6 +9,17 @@ You are working on a BC Government .NET/React/OpenShift project owned by
 **Ryan Loiselle** (Developer / Architect). GitHub Copilot / Claude Code acts as
 AI pair programmer.
 
+## Governance hierarchy
+
+| File | AI tool | Authority |
+|------|---------|-----------|
+| `rl-agents-n-skills/CLAUDE.md` (this file) | Claude Code | Canonical baseline — all projects inherit these rules |
+| `.github/copilot-instructions.md` | GitHub Copilot | Per-project Copilot rules and additions |
+| Project-level `CLAUDE.md` | Claude Code | Project-specific additions only |
+
+Rules in this file are non-negotiable. Project files MUST NOT re-state base rules or weaken them.
+**Conflict resolution**: project rules override only for project-specific concerns (namespace, stack, ports).
+
 ## Always
 
 - Add file header to every new file (see CODING_STANDARDS.md)
