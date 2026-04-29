@@ -43,14 +43,18 @@ Run these commands for each environment (dev, test, prod, tools) in the namespac
 Substitute `<NS>` with the environment namespace (e.g. `f1b263-prod`).
 
 ```bash
-# Workload inventory
+# Create working directory first (avoids redirect failures on fresh workstations)
+mkdir -p working/<NS>
+
+# Workload inventory (dc covers DeploymentConfig still used on Silver/Gold)
 oc get dc,deployment,statefulset,daemonset -n <NS> -o yaml > working/<NS>/workloads.yaml
 
 # Services and Routes
 oc get svc,route -n <NS> -o yaml > working/<NS>/network-svc-routes.yaml
 
-# Persistent storage
-oc get pvc,storageclass -n <NS> -o yaml > working/<NS>/storage.yaml
+# Persistent storage (storageclass is cluster-scoped — split from namespace-scoped pvc)
+oc get pvc -n <NS> -o yaml > working/<NS>/pvcs.yaml
+oc get storageclass -o yaml > working/<NS>/storageclasses.yaml  # requires cluster read; omit if RBAC restricts
 
 # Secret names (no values — security boundary)
 oc get secret -n <NS> --no-headers | awk '{print $1, $2}' > working/<NS>/secret-names.txt
@@ -92,13 +96,13 @@ find working/repo -maxdepth 4 \( -name 'pom.xml' -o -name 'build.gradle' \
 
 # Helm charts or raw k8s YAML
 find working/repo -name 'Chart.yaml' -o -name 'values.yaml' | sort
-find working/repo -name '*.yaml' | xargs grep -l 'kind: Deployment\|kind: DeploymentConfig' 2>/dev/null | head -20
+find working/repo -name '*.yaml' -print0 | xargs -0 grep -l 'kind: Deployment\|kind: DeploymentConfig' 2>/dev/null | head -20
 
 # Existing health probe definitions
 grep -r 'livenessProbe\|readinessProbe\|startupProbe' working/repo --include='*.yaml' -l
 
 # NetworkPolicy files
-find working/repo -name '*.yaml' | xargs grep -l 'kind: NetworkPolicy' 2>/dev/null
+find working/repo -name '*.yaml' -print0 | xargs -0 grep -l 'kind: NetworkPolicy' 2>/dev/null
 ```
 
 ### 1.3 Use `ocp-migration-toolkit` for Automated Collection
@@ -174,6 +178,27 @@ For Zone B services (SFTP, ORDS, MQ, etc.) — see `bc-gov-sdn-zones` for FWCR p
 
 ## Phase 4 — Report Generation
 
+### 4.0 Document Header (REQUIRED)
+
+Every migration report must open with this header block. **Each metadata line must end with two trailing spaces** (`  `) to force a Markdown line break — omit them and all fields collapse onto one line in the rendered PDF.
+
+```markdown
+# <APP_NAME> — Migration Analysis Report
+## OpenShift <SOURCE_PLATFORM> (<NAMESPACE>) → <TARGET_PLATFORM> Platform Migration
+
+**Classification:** Protected B — Internal Use  
+**Prepared by:** Ryan Loisell, Developer / Solution Architect Consultant (BC Gov AG/PSSG) — Migration analysis, architecture review, and implementation planning  
+**Prepared for:** <PRODUCT_OWNER_NAME>, Product Owner — for review and handoff to the implementation team  
+**AI Analysis by:** GitHub Copilot (Claude Sonnet 4.6) — Technical analysis, gap identification, and documentation  
+**Date:** <DATE> (v<N> — <brief description>)  
+**Previous version:** v<N-1> (<DATE> — <what changed>) ← omit on v1  
+**Namespace:** <NAMESPACE> (<envs>) — <SOURCE_PLATFORM>, Kamloops DC  
+**Repository:** <REPO_URL>  
+**Analysis scope:** Read-only — no changes made to repo, deployments, or environments.
+
+<div style="page-break-after: always"></div>
+```
+
 Use the templates in `ocp-migration-toolkit/templates/report-sections.md` to generate each section.
 The reference JUSTINRCC report has 12 sections:
 
@@ -212,6 +237,60 @@ The reference JUSTINRCC report has 12 sections:
 | 🤝 | Copilot drafts, developer verifies (project-specific details needed) |
 | 💼 | Admin action (GitHub Secrets, Vault namespace, CSBC FWCR) |
 | 🔎 | Investigation required before task can begin |
+
+### 4.1 Copilot Setup Guidance for Migration Projects
+
+Include a dedicated **Section 9.6 GitHub Copilot Utilization** in every migration report, and an **Appendix F / 12.G rl-agents-n-skills Integration Guide**. These sections tell the implementation team:
+
+1. What Copilot will and will not do for each task category (table with icons + effort reduction estimates)
+2. How to set up Copilot with the `rl-agents-n-skills` submodule before starting the work
+3. Which specific agents to invoke for each phase
+
+**Standard Section 9.6 content (adapt task IDs to match the project):**
+
+```markdown
+### 9.6 GitHub Copilot Utilization — Setup and Usage Guide
+
+#### 9.6.1 What Copilot Will Do For You
+
+| Category | Tasks | Copilot Coverage | Est. Effort Reduction |
+|---|---|---|---|
+| Helm chart authoring | HELM-01 to HELM-XX | 🤖 High — fully generatable from existing specs | 60–70% reduction |
+| NetworkPolicy suite | NP-XX (via HELM-11) | 🤝 Medium — external CIDRs depend on FWCR results | 50% reduction |
+| ExternalSecret CRDs | VAULT-02 | 🤖 High — fully templated | 80% reduction |
+| CI/CD workflow updates | CI-XX | 🤖/🤝 depends on complexity | 40–60% reduction |
+| Application code changes | APP-XX | 🤝 Medium | 30–40% reduction |
+| Administrative / stakeholder | PRE tasks, admin tasks | 💼 None | Not applicable |
+| End-to-end validation | ENV/VAL tasks | 👤 Low | 10–15% (test scaffolding only) |
+
+**Estimated overall effort reduction with Copilot:** approximately **35–45%** of total developer-hours.
+
+#### 9.6.2 Prerequisites — How to Set Up Copilot for This Migration
+
+**Option A — VS Code + GitHub Copilot (recommended)**
+```bash
+git submodule add https://github.com/rloisell/rl-agents-n-skills.git .github/agents
+git submodule update --init --recursive
+```
+
+**Option B — npx skills add (quickstart)**
+```bash
+npx skills add rloisell/rl-agents-n-skills
+```
+
+**Option C — Claude Code CLI:** Configure `.claude/settings.json` to point at the `agents/` folder.
+
+#### 9.6.3 How to Use the AI Assist Indicators
+
+| Icon | Meaning | What you should do |
+|---|---|---|
+| 🤖 | Copilot can generate this fully | Load the relevant agent (Appendix F), paste the Example Invocation |
+| 🤝 | Copilot drafts, you review | Validate against the live system before applying |
+| 👤 | Requires developer hands-on | Live access or security-sensitive; Copilot cannot help |
+| 💼 | Administrative / stakeholder | Human process only; engage the Product Owner |
+```
+
+**Standard Appendix F / 12.G content:** A table mapping each agent to its domain coverage, the migration task IDs it assists with, and a project-specific example invocation. Use the table from the reference JUSTINRCC-Migration-Analysis-v6.md Appendix F as the template, adapting task IDs for the project under analysis.
 
 ---
 

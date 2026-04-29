@@ -70,11 +70,15 @@ Every CRITICAL finding (R01, R02, R03, R10, R15) must appear in the Executive Su
 
 ```bash
 bash <TOOLKIT_PATH>/render/render.sh \
-  --input  "<REPORT_DIR>/<APP_NAME>-Resilience-Report.md" \
+  --input  "<REPORT_DIR>/<APP_NAME>-Resilience-Report-v<N>.md" \
   --output "<REPORT_DIR>"
 ```
 
 ## Output
 
-- `<OUTPUT>/report/<APP_NAME>-Resilience-Report.md` — full markdown report
-- `<OUTPUT>/report/<APP_NAME>-Resilience-Report.pdf` — rendered PDF
+- `<OUTPUT>/report/<APP_NAME>-Resilience-Report-v1.md` — full markdown report (v1 on first run)
+- `<OUTPUT>/report/<APP_NAME>-Resilience-Report-v1.pdf` — rendered PDF (PDF parity required)
+
+**Versioning rule:** Never save as un-versioned. Always use `v<N>` suffix. For subsequent
+runs, copy `v(N-1)` to `v(N)` first, then make changes — never overwrite a previous version.
+See `doc-versioning/SKILL.md` for the full copy-first protocol.

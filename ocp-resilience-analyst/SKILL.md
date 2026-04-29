@@ -1,8 +1,8 @@
 # SKILL: ocp-resilience-analyst
 
 **Domain**: OpenShift Workload Resilience & Pod Disruption Analysis  
-**Skill version**: 1.0  
-**Updated**: April 2026
+**Skill version**: 1.1  
+**Updated**: April 2026 (v1.1 — added report format standard, versioning rule, prod namespace collection fix)
 
 ---
 
@@ -48,9 +48,9 @@ NS="<NAMESPACE>-<ENV>"
 OUT="<OUTPUT>/${NS}"
 mkdir -p "${OUT}"
 
-# Core workloads
-oc get deployment,statefulset,daemonset,cronjob -n "${NS}" -o yaml > "${OUT}/workloads.yaml"
-oc get deployment,statefulset,daemonset -n "${NS}" \
+# Core workloads (dc covers DeploymentConfig still used on Silver/Gold)
+oc get dc,deployment,statefulset,daemonset,cronjob -n "${NS}" -o yaml > "${OUT}/workloads.yaml"
+oc get dc,deployment,statefulset,daemonset -n "${NS}" \
   -o custom-columns='NAME:.metadata.name,KIND:.kind,REPLICAS:.spec.replicas,STRATEGY:.spec.strategy.type,PROGRESSING:.status.conditions[?(@.type=="Progressing")].status' \
   > "${OUT}/workload-summary.txt"
 
@@ -203,11 +203,11 @@ Each check maps to one or more standards in the [Sources and References](#source
 
 ## Phase 3 — Report Structure
 
-Generate the following 10 sections. See `templates/report-sections.md` for detailed
+Generate the following 13 sections. See `templates/report-sections.md` for detailed
 generation instructions per section.
 
 ```
-1.  Executive Summary & Resilience Scorecard
+1.  Executive Summary (with Resilience Scorecard table)
 2.  Workload Inventory
 3.  PodDisruptionBudget Analysis
 4.  Scaling & Autoscaling Configuration
@@ -219,21 +219,191 @@ generation instructions per section.
 10. Disruption Simulation (node drain / zone failure / upgrade)
 11. Remediation Tasks (prioritized)
 12. Appendix
+13. Sources and References
 ```
 
 **Task numbering**: Use `RES-NN` prefix (e.g. `RES-01`, `RES-02`).
 
 ---
 
+## Report Output Format Standard
+
+**BLOCKING:** Every generated report MUST follow this format exactly. This standard is
+derived from the JUSTINRCC Migration Analysis v6 — the canonical output template.
+
+### 3.1 File Naming and Versioning
+
+```
+<APP-NAME>-Resilience-Report-v<N>.md   # ALWAYS version-numbered
+<APP-NAME>-Resilience-Report-v<N>.pdf  # PDF must be rendered immediately after .md is finalised
+```
+
+- **Never save as un-versioned** (e.g. `CCM-Resilience-Report.md`) — un-versioned files
+  must be renamed to `v1` before committing.
+- **Never overwrite a previous version** — always create `v(N+1)` from a copy of `vN`.
+- **PDF parity is required** — every `.md` version must have a matching `.pdf`.
+- Reference the `doc-versioning/SKILL.md` for the full copy-first rule.
+
+### 3.2 Document Header (REQUIRED)
+
+Every report must open with this header block. **Each metadata line must end with two trailing spaces** (`  `) to force a Markdown line break — omit the trailing spaces and all fields collapse onto one line in the rendered PDF.
+
+```markdown
+# <APP_NAME> — OpenShift Resilience Posture Report
+## Platform: <CLUSTER> (<NAMESPACE>) — Resilience Analysis
+
+**Classification:** Protected B — Internal Use  
+**Prepared by:** Ryan Loisell, Developer / Solution Architect Consultant (BC Gov AG/PSSG) — ...  
+**Prepared for:** <PRODUCT_OWNER_NAME>, Product Owner — for review and handoff to the implementation team  
+**AI Analysis by:** GitHub Copilot (Claude Sonnet 4.6) — Technical analysis, gap identification, and documentation  
+**Date:** <DATE> (v<N> — <brief description of this version>)  
+**Previous version:** v<N-1> (<DATE> — <what changed>) ← omit on v1  
+**Namespace:** <NAMESPACE> (<envs>) — <CLUSTER>, Kamloops DC  
+**Repository:** <REPO_URL>  
+**Analysis scope:** Read-only — no changes made to repo, deployments, or environments.
+
+<div style="page-break-after: always"></div>
+```
+
+### 3.3 Table of Contents (REQUIRED)
+
+A numbered, anchor-linked Table of Contents must follow the header:
+
+```markdown
+## Table of Contents
+
+1. [Executive Summary](#1-executive-summary)
+2. [Workload Inventory](#2-workload-inventory)
+...
+13. [Sources and References](#13-sources-and-references)
+```
+
+### 3.4 Section Numbering (REQUIRED)
+
+- All top-level sections use `## N. Section Name` (e.g. `## 1. Executive Summary`)
+- All subsections use `### N.M Subsection Name` (e.g. `### 1.1 What This System Does`)
+- This applies throughout the entire document without exception
+
+### 3.5 Standards Column (REQUIRED)
+
+Every finding in the Resilience Scorecard table MUST include a Standard column:
+
+```markdown
+| ID | Category | Grade | Status | Affected Workloads | Standard |
+|----|----------|-------|--------|--------------------|----------|
+| R04 | Liveness probe missing | D | ⛔ HIGH | All 3 CCM adapters | K8S-02; PS-03 |
+```
+
+Every remediation task table MUST also include a Standard column:
+
+```markdown
+| Task | Category | Description | Effort | Standard |
+|------|----------|-------------|--------|----------|
+| RES-01 | Probes | Add liveness probe ... | 2h | K8S-02; PS-03 |
+```
+
+### 3.6 Sources and References Section (REQUIRED)
+
+Section 13 must contain a complete standards reference table, organised by source:
+- Kubernetes Documentation (K8S-01 through K8S-10)
+- OpenShift Platform (OCP-01 through OCP-03)
+- BC Gov Platform Services (PS-01 through PS-03)
+- ag-devops Policy Standards (AD-01, AD-02)
+- Security Standards (SEC-01)
+
+### 3.7 Footer (REQUIRED)
+
+```markdown
+*Prepared by: Ryan Loisell, Developer / Solution Architect Consultant (BC Gov AG/PSSG) | AI Analysis: GitHub Copilot (Claude Sonnet 4.6) | Generated: <DATE> (v<N> — <description>)*
+```
+
+### 3.8 Reference Reports
+
+The canonical reference outputs for this format are:
+
+| Version | File | Notes |
+|---------|------|-------|
+| v1 | `/Users/rloisell/Documents/developer/jpss-jade-ccm-analysis/report/CCM-Resilience-Report-v1.md` | Dev-only, Grade D |
+| v2 | `/Users/rloisell/Documents/developer/jpss-jade-ccm-analysis/report/CCM-Resilience-Report-v2.md` | Prod-primary, Grade F |
+| v3 | `/Users/rloisell/Documents/developer/jpss-jade-ccm-analysis/report/CCM-Resilience-Report-v3.md` | Three-environment + alignment plan — **use as template** |
+
+Use v3 as the format template when writing any new resilience report. It demonstrates:
+- Three-environment scorecard and comparison table
+- Per-environment workload inventory
+- Dev remaining gaps section
+- Three-environment alignment plan section
+- Correct CSS rendering with `report-style.css`
+
+### 3.9 Visual Standard — CSS File
+
+Every report PDF MUST be rendered with the canonical `report-style.css`.
+Rendering without it produces Times-Roman font and unstyled tables (plain pandoc defaults).
+
+| Property | Value |
+|----------|-------|
+| Body font | `Helvetica Neue, Helvetica, Arial, sans-serif` |
+| Cover title colour | `#003366` (BC Gov navy) |
+| Table header background | `#003366` (white text) |
+| Table row stripe | `#f2f5f9` (even rows) |
+| Table cell border | `1px solid #c8d0d8` |
+| Section page breaks | All `h2` sections break to new page |
+
+CSS source: `/Users/rloisell/Documents/developer/justinrcc-analysis/report/report-style.css`  
+render.sh template: `/Users/rloisell/Documents/developer/jpss-jade-ccm-analysis/report/render.sh`
+
+---
+
 ## Phase 4 — Render PDF
+
+**Visual Standard (REQUIRED):** Every report must be rendered with `report-style.css`
+to match the canonical visual standard established by JUSTINRCC-Migration-Analysis-v6.
+
+The CSS file applies:
+- **Font:** `Helvetica Neue, Helvetica, Arial, sans-serif` — overrides Chrome headless default (Times-Roman)
+- **Cover title (h1):** `#003366` (BC Gov navy blue), 2.2em, centered, bottom border
+- **Tables:** Dark header `#003366` white text, alternating row stripe `#f2f5f9`, 1px cell borders
+- **Page breaks:** All `h2` sections get `break-before: page` (cover and ToC excluded)
+
+The `report-style.css` canonical source is:
+`/Users/rloisell/Documents/developer/justinrcc-analysis/report/report-style.css`
+
+Copy it to the report output folder before rendering, then use:
+
+```bash
+# 1. Copy CSS to the report directory (one-time setup)
+cp /Users/rloisell/Documents/developer/justinrcc-analysis/report/report-style.css \
+   <REPORT_DIR>/report-style.css
+
+# 2. Create render.sh (copy from CCM report as template)
+cp /Users/rloisell/Documents/developer/jpss-jade-ccm-analysis/report/render.sh \
+   <REPORT_DIR>/render.sh
+
+# 3. Render a specific version
+cd <REPORT_DIR>
+chmod +x render.sh
+./render.sh <APP_NAME>-Resilience-Report-vN.md
+
+# Or render all .md files in the directory
+./render.sh
+```
+
+Alternatively, render directly with pandoc + Chrome:
 
 ```bash
 # From the report directory
-cd <REPORT_DIR>
-bash <TOOLKIT_PATH>/render/render.sh \
-  --input  "<REPORT_DIR>/<APP_NAME>-Resilience-Report.md" \
-  --output "<REPORT_DIR>" \
-  --css    "<TOOLKIT_PATH>/templates/style/report-style.css"
+CSS="<REPORT_DIR>/report-style.css"
+
+pandoc <APP_NAME>-Resilience-Report-vN.md \
+  --from gfm --to html5 \
+  --standalone --embed-resources \
+  --css "$CSS" \
+  -o <APP_NAME>-Resilience-Report-vN.html
+
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+  --headless --disable-gpu \
+  --print-to-pdf=<APP_NAME>-Resilience-Report-vN.pdf \
+  --print-to-pdf-no-header \
+  <APP_NAME>-Resilience-Report-vN.html
 ```
 
 ---
