@@ -21,6 +21,10 @@ metadata:
     - title: "IMIT 5.08 — Network-to-Network Connectivity Security Specifications (v1.0, 2022)"
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network-to-network_connectivity_specifications.pdf"
 
+    - title: "Network-to-Network Connectivity Technical and Product Standard"
+      note: "Companion technical and product specification to IMIT 5.08 — describes 3PG-approved technical implementations and certified products."
+      url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/network_to_network_connectivity_technical_and_product_standard.pdf"
+
     - title: "IMIT 6.28 — Network and Communications Security Standard (v5.0, 2022; reviewed 2024)"
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/09_-_communications_security_standard_v10.pdf"
 

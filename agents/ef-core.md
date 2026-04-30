@@ -68,10 +68,21 @@ public class WorkItemService(ApplicationDbContext db) : IWorkItemService
 ## Domain exceptions
 
 | Exception | HTTP Status | Use when |
-|-----------|-------------|----------|
+| --- | --- | --- |
 | `NotFoundException` | 404 | Entity not found |
 | `ForbiddenException` | 403 | Requester doesn't own item and isn't Admin/Manager |
 | `BadRequestException` | 400 | Invalid input that passed model validation |
 | `UnauthorizedException` | 401 | No valid identity in token |
 
 Global exception handler maps these to RFC 7807 ProblemDetails.
+
+## BC Government compliance
+
+EF Core data layers for BC Gov projects must comply with these OCIO standards (full
+control mappings in the linked skills):
+
+| Standard | What to apply | Skill |
+| --- | --- | --- |
+| [Database Security Standard for Information Protection v1.0 (Apr 2018)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/database_security_standards_for_information_protection_-_2018-04_version_1.pdf) | 23 controls \u2014 data classification, encryption-in-transit (TLS connection string), separation of duties, prod/non-prod segregation, no production data in test (sanitise MEDIUM/HIGH), patch cadence, audit | `bc-gov-database-security` |
+| [REST API Development Standard (2015)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/api-standard.pdf) | 8 mandates for any controller exposing data over HTTP \u2014 RESTful interface, verb correctness, single-resource URLs, metadata + license + ISO 8601 timestamp, error messaging, versioning | `bc-gov-rest-api` |
+| [Security Standard for Application and Web Development and Deployment v1.3](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/security_standard_application_web_development_deployment.pdf) | Code review before release; OWASP-aware; no creds in source; dormant accounts \u2264 45 days | (`security-architect` agent) |

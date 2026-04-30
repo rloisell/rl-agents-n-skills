@@ -63,3 +63,21 @@ Use `List<string>` for LINQ collection variables — not `new[]` — for EF Core
 
 ## .gitignore additions
 Always add `__pycache__/` and `*.pyc` when spec-kitty is used in a project.
+
+## BC Gov Requirements Management Standard alignment
+
+When the project is for BC Government, every WP must be defensible against the OCIO
+Development Standards for Information Systems and Services v3.0 §1 Requirements Management:
+
+| BC Gov mandate | Spec-Kitty mapping |
+| --- | --- |
+| (§1.2.1) Known requirements and constraints MUST be documented | spec.md Functional Requirements + Constraints sections |
+| (§1.2.2) Known assumptions MUST be documented | spec.md Assumptions section |
+| (§1.2.3) Known uncertainties MUST be documented | spec.md Open Questions / Risks |
+| (§1.2.5) Requirements MUST be subjected to an approval process | PR review on spec.md before WP creation |
+| (§1.2.6) Approved requirements MUST have a sponsor and/or owner | spec.md Owner field |
+| (§1.3.1) Each requirement MUST be testable against objective criteria | WP acceptance criteria checklist |
+| (§1.3.4) Each requirement MUST be uniquely identified | `WP{NN}` numbering + REQ-{NN} IDs in spec.md |
+| (§1.3.5) A requirement statement SHOULD express only one requirement | One acceptance criterion per checklist line |
+
+Source: [OCIO Development Standards for Information Systems and Services v3.0 (May 2015)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/development_standards_for_information_systems_and_services.pdf)

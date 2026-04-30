@@ -46,7 +46,7 @@ this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `ag
 
 ---
 
-## Shared Skills (15) — reusable reference libraries
+## Shared Skills (17) — reusable reference libraries
 
 | Directory | Consumed by |
 | --- | --- |
@@ -57,6 +57,8 @@ this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `ag
 | `vault-secrets/` | security-architect, bc-gov-devops, ci-cd-pipeline |
 | `bc-gov-networkpolicy/` | bc-gov-network-architect, bc-gov-devops |
 | `bc-gov-sdn-zones/` | bc-gov-network-architect |
+| `bc-gov-database-security/` | ef-core, security-architect, bc-gov-devops |
+| `bc-gov-rest-api/` | ef-core, bc-gov-devops |
 | `bc-gov-design-system/` | bc-gov-devops, local-dev |
 | `network-security/` | security-architect, network-architect, zero-trust-architect |
 | `dns-tools/` | network-architect, sysadmin |
@@ -130,6 +132,13 @@ Standards, frameworks, and projects that shaped the skills in this library:
 | [BC Gov IMIT 6.13 — Network Security Zones Standard (v5) + Specifications (v1)](https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_standard_v5.pdf) | `bc-gov-sdn-zones`, `bc-gov-network-architect`, `bc-gov-emerald`, `bc-gov-devops`, `network-security`, `network-architect`, `zero-trust-architect`, `security-architect` | Zone model (DMZ / Zone A/B/C; SDN Low/Medium/High); zone adjacency; SPAN. Intranet-only. |
 | [BC Gov IMIT 6.28 — Network and Communications Security Standard (v5.0, 2022)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/09_-_communications_security_standard_v10.pdf) · [Specifications (v1.0, 2024)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_628_netowrk_and_communications_security_specifications.pdf) | `bc-gov-sdn-zones`, `bc-gov-networkpolicy`, `bc-gov-emerald`, `bc-gov-network-architect`, `bc-gov-devops`, `network-security`, `network-architect`, `zero-trust-architect`, `security-architect` | Network controls, segregation (§3.5), routing controls (§3.6), logging (§3.3), communication security (§3.7), exchange agreements (§3.9). Includes retired IMIT 5.09 WLAN requirements. |
 | [BC Gov IMIT 5.08 — Network-to-Network Connectivity Security Standard (v2.0, 2022)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network_to_network_connectivity_standard.pdf) · [Specifications (v1.0, 2022)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network-to-network_connectivity_specifications.pdf) | `bc-gov-sdn-zones`, `bc-gov-networkpolicy`, `bc-gov-network-architect`, `bc-gov-devops`, `network-security`, `network-architect`, `zero-trust-architect`, `security-architect` | Third-Party Gateway (3PG) standard. Stateful firewall + IPS/IDS at security transit point; default-deny; encryption per IMIT 6.10; PCI traffic requires separate physical router per circuit; raw log retention ≥ 13 months. |
+| [BC Gov Network-to-Network Connectivity Technical and Product Standard](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/network_to_network_connectivity_technical_and_product_standard.pdf) | `bc-gov-sdn-zones`, `bc-gov-network-architect` | Companion to IMIT 5.08 — approved technical implementations and certified products. |
+| [BC Gov OCIO SDN Security Classification Model v1.0 (June 2022)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/sdn_security_classification_model.pdf) | `bc-gov-sdn-zones`, `bc-gov-networkpolicy`, `bc-gov-emerald`, `bc-gov-network-architect` | Workload-centric Low/Medium/High classification; guardrails vs security policies; Public VIP rules; Forward Proxy supported protocols. |
+| [BC Gov Database Security Standard for Information Protection v1.0 (Apr 2018)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/database_security_standards_for_information_protection_-_2018-04_version_1.pdf) | `bc-gov-database-security`, `ef-core`, `security-architect`, `bc-gov-devops` | 23 mandatory database controls (data classification, encryption decisions, separation of duties, env segregation, vulnerability assessment, change mgmt, patching, audit). |
+| [BC Gov Security Standard for Application and Web Development and Deployment v1.3 (Apr 2015)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/security_standard_application_web_development_deployment.pdf) | `security-architect`, `bc-gov-devops`, `ci-cd-pipeline` | Patch & vulnerability mgmt; prod/non-prod segregation; code review; secure coding (OWASP); 45-day dormant accounts; no creds in source; WAF for public-facing web apps. |
+| [BC Gov Development Standards for Information Systems and Services v3.0 (May 2015)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/development_standards_for_information_systems_and_services.pdf) | `github-workflow`, `spec-kitty`, `spec-kit`, `bc-gov-devops`, `security-architect` | Requirements management practices; github.com/bcgov mandate; 2FA on repo admins; approved licenses; Content Approval Checklist. |
+| [BC Gov REST API Development Standard (2015-04-01)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/api-standard.pdf) | `bc-gov-rest-api`, `ef-core`, `bc-gov-devops` | 8 mandated minimums: REST for public APIs, HTTP verbs per RFC, single-resource URLs, JSON/XML, response metadata (ISO 8601 + license), error messaging, version number. |
+| [BC Gov Guidelines on the Use of Open Source Software (R1.0, Apr 2012)](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/guidelines_on_the_use_of_open_source_software_2016.pdf) | `bc-gov-devops`, `security-architect`, `github-workflow` | OSS adoption guidance — license review, business value + TCO, due diligence (guideline, not mandate). |
 
 ---
 
@@ -156,6 +165,8 @@ which is the org-level shared skills library used across BC Gov projects.
 | `bc-gov-networkpolicy/` | NetworkPolicy patterns — applicable to all OCP clusters |
 | `bc-gov-sdn-zones/` | SDN zone model — org-wide reference |
 | `bc-gov-network-architect/` | BC Gov network architecture reasoning |
+| `bc-gov-database-security/` | Database Security Standard for Information Protection — 23 mandatory controls |
+| `bc-gov-rest-api/` | REST API Development Standard — 8 mandated minimums for public APIs |
 | `ocp-migration-analyst/` | OCP migration analysis pipeline |
 | `ocp-resilience-analyst/` | Namespace resilience posture reporting |
 
