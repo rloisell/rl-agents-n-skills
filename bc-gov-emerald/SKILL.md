@@ -6,19 +6,24 @@ metadata:
   author: Ryan Loiselle
   version: "2.2"
   sources:
+
     - title: "IMIT 6.13 — Network Security Zones Standard / Specifications"
       note: "DataClass label + AVI annotation are Emerald's enforcement of the 6.13 zone model."
       url: "https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_standard_v5.pdf"
+
     - title: "IMIT 6.28 — Network and Communications Security Standard / Specifications"
       note: "§3.3 logging/monitoring — Emerald workloads forward logs to centralised SIEM; §3.5 segregation realised by namespaces + NetworkPolicy."
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/09_-_communications_security_standard_v10.pdf"
+
     - title: "OCIO SDN Security Classification Model v1.0 (2022)"
+
 compatibility: BC Gov Emerald OpenShift cluster. Projects in bcgov-c/ and rloisell/ namespaces (be808f family).
 ---
 
 # BC Gov Emerald Platform Standards
 
 Emerald-specific mechanics only. Platform-independent concepts live in companion skills:
+
 - Zone model, ISCF classification, internet egress constraints → `bc-gov-sdn-zones`
 - NetworkPolicy YAML patterns and two-policy rule → `bc-gov-networkpolicy`
 - End-to-end network architecture reasoning → `bc-gov-network-architect` agent
@@ -41,7 +46,7 @@ Emerald-specific mechanics only. Platform-independent concepts live in companion
 Controls which VIP pool handles the Route. **Get this wrong and traffic silently drops.**
 
 | Annotation value | VIP | When to use |
-|-----------------|-----|-------------|
+| --- | --- | --- |
 | `dataclass-medium` | Private VIP — VPN only | ✅ All internal workloads (default) |
 | `dataclass-high` | Private VIP — sensitive data | Higher-trust internal workloads |
 | `dataclass-public` | Public internet VIP | Internet-facing routes with public exposure |
@@ -91,6 +96,7 @@ environment: development
 ```
 
 ### Internet-Ingress label
+
 ```yaml
 podLabels:
   Internet-Ingress: "DENY"    # default — correct for all internal services
@@ -109,7 +115,7 @@ patterns, the two-policy rule, DNS egress, CIDR egress, and the debugging checkl
 Quick reminder of the flows that need policies on Emerald:
 
 | Flow | Policy needed |
-|------|--------------|
+| --- | --- |
 | Router → Frontend | Ingress on Frontend |
 | Router → API | Ingress on API |
 | Frontend → API | Ingress on API **+** Egress from Frontend |
@@ -121,6 +127,7 @@ Quick reminder of the flows that need policies on Emerald:
 ## Route Edge Termination (Conftest hard-deny)
 
 ag-devops Conftest denies **edge-terminated** Routes unless the Route has either:
+
 - Label `app.kubernetes.io/component: frontend`, **or**
 - Annotation `isb.gov.bc.ca/edge-termination-approval: "<ticket>"`
 
@@ -151,6 +158,7 @@ globalDefault: false
 ```
 
 Then in each workload:
+
 ```yaml
 spec:
   template:
@@ -170,6 +178,7 @@ global:
 ```
 
 Effect:
+
 - Deployment/Job pod `securityContext` does **not** pin `runAsUser`/`runAsGroup` — OpenShift SCC assigns runtime UID/GID
 - Adds `checkov.io/skip999: CKV_K8S_40=...` annotation to suppress Checkov false-positive
 - Still enforces `runAsNonRoot`, `allowPrivilegeEscalation: false`, `readOnlyRootFilesystem: true`, capabilities drop ALL
@@ -184,7 +193,7 @@ Effect:
 Choose based on access mode and workload type:
 
 | StorageClass | Access mode | Best for |
-|---|---|---|
+| --- | --- | --- |
 | `netapp-file-standard` | RWX (multi-pod) | Shared file storage, build artefacts, config mounts |
 | `netapp-block-standard` | RWO (single-pod) | Databases, stateful workloads requiring higher IOPS |
 

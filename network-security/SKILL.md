@@ -5,16 +5,21 @@ metadata:
   author: Ryan Loiselle
   version: "1.1"
   sources:
+
     - title: "IMIT 6.28 — Network and Communications Security Standard (v5.0, 2022)"
       note: "§3.1 network controls, §3.5 segregation, §3.6 routing controls, §3.7 communication security — baseline controls for any BC Gov network."
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/09_-_communications_security_standard_v10.pdf"
+
     - title: "IMIT 6.28 Specifications (v1.0, 2024)"
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_628_netowrk_and_communications_security_specifications.pdf"
+
     - title: "IMIT 5.08 — Network-to-Network Connectivity Security Standard (v2.0, 2022)"
       note: "3PG security transit point requirements: stateful firewall, IPS/IDS, default-deny, encryption per IMIT 6.10, log retention ≥ 13 months."
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network_to_network_connectivity_standard.pdf"
+
     - title: "IMIT 5.08 Specifications (v1.0, 2022)"
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network-to-network_connectivity_specifications.pdf"
+
     - title: "IMIT 6.13 — Network Security Zones Standard / Specifications"
       note: "Zone model that firewall and ACL design must align with on BC Gov networks."
       url: "https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_standard_v5.pdf"
@@ -26,6 +31,7 @@ compatibility: Cisco IOS/IOS-XE ACLs, Cisco ASA/FTD, zone-based firewall (ZBF), 
 Access control, encryption, firewall design, and Layer 2 security hardening.
 
 **Related skills:**
+
 - IPsec VPN depth and Zero Trust architecture → [`../zero-trust-architect/SKILL.md`](../zero-trust-architect/SKILL.md)
 - Routing / switching context → [`../network-architect/SKILL.md`](../network-architect/SKILL.md)
 
@@ -315,7 +321,7 @@ interface range GigabitEthernet0/2-24
 ## Attack Vectors and Mitigations
 
 | Attack | Description | Mitigation |
-|--------|-------------|------------|
+| --- | --- | --- |
 | ARP Spoofing / Poisoning | Attacker replies to ARP with own MAC → MITM | DAI, static ARP entries, 802.1X |
 | VLAN Hopping (switch spoofing) | Attacker negotiates trunk via DTP | `switchport nonegotiate`, never use VLAN 1 on trunks |
 | VLAN Hopping (double-tagging) | Exploit native VLAN to jump one hop | Change native VLAN to unused VLAN (e.g. 999) |
@@ -351,7 +357,7 @@ For BC Government networks, the following standards translate to concrete contro
 in this skill. Cite them in design docs and STRA submissions.
 
 | IMIT Standard | Section | Controls implemented in this skill |
-|---|---|---|
+| --- | --- | --- |
 | 6.28 Network & Communications Security | §3.1 Network controls | Configuration controls, MFA on devices, change management, baseline integrity |
 | 6.28 | §3.3 Logging, monitoring, detection | SIEM forwarding, IDS/IPS sensors, log boundary capture |
 | 6.28 | §3.5 Segregation | Zone segmentation, VLANs, security gateways, NetworkPolicy, ZBF |

@@ -6,12 +6,15 @@ metadata:
   author: Ryan Loiselle
   version: "1.2"
   sources:
+
     - title: "IMIT 6.13 — Network Security Zones Standard / Specifications"
       note: "Governs zone model that NetworkPolicy must align with (SDN Low/Medium/High)."
       url: "https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_standard_v5.pdf"
+
     - title: "IMIT 6.28 — Network and Communications Security Standard / Specifications"
       note: "§3.5 segregation, §3.6 routing controls, §3.3 logging/monitoring — NetworkPolicy is one of the enforcement points required to meet these."
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/09_-_communications_security_standard_v10.pdf"
+
     - title: "IMIT 5.08 — Network-to-Network Connectivity Security Standard"
       note: "Governs traffic that exits the cluster to external partners via 3PG — egress NetworkPolicy must target 3PG CIDR, not partner endpoint."
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network_to_network_connectivity_standard.pdf"
@@ -32,7 +35,7 @@ For Emerald-specific mechanics (AVI annotation, DataClass label), see `bc-gov-em
 **Every traffic flow requires exactly two NetworkPolicy objects**, one on each end:
 
 | Role | Policy type | Applied to | Namespace |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Sender | **Egress** | Sender pod | Sender's namespace |
 | Receiver | **Ingress** | Receiver pod | Receiver's namespace |
 
@@ -274,7 +277,7 @@ Prefer a specific CIDR (`ipBlock`) over `0.0.0.0/0` — specific CIDRs do not re
 ### AllowIngressFrom / AllowEgressTo intent schema summary
 
 | Key | Type | Description |
-|-----|------|-------------|
+| --- | --- | --- |
 | `apps` | list of `{name, ports?}` | Same-namespace pods by `app` label |
 | `namespaces` | list of `{name, podSelector?}` | Cross-namespace (e.g. openshift-ingress router) |
 | `ipBlocks` | list of `{cidr, ports}` | CIDR-based (on-prem systems, external APIs) |
@@ -287,7 +290,7 @@ For full schema and examples: [bcgov/ag-devops cd/shared-lib/ag-helm/docs/SIMPLE
 ## Common Port Reference
 
 | Service | Protocol | Port |
-|---|---|---|
+| --- | --- | --- |
 | Oracle Database | TCP | 1521 |
 | SQL Server (MSSQL) | TCP | 1433 |
 | PostgreSQL | TCP | 5432 |

@@ -10,7 +10,7 @@ Claude Code subagents for rloisell BC Gov .NET/React/OpenShift projects.
 This repo serves two toolchains from a single source:
 
 | Toolchain | How it consumes this repo | Discovery path |
-|-----------|--------------------------|----------------|
+| --- | --- | --- |
 | **VS Code / GitHub Copilot** | Git submodule at `.github/agents/` | `.github/agents/*/SKILL.md` |
 | **Claude Code** | Plugin via `.claude/settings.json` | `agents/` subagents in plugin root |
 
@@ -22,7 +22,7 @@ Each agent has two artefacts: a VS Code `SKILL.md` at the repo root (auto-discov
 this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `agents/`.
 
 | Directory | Scope |
-|-----------|-------|
+| --- | --- |
 | `session-workflow/` | Session startup/shutdown, AI file maintenance (WORKLOG/CHANGES/COMMANDS/COMMIT_INFO) |
 | `github-workflow/` | Branch naming, PR lifecycle, CI diagnosis, gh CLI, rulesets |
 | `diagram-generation/` | draw.io + PlantUML + Mermaid, 10-diagram UML suite, folder structure, export |
@@ -49,7 +49,7 @@ this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `ag
 ## Shared Skills (15) — reusable reference libraries
 
 | Directory | Consumed by |
-|-----------|-------------|
+| --- | --- |
 | `ai-session-files/` | session-workflow, github-workflow |
 | `git-conventions/` | session-workflow, github-workflow, ci-cd-pipeline |
 | `bc-gov-emerald/` | bc-gov-devops, ci-cd-pipeline |
@@ -92,6 +92,7 @@ Reference the submodule path in `.claude/settings.json`:
 ```
 
 Run subagents explicitly:
+
 ```bash
 Use the security-architect subagent to review this file for vulnerabilities
 ```
@@ -118,7 +119,7 @@ consuming project — not in this repo.
 Standards, frameworks, and projects that shaped the skills in this library:
 
 | Reference | Used in | Notes |
-|-----------|---------|-------|
+| --- | --- | --- |
 | [NousResearch Hermes Agent](https://github.com/NousResearch/hermes-function-calling) (MIT) | `agent-evolution` | Retain/recall/reflect pattern — mid-session knowledge capture, pre-session retrieval, USER_MODEL section |
 | [GitHub Spec-Kit](https://github.com/github/spec-kit) (MIT) | `spec-kit` | Spec-Driven Development lifecycle — specify-cli commands, extensions/presets model, SDD phases |
 | [NIST SP 800-207 — Zero Trust Architecture](https://csrc.nist.gov/publications/detail/sp/800-207/final) | `zero-trust-architect` | Authoritative ZTA definition and design principles |
@@ -148,7 +149,7 @@ which is the org-level shared skills library used across BC Gov projects.
 **Candidate skills for bcgov/copilot-instructions:**
 
 | Skill | Notes |
-|-------|-------|
+| --- | --- |
 | `bc-gov-devops/` | Emerald deployment patterns — broadly applicable |
 | `bc-gov-iam/` | DIAM / Common SSO OIDC — applicable to all BC Gov apps |
 | `bc-gov-emerald/` | Emerald platform mechanics |
@@ -163,13 +164,14 @@ which is the org-level shared skills library used across BC Gov projects.
 `doc-versioning`, `solaris`, `cisco-ios`, `local-dev`, `dns-tools`.
 
 **Contribution process:**
+
 1. Develop and validate the skill here as normal
 2. Fork `bcgov/copilot-instructions`
 3. Copy the skill to `.github/skills/<name>/SKILL.md` — strip personal
    references (`metadata.author`, project-specific `compatibility` notes,
    cross-refs to personal skills)
+
 4. Submit PR with a clear description of what the skill does and what it targets
 
 Sources in this repo and `bcgov/copilot-instructions` are intentionally separate.
 The BCGov version is a trimmed, generic copy — not a symlink.
-

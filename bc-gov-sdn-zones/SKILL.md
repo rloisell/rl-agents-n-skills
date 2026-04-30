@@ -6,23 +6,31 @@ metadata:
   author: Ryan Loiselle
   version: "1.1"
   sources:
+
     - title: "IMIT 6.13 — Network Security Zones Standard (v5)"
       url: "https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_standard_v5.pdf"
       access: "BC Gov intranet"
+
     - title: "IMIT 6.13 — Network Security Zones Specifications (v1)"
       url: "https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_specs_v1.pdf"
       access: "BC Gov intranet"
+
     - title: "IMIT 5.08 — Network-to-Network Connectivity Security Standard (v2.0, 2022)"
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network_to_network_connectivity_standard.pdf"
+
     - title: "IMIT 5.08 — Network-to-Network Connectivity Security Specifications (v1.0, 2022)"
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network-to-network_connectivity_specifications.pdf"
+
     - title: "IMIT 6.28 — Network and Communications Security Standard (v5.0, 2022; reviewed 2024)"
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/09_-_communications_security_standard_v10.pdf"
+
     - title: "IMIT 6.28 — Network and Communications Security Specifications (v1.0, 2024)"
       url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_628_netowrk_and_communications_security_specifications.pdf"
+
     - title: "OCIO SDN Security Classification Model v1.0 (2022)"
     - title: "OCIO IMIT 6.18 — Information Security Classification Standard (ISCF)"
     - title: "ASRB SEP Network Zones submission v4.1"
+
 compatibility: All BC Government workloads. SDN model applies to OpenShift Private Cloud (Silver, Gold, Emerald) and legacy gov.bc.ca network.
 ---
 
@@ -47,7 +55,7 @@ Every workload's `DataClass` label and network zone placement must be derived fr
 > — SDN Security Classification Model v1.0 §Guiding Principles
 
 | ISCF Class | Examples | OpenShift `DataClass` | SDN classification | IMIT 6.13 zone |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | Public / Unclassified | Public websites, open data, IP addresses in raw access logs (subject to handling rules) | `Low` | Low | DMZ |
 | Protected A | Low-sensitivity personal info, internal business | `Medium` | Medium | Zone B |
 | Protected B (lower-risk) | Some medical / financial records | `Medium` | Medium | Zone B |
@@ -111,7 +119,7 @@ all core government networks (Data Centre Classic, SPAN/BC) and coexists with th
 model above. Zone names persist in firewall rules, IPAM tagging, and partner connectivity.
 
 | Zone | Name | ISCF data at rest | Notes |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Internet | — | n/a | All traffic to perimeter is denied by default for common mgmt ports (SSH, RDP, Telnet, SMB, NetBIOS, LDAP/S, Oracle, SQL Server, MySQL, PostgreSQL, ICMP) |
 | DMZ | Demilitarized Zone | Public | Hosts proxies, web gateways, citizen-facing interfaces; DMZ servers MUST NOT be in IDIR domain (DMZ AD domain only); apps require Application Vulnerability Scan before placement |
 | SPAN/BC | Shared Provincial Access Network | Mixed | ISP-like service; hosts both trusted and untrusted endpoints |
@@ -150,6 +158,7 @@ Internet  ↔  DMZ  ↔  Zone B  ↔  Zone A
 - The internet **cannot** initiate a session directly into Medium / High / Zone B / Zone A.
 - Session initiation between adjacent zones may be **asymmetric**
   (e.g., Zone C → Internet permitted; Internet → Zone C denied).
+
 - **NetworkPolicy and SDN Security Policies cannot override guardrails.** Adjacency is
   enforced at the SDN guardrail / firewall, not at the pod level. A NetworkPolicy allow
   rule from Internet to Medium is silently dropped at the guardrail.
@@ -157,7 +166,7 @@ Internet  ↔  DMZ  ↔  Zone B  ↔  Zone A
 ### SDN guardrail key denies (selected)
 
 | Source | Destination | Action |
-|---|---|---|
+| --- | --- | --- |
 | Public VIP | Medium / High / Zone DMZ / Zone B / Zone A / Zone C | Deny |
 | Internet | Low / Medium / High (direct) | Deny |
 | Low workload (Internet-Accessible, no WAF) | High | Deny |
@@ -171,7 +180,7 @@ Internet  ↔  DMZ  ↔  Zone B  ↔  Zone A
 ## Internet Egress Constraints by SDN Classification
 
 | Classification | Direct Internet egress | Via SDN Forward Proxy | Notes |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Low | Denied at guardrail | Allowed (whitelist-based) | Even Low workloads cannot egress directly to Internet |
 | Medium | Denied at guardrail | Allowed (whitelist-based) | |
 | High | Denied at guardrail | Exemption required (MISO) | Only for update / licence / call-home servers; not for API integrations |
@@ -233,8 +242,10 @@ the SDN perimeter to legacy multi-zone networks (Data Centre Classic):
 - Tags are **lost** at the SDN perimeter
 - External networks treat all SDN traffic as the segment's *lowest* classification — in
   practice, **DMZ / Low**
+
 - A Medium workload may be permitted by SDN guardrails to reach a Zone A workload, but
   the Zone A boundary firewall will deny it (source appears as DMZ)
+
 - Best suited to containerised workloads (e.g., OpenShift); confines guardrail scope to
   intra-SDN flows
 
@@ -253,7 +264,7 @@ When one end of a connection is the SPAN network, the **3PG service MUST be used
 (IMIT 5.08 §5). The 3PG architecture provides:
 
 | Control | Requirement |
-|---|---|
+| --- | --- |
 | Connection routers | Logical (and where required, physical) separation guaranteed at all times |
 | Stateful firewall | Mandatory; rules follow least-privilege; combined router+firewall acceptable if both requirements are met |
 | IPS / IDS | Mandatory at the security transit point |
@@ -297,6 +308,7 @@ adjacency rules. Confirm the target system's zone before designing your NetworkP
    - **Recommended**: split the workload — the data store stays *High*; create a *Medium*
      proxy service (or a *Low* + WAF service) that calls the public address-validation API
      via the Forward Proxy and serves the result to the *High* workload internally
+
    - Reclassify the *requesting* component if it is not itself responsible for High data
    - Apply for MISO exemption (lengthy; only justified for update / licence / call-home traffic)
 
@@ -305,7 +317,7 @@ adjacency rules. Confirm the target system's zone before designing your NetworkP
 ## Quick Reference — Which Standard Governs?
 
 | Question | Standard | Document |
-|---|---|---|
+| --- | --- | --- |
 | What class is this data? | IMIT 6.18 ISCF | gov.bc.ca information-security-classification |
 | What zone? | IMIT 6.13 v5 (current) + OCIO SDN Security Classification Model v1.0 | IMIT 6.13 Standard + Specs (intranet) |
 | Can I reach the internet? | SDN guardrail rules + IMIT 6.13 §5 Zone B Internet Access | OCIO SDN Security Classification Model v1.0 (2022); IMIT 6.13 Specs |
