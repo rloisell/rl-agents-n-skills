@@ -14,6 +14,12 @@ This repo serves two toolchains from a single source:
 | **VS Code / GitHub Copilot** | Git submodule at `.github/agents/` | `.github/agents/*/SKILL.md` |
 | **Claude Code** | Plugin via `.claude/settings.json` | `agents/` subagents in plugin root |
 
+> **Note on `.github/agents/`:** this path is the **mount point in consumer
+> projects** — the location where downstream repos add this library as a git
+> submodule. There is no `.github/` directory inside this library itself; SKILL
+> files live at the repo root and become discoverable to VS Code only after a
+> consumer mounts them under its own `.github/agents/`.
+
 ---
 
 ## Agents (20) — VS Code SKILL.md + Claude Code subagent

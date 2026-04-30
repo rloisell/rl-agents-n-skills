@@ -1,0 +1,16 @@
+# macOS Finder metadata
+.DS_Store
+**/.DS_Store
+
+# Editor / IDE state
+.vscode/
+.idea/
+
+# Spec-kit / spec-kitty workspace scaffolding (consumer-side, not part of this library)
+.specify/
+.github/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
