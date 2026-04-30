@@ -3,7 +3,21 @@ name: network-security
 description: Network security controls including ACLs (standard/extended/named/object-group), NAT/PAT, IPsec VPN (IKEv1/IKEv2, site-to-site, remote access), zone-based firewall, VLAN security hardening (DHCP snooping, DAI, 802.1X, port security), and common attack vectors (ARP spoofing, VLAN hopping, rogue DHCP, DDoS mitigation). Use when designing or auditing firewall policy, ACL rules, VPN configurations, or switch security hardening.
 metadata:
   author: Ryan Loiselle
-  version: "1.0"
+  version: "1.1"
+  sources:
+    - title: "IMIT 6.28 — Network and Communications Security Standard (v5.0, 2022)"
+      note: "§3.1 network controls, §3.5 segregation, §3.6 routing controls, §3.7 communication security — baseline controls for any BC Gov network."
+      url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/09_-_communications_security_standard_v10.pdf"
+    - title: "IMIT 6.28 Specifications (v1.0, 2024)"
+      url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_628_netowrk_and_communications_security_specifications.pdf"
+    - title: "IMIT 5.08 — Network-to-Network Connectivity Security Standard (v2.0, 2022)"
+      note: "3PG security transit point requirements: stateful firewall, IPS/IDS, default-deny, encryption per IMIT 6.10, log retention ≥ 13 months."
+      url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network_to_network_connectivity_standard.pdf"
+    - title: "IMIT 5.08 Specifications (v1.0, 2022)"
+      url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network-to-network_connectivity_specifications.pdf"
+    - title: "IMIT 6.13 — Network Security Zones Standard / Specifications"
+      note: "Zone model that firewall and ACL design must align with on BC Gov networks."
+      url: "https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_standard_v5.pdf"
 compatibility: Cisco IOS/IOS-XE ACLs, Cisco ASA/FTD, zone-based firewall (ZBF), Linux iptables/nftables, general IP security principles.
 ---
 
@@ -328,6 +342,27 @@ interface range GigabitEthernet0/2-24
 9. Scrubbing: normalise fragments, enforce MSS, reject illegal flag combos
 10. Separate management plane — OOB management or dedicated VRF
 ```
+
+---
+
+## BC Gov IMIT Standards — Mapping to Controls
+
+For BC Government networks, the following standards translate to concrete controls
+in this skill. Cite them in design docs and STRA submissions.
+
+| IMIT Standard | Section | Controls implemented in this skill |
+|---|---|---|
+| 6.28 Network & Communications Security | §3.1 Network controls | Configuration controls, MFA on devices, change management, baseline integrity |
+| 6.28 | §3.3 Logging, monitoring, detection | SIEM forwarding, IDS/IPS sensors, log boundary capture |
+| 6.28 | §3.5 Segregation | Zone segmentation, VLANs, security gateways, NetworkPolicy, ZBF |
+| 6.28 | §3.6 Routing controls | Anti-spoofing ACLs, uRPF, authenticated routing protocols, prefix filtering |
+| 6.28 | §3.7 Communication security | Encrypted transport (SSH/TLS/IPsec), anti-malware on transit |
+| 6.13 Network Security Zones | Zone model | DMZ / Zone B / Zone A boundaries; SDN Low/Medium/High |
+| 5.08 N2N Connectivity (3PG) | §5 Specifications | Stateful firewall + IPS/IDS at transit, default-deny, NAT to hide internals |
+| 5.08 | §5.1.3 Data in transit | IMIT 6.10 cryptography; encrypted tunnels / MPLS / isolated VLANs; PCI → separate physical router per circuit |
+| 5.08 | §5.1.4 Logging | Raw logs retained ≥ 13 months; available to Province SIEM |
+
+Full URLs are in this skill's frontmatter `sources:` block.
 
 ---
 

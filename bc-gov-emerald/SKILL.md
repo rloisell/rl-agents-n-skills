@@ -4,7 +4,15 @@ description: BC Government Emerald OpenShift platform mechanics: namespace conve
 tools: Read, Grep, Glob
 metadata:
   author: Ryan Loiselle
-  version: "2.1"
+  version: "2.2"
+  sources:
+    - title: "IMIT 6.13 — Network Security Zones Standard / Specifications"
+      note: "DataClass label + AVI annotation are Emerald's enforcement of the 6.13 zone model."
+      url: "https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_standard_v5.pdf"
+    - title: "IMIT 6.28 — Network and Communications Security Standard / Specifications"
+      note: "§3.3 logging/monitoring — Emerald workloads forward logs to centralised SIEM; §3.5 segregation realised by namespaces + NetworkPolicy."
+      url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/09_-_communications_security_standard_v10.pdf"
+    - title: "OCIO SDN Security Classification Model v1.0 (2022)"
 compatibility: BC Gov Emerald OpenShift cluster. Projects in bcgov-c/ and rloisell/ namespaces (be808f family).
 ---
 

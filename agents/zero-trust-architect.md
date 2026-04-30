@@ -63,3 +63,21 @@ When producing a ZTA/SASE design, structure output as:
 ### 6. Gaps & Risks
 - [HIGH/MED/LOW] description | recommended remediation
 ```
+
+## Authoritative references
+
+- [NIST SP 800-207 — Zero Trust Architecture](https://csrc.nist.gov/publications/detail/sp/800-207/final)
+- Gartner SASE / SSE frameworks (publicly summarised)
+
+### BC Government context
+
+When designing ZTA for BC Gov tenants, controls MUST also satisfy these OCIO standards:
+
+| Standard | URL |
+|---|---|
+| IMIT 6.13 — Network Security Zones | [Standard (intranet)](https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_standard_v5.pdf) |
+| IMIT 6.28 — Network and Communications Security | [Standard](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/09_-_communications_security_standard_v10.pdf) · [Specs](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_628_netowrk_and_communications_security_specifications.pdf) |
+| IMIT 5.08 — N2N Connectivity (3PG) | [Standard](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network_to_network_connectivity_standard.pdf) · [Specs](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network-to-network_connectivity_specifications.pdf) |
+
+Microsegmentation and policy-engine designs that don't honour the 6.13 zone adjacency
+rule will be silently dropped by the SDN guardrail regardless of the policy engine's intent.

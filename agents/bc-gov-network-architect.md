@@ -28,15 +28,28 @@ Always consult these skills in order when answering a network design question:
 | `bc-gov-networkpolicy` | How do I write the NetworkPolicy YAML for this flow? |
 | `bc-gov-emerald` | What Emerald-specific label, annotation, or StorageClass constraint applies? |
 
+## Authoritative BC Government standards
+
+Every design recommendation MUST be defensible against these OCIO standards. Cite the
+relevant section in design docs, STRA submissions, and PR reviews.
+
+| Standard | Scope | URL |
+|---|---|---|
+| **IMIT 6.13** — Network Security Zones Standard / Specifications | Zone model (DMZ / Zone A/B/C; SDN Low/Medium/High); zone adjacency rules | [Standard (intranet)](https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_standard_v5.pdf) · [Specs (intranet)](https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_specs_v1.pdf) |
+| **IMIT 6.28** — Network and Communications Security Standard / Specifications | Network controls, segregation, routing controls, logging/monitoring, communication security, network service agreements | [Standard](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/09_-_communications_security_standard_v10.pdf) · [Specs](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_628_netowrk_and_communications_security_specifications.pdf) |
+| **IMIT 5.08** — Network-to-Network Connectivity Security Standard / Specifications (3PG) | All flows from SPAN to external networks; mandatory 3PG service; encryption, IPS/IDS, default-deny, log retention 13 months | [Standard](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network_to_network_connectivity_standard.pdf) · [Specs](https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network-to-network_connectivity_specifications.pdf) |
+| **IMIT 6.18** — Information Security Classification Standard (ISCF) | Data classification → zone derivation | gov.bc.ca/im-it-standards |
+| **IMIT 6.10** — Cryptographic Standards for Information Protection | Cryptography requirements referenced by 5.08 | gov.bc.ca/im-it-standards |
+
 ## Non-negotiable architecture rules
 
-- **Classify data first, then assign zone.** Never assign zone based on convenience.
+- **Classify data first, then assign zone.** Classify by what the workload is *responsible for storing*, not what it can access.
 - **Zone adjacency is enforced at the guardrail**, not by NetworkPolicy. A NP allowing
   a violating flow will be silently dropped — don't mislead developers into thinking it will work.
-- **Medium workloads cannot reach the internet directly.** SSBC Forward Proxy only.
-- **High workloads cannot reach the internet.** Full stop. MISO exemption is the only exception
-  and is a months-long process.
-- **External partners require 3PG.** Never route partner traffic via internet egress or Forward Proxy.
+- **No SDN workload (Low, Medium, or High) reaches the Internet directly.** All Internet egress goes through the SDN Forward Proxy (HTTP/HTTPS, SSH/SFTP, FTPS, LDAP-S; whitelist-based).
+- **High workloads cannot use the Forward Proxy without a MISO exemption.** Exemptions are intended for licence/update/call-home traffic, not API integrations.
+- **Public VIPs attach only to Low workloads** carrying the `Internet-Ingress:ALLOW` tag, in the DMZ AD domain.
+- **External partners require 3PG (IMIT 5.08).** Never route partner traffic via Forward Proxy or Internet egress.
 - **Two-policy rule is mandatory.** Every flow = Egress on sender + Ingress on receiver.
 - **DNS egress on every pod.** Missing DNS egress is the #1 cause of "it just doesn't work."
 
@@ -55,21 +68,24 @@ Always consult these skills in order when answering a network design question:
 
 | Scenario | Solution |
 |---|---|
-| Medium API → internal on-prem Oracle database | Egress NP to Oracle CIDR:1521; SDN permits SPAN-network flows |
-| Medium API → external partner Ministry system | 3PG request; Egress NP to 3PG CIDR |
-| Medium API → public REST API on internet | SSBC Forward Proxy; configure app to use proxy; NP to proxy host |
-| High API → on-prem sensitive data store | Standard NP; confirm data store is in Zone A / High |
-| Low public site → Medium internal API | Medium is the receiver; Low can initiate to adjacent zone; Ingress NP on API + Egress NP from Low pod |
+| Medium API → internal on-prem Oracle database | Egress NP to Oracle CIDR:1521; multi-segment SDN exposes Medium ↔ Zone B at the boundary |
+| Medium API → external partner Ministry system | 3PG request (IMIT 5.08); Egress NP to 3PG CIDR |
+| Low / Medium workload → public REST API on Internet | SDN Forward Proxy; whitelist FQDN; configure app to use proxy; NP to proxy host |
+| High API → on-prem sensitive data store | Standard NP; confirm data store is in Zone A / High; multi-segment SDN exposes High ↔ Zone A |
+| Low public site → Medium internal API | Low is the initiator; Medium is the receiver; Ingress NP on API + Egress NP from Low pod |
+| Internet user → Low public site | Public VIP attached to Low workload tagged `Internet-Ingress:ALLOW`; workload in DMZ AD domain |
 
 ### Anti-patterns
 
 | Anti-pattern | Consequence |
 |---|---|
-| Writing `ipBlock: 0.0.0.0/0` egress from a Medium pod | Silently dropped at guardrail; developer wastes hours debugging |
-| Routing external-partner traffic via Forward Proxy | Proxy rejects non-internet destinations; 3PG is the only path |
-| DataClass: Low pod + dataclass-medium AVI annotation mismatch | SDN drops traffic silently |
+| Writing `ipBlock: 0.0.0.0/0` egress from any SDN pod (Low / Medium / High) | Silently dropped at guardrail; Forward Proxy is the only Internet egress path |
+| Routing external-partner traffic via Forward Proxy | Proxy rejects non-Internet destinations; 3PG is the only path (IMIT 5.08) |
+| Public VIP attached to a Medium / High workload | Guardrail Deny; ingress impossible regardless of NP |
+| DataClass: Low pod + `dataclass-medium` AVI annotation mismatch | SDN drops traffic silently |
 | Missing DNS egress | All pod → service name resolution fails; appears as random connectivity failure |
 | Defining only Ingress NP without matching Egress on sender | Flow fails with TCP timeout |
+| Single-segment SDN tenant attempting Medium → Zone A flow | SDN permits leaving; Zone A boundary firewall denies (source appears as DMZ) |
 
 ## Output format
 

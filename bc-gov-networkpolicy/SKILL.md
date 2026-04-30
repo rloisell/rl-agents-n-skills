@@ -4,7 +4,17 @@ description: Kubernetes / OpenShift NetworkPolicy authoring for BC Gov Private C
 tools: Read, Grep, Glob
 metadata:
   author: Ryan Loiselle
-  version: "1.1"
+  version: "1.2"
+  sources:
+    - title: "IMIT 6.13 — Network Security Zones Standard / Specifications"
+      note: "Governs zone model that NetworkPolicy must align with (SDN Low/Medium/High)."
+      url: "https://intranet.gov.bc.ca/assets/intranet/mtics/ocio/es/enterprise-services-division/information-security-branch/information-security-standards-and-guidelines/imit_613_network_security_zones_standard_v5.pdf"
+    - title: "IMIT 6.28 — Network and Communications Security Standard / Specifications"
+      note: "§3.5 segregation, §3.6 routing controls, §3.3 logging/monitoring — NetworkPolicy is one of the enforcement points required to meet these."
+      url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/09_-_communications_security_standard_v10.pdf"
+    - title: "IMIT 5.08 — Network-to-Network Connectivity Security Standard"
+      note: "Governs traffic that exits the cluster to external partners via 3PG — egress NetworkPolicy must target 3PG CIDR, not partner endpoint."
+      url: "https://www2.gov.bc.ca/assets/gov/government/services-for-government-and-broader-public-sector/information-technology-services/standards-files/imit_508_network_to_network_connectivity_standard.pdf"
 compatibility: All BC Gov Private Cloud clusters (Silver, Gold, Emerald). Emerald is the strictest — default-deny both ingress AND egress.
 ---
 
