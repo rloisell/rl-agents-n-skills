@@ -3,7 +3,22 @@
 **Domain**: Tier 3 OCP Migration Analysis Service  
 **Runtime**: Node.js 22 / TypeScript / Fastify — GitHub Copilot Extension on Emerald  
 **Skill version**: 1.0  
-**Updated**: April 2026
+**Updated**: April 2026  
+**Status**: ⚠️ **DEPRECATED — May 2026**
+
+---
+
+> ⚠️ **DEPRECATED — Tier 3 was scaled back to Tier 2 (May 2026).**
+>
+> The active delivery model for OCP migration analysis is the **Tier 2 GitHub
+> Composite Action** in [`ocp-migration-toolkit`](https://github.com/rloisell/ocp-migration-toolkit)
+> and the **Tier 1 VS Code skill** [`ocp-migration-analyst`](../ocp-migration-analyst/SKILL.md).
+>
+> This skill is retained for reference only — the `@bc-migrate` Copilot Extension
+> service is **not deployed** on Emerald and there are no current plans to deploy it.
+> Do not invoke `@bc-migrate` in Copilot Chat; it will not respond.
+>
+> See [`../ocp-migration-analyst/SKILL.md`](../ocp-migration-analyst/SKILL.md) for the supported workflow.
 
 ---
 

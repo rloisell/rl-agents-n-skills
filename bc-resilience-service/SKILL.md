@@ -4,6 +4,18 @@
 # Tier 3 GitHub Copilot Extension — OCP Resilience Posture Analysis
 # Deployed on Emerald OpenShift (be808f namespace)
 
+> ⚠️ **DEPRECATED — Tier 3 was scaled back to Tier 2 (May 2026).**
+>
+> The active delivery model for OCP resilience analysis is the **Tier 2 GitHub
+> Composite Action** in [`ocp-resilience-toolkit`](https://github.com/rloisell/ocp-resilience-toolkit)
+> and the **Tier 1 VS Code skill** [`ocp-resilience-analyst`](../ocp-resilience-analyst/SKILL.md).
+>
+> This skill is retained for reference only — the `@bc-resilience` Copilot
+> Extension service is **not deployed** on Emerald and there are no current plans
+> to deploy it. Do not invoke `@bc-resilience` in Copilot Chat; it will not respond.
+>
+> See [`../ocp-resilience-analyst/SKILL.md`](../ocp-resilience-analyst/SKILL.md) for the supported workflow.
+
 ## Overview
 
 `bc-resilience-service` is a GitHub Copilot Extension that performs on-demand
