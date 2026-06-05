@@ -331,3 +331,12 @@ adjacency rules. Confirm the target system's zone before designing your NetworkP
 | How to write the NetworkPolicy? | NetworkPolicy patterns | `bc-gov-networkpolicy` skill |
 
 Full URLs are in this skill's frontmatter `sources:` block.
+
+---
+
+## BC_GOV_SDN_ZONES_KNOWLEDGE
+
+<!-- agent-evolution appends discoveries here -->
+<!-- Format: - YYYY-MM-DD: [engagement] <imperative statement> -->
+- 2026-06-05: [multi-app-engagement] Zone C is the Trusted Client Zone for IDIR workstations — never assign DataClass: High to Zone C; High maps to Zone A (Restricted High Security) and Low maps to DMZ, not Zone A
+- 2026-06-05: [multi-app-engagement] AI models frequently confuse Zone A/B/C ordinal numbering with ascending sensitivity — always use the full name (Zone A = Restricted High Security, Zone B = High Security, Zone C = Trusted Client / workstations)
