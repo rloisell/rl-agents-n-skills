@@ -94,7 +94,7 @@ See `README.md` for the full agent list. Key orchestrating agents:
 | Agent | When to invoke |
 |---|---|
 | `session-workflow` | Start and end of every development session |
-| `bc-gov-foi-multi-app-orchestrator` | Analysing 2+ interconnected OCP apps in a program area |
+| `bc-gov-multi-app-analyst` | Analysing 2+ interconnected OCP apps in a program area |
 | `ocp-resilience-analyst` | Per-namespace R01–R15 resilience posture |
 | `ocp-migration-analyst` | Silver/Gold → Emerald migration gap analysis |
 | `container-network-analyst` | Cross-namespace and cross-cluster network flow mapping |
