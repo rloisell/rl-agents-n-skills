@@ -74,7 +74,116 @@ Before declaring a flow complete:
 
 ---
 
+## Cross-Namespace and Cross-Cluster Flow Mapping Playbook
+
+---
+
+### Detecting Cross-Namespace NetworkPolicies
+
+```bash
+# Find all NPs with namespaceSelector in ingress or egress rules
+oc get networkpolicies -A -o json | jq '
+  .items[] |
+  select(
+    (.spec.ingress[]?.from[]?.namespaceSelector != null) or
+    (.spec.egress[]?.to[]?.namespaceSelector != null)
+  ) |
+  {namespace: .metadata.namespace, name: .metadata.name, spec: .spec}'
+
+# Detect "wide-open" pattern: namespaceSelector with no podSelector and no port restriction
+oc get networkpolicies -A -o json | jq '
+  .items[] |
+  select(
+    .spec.ingress[]?.from[]? |
+    (.namespaceSelector != null) and
+    (.podSelector == null or .podSelector == {})
+  ) |
+  {namespace: .metadata.namespace, name: .metadata.name}'
+```
+
+### Cross-Namespace NP Risk Classification
+
+| Pattern | Risk | Explanation |
+|---|---|---|
+| `namespaceSelector` only — no `podSelector`, no `ports` | 🔴 HIGH | Any pod in source NS can reach any pod in target NS on any port |
+| `namespaceSelector` + `podSelector`, no `ports` | 🟡 MEDIUM | Scoped to specific pods but all ports exposed |
+| `namespaceSelector` + `podSelector` + `ports` | 🟢 COMPLIANT | Fully scoped — principle of least privilege |
+
+### Recommended Scoped Cross-Namespace NP Pattern
+
+```yaml
+# Ingress on the RECEIVER side — allows traffic from a specific pod in another namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-foi-requests-api
+  namespace: d7abee-dev
+spec:
+  podSelector:
+    matchLabels:
+      app: foi-flow-api          # target: only the receiver pods
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: d106d6-dev   # source namespace
+          podSelector:
+            matchLabels:
+              app: foi-requests-api                     # source: specific sender pods only
+      ports:
+        - protocol: TCP
+          port: 8080                                    # only the required port
+```
+
+### Cross-Cluster Flows (Silver ↔ Emerald)
+
+There is **no direct cluster-to-cluster Kubernetes networking** between Silver and Emerald. All cross-cluster communication routes via **public Routes**.
+
+| Step | Detail |
+|---|---|
+| 1. Service B in Silver | Must have a `Route` with a public hostname |
+| 2. Service A in Emerald | Makes HTTP/HTTPS calls to Service B's public route hostname |
+| 3. Egress NP on Service A | Egress to the Silver route hostname (via Forward Proxy or direct if public) |
+| 4. Ingress NP on Service B | Standard public-ingress NP (allows from router namespace) |
+
+**Treat Silver ↔ Emerald flows as external egress — apply the same controls as any internet-bound flow including TLS enforcement, FWCR if applicable, and Forward Proxy routing.**
+
+### Stale NP Detection
+
+```bash
+# List all NPs in a namespace with their pod selector and age
+oc get networkpolicies -n <ns> -o json | jq '
+  [.items[] | {
+    name: .metadata.name,
+    age: .metadata.creationTimestamp,
+    podSelector: .spec.podSelector
+  }]'
+
+# Cross-reference NP pod selectors against running pod labels
+# For each NP, check if any running pod matches .spec.podSelector.matchLabels
+oc get pods -n <ns> -o json | jq '
+  [.items[] | {name: .metadata.name, labels: .metadata.labels}]'
+```
+
+Flag NPs where the `podSelector` matchLabels matches **no running pods** — these are stale and accumulate silently after workload decommission.
+
+### FOI-Analysis Evidence (Concrete Patterns)
+
+| NP Name | Namespace | Pattern | Risk |
+|---|---|---|---|
+| `allow-from-d106d6-dev` | d7abee-dev | `namespaceSelector` only — no `podSelector`, no `ports` | 🔴 HIGH |
+| `allow-from-d7abee-dev` | d106d6-dev | `namespaceSelector` only — no `podSelector`, no `ports` | 🔴 HIGH |
+| 14 stale NPs | d7abee-dev | Pod selectors from decommissioned Patroni/Redis instances | Orphaned |
+| `rabbitmq-internal-access` | d7abee-dev | 3y+ old; no RabbitMQ deployment present | Orphaned |
+
+**Source evidence:** `AI/OCP-CLI-CAPTURES/d7abee-dev/networkpolicies.yaml` and `AI/REPO-CAPTURES/coupling-matrix.md` in `rloisell/FOI-analysis`.
+
+---
+
 ## BC_GOV_NETWORK_ARCHITECT_KNOWLEDGE
 
 <!-- agent-evolution appends discoveries here -->
 <!-- Format: - YYYY-MM-DD: [Project] <imperative statement> -->
+- 2026-06-05: [FOI-analysis] Cross-namespace NPs with no port/pod filtering are wide-open — always scope with podSelector + ports
+- 2026-06-05: [FOI-analysis] Stale NPs from decommissioned workloads accumulate silently — add NP cleanup to decommission checklists
+- 2026-06-05: [FOI-analysis] Cross-cluster flows (Silver↔Emerald) route via public Routes, not K8s networking — treat as external egress
