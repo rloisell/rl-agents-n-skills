@@ -124,6 +124,77 @@ This produces `working/<namespace>/manifest-summary.md` — a structured summary
 
 ---
 
+## Phase 1b — Multi-App Coupling Matrix
+
+Run Phase 1b when the migration involves **2 or more interconnected applications** in the same Ministry / program area. Indicators that Phase 1b is needed:
+
+- Cross-namespace NetworkPolicies exist between application namespaces
+- Applications share a Keycloak realm, S3 bucket prefix, SMTP relay, or AXIS endpoint
+- Redis stream keys span multiple namespaces (producer in one NS, consumer in another)
+- CORS `allowed-origins` in one app references another app's Route hostname
+
+### What to Collect
+
+| Signal | Collection command |
+|---|---|
+| Cross-namespace NPs | `oc get networkpolicies -A -o json \| jq '.items[] \| select(.spec.ingress[]?.from[]?.namespaceSelector != null or .spec.egress[]?.to[]?.namespaceSelector != null) \| {ns: .metadata.namespace, name: .metadata.name}'` |
+| CORS origins | `grep -r "CORS\|allowed.origin\|Access-Control" working/repo --include="*.yaml" --include="*.env*" --include="*.json" -l` |
+| Shared ConfigMap patterns | Check for identical service URLs across multiple namespace ConfigMaps |
+| Redis stream keys | `oc get configmaps -n <ns> -o json \| jq '.items[] \| .data \| to_entries[] \| select(.key \| test("STREAM\|TOPIC\|QUEUE")) \| {key, value}'` |
+| Shared external services | Cross-reference Keycloak realm URLs, object storage bucket names, SMTP hosts across all app ConfigMaps |
+
+### Output: `working/<prefix>/coupling-matrix.md`
+
+Produce a coupling matrix file with these sections:
+
+```
+## Cross-Namespace Network Links
+| Source NS | Target NS | NP Name | Direction | Scoped? |
+
+## HTTP Service Calls (Cross-App)
+| Caller App | Target App | URL Pattern | Protocol/Port | Via Public Route? |
+
+## Redis Stream Keys (if applicable)
+| Stream Key | Producer NS | Consumer NS |
+
+## Shared Object Storage
+| Bucket / Prefix | Apps Sharing |
+
+## Shared External Services
+| Service | Type | Apps Using |
+
+## Keycloak Clients (per app)
+| App | Realm | Client ID |
+
+## Database Isolation
+| App | DB Host | DB Name | Shared With |
+
+## Stale / Orphaned Resources
+| Resource | Namespace | Last Active | Notes |
+```
+
+### Migration Sequencing Rule
+
+**Migrate the most-upstream (least-dependent) app first.**
+
+- If App A makes service calls to App B, migrate App B's network-facing surface (Routes, Services) before App A's cutover
+- Apps with no direct K8s service calls to each other (only via public Routes) can be migrated in parallel
+- Shared infrastructure (Redis, S3, Keycloak) must be available in the target environment before any dependent app cutover
+
+### FOI Example — Dependency-Ordered Migration
+
+```
+foi-docreviewer   (consumed by foi-flow — migrate first)
+      ↓
+foi-flow          (consumed by foi-requests — migrate second)
+      ↓
+foi-requests      (end-user facing — migrate last)
+```
+
+foi-flow and foi-requests share no direct K8s service calls (only via public routes) and can be migrated in parallel once foi-docreviewer is stable in the target environment.
+
+---
+
 ## Phase 2 — Gap Analysis
 
 Apply the following skill knowledge bases when interpreting collected data:
@@ -443,3 +514,7 @@ an evidence-based analysis from a generic checklist.
 |----|----------|-----------|
 | SEC-01 | OWASP A06:2021 — Vulnerable and Outdated Components (mutable image tags allow silent dependency drift) | [owasp.org](https://owasp.org/Top10/A06_2021-Vulnerable_and_Outdated_Components/) |
 | SEC-02 | GitHub Actions — SHA pinning for third-party actions | [GitHub Security Hardening](https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions) |
+
+## KNOWLEDGE
+
+- 2026-06-05: [FOI-analysis] Cross-namespace NPs (allow-from-d106d6-dev) detected during analysis — coupling matrix is essential for multi-app migrations to identify sequencing dependencies and shared infrastructure
