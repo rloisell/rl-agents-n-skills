@@ -1,5 +1,5 @@
 ---
-name: bc-gov-foi-multi-app-orchestrator
+name: bc-gov-multi-app-analyst
 description: Multi-app BC Gov OCP analysis orchestrator — phases 0-5, coupling matrix, per-app deep-dive template, cross-cutting reports, and PDF packaging.
 tools: Bash, Read, Write, Grep, Glob, agent
 user-invocable: true
@@ -12,7 +12,7 @@ compatibility: >
   container-network-analysis-toolkit repos.
 ---
 
-# BC Gov FOI Multi-App Orchestrator
+# BC Gov Multi-App Analyst
 
 Repeatable orchestration pattern for structured analysis of 2+ interconnected BC Gov OCP applications.
 

@@ -2,7 +2,7 @@
 
 **Domain**: OpenShift Container Network Posture & Cross-Namespace Flow Analysis  
 **Skill version**: 1.0  
-**Updated**: June 2026 (v1.0 — initial skill, extracted from FOI multi-app engagement)
+**Updated**: June 2026 (v1.0 — initial skill, extracted from multi-app analysis engagement)
 
 ---
 
