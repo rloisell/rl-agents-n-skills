@@ -181,17 +181,17 @@ Produce a coupling matrix file with these sections:
 - Apps with no direct K8s service calls to each other (only via public Routes) can be migrated in parallel
 - Shared infrastructure (Redis, S3, Keycloak) must be available in the target environment before any dependent app cutover
 
-### FOI Example — Dependency-Ordered Migration
+### Example — Dependency-Ordered Migration
 
 ```
-foi-docreviewer   (consumed by foi-flow — migrate first)
+app-c   (consumed by app-b — migrate first)
       ↓
-foi-flow          (consumed by foi-requests — migrate second)
+app-b   (consumed by app-a — migrate second)
       ↓
-foi-requests      (end-user facing — migrate last)
+app-a   (end-user facing — migrate last)
 ```
 
-foi-flow and foi-requests share no direct K8s service calls (only via public routes) and can be migrated in parallel once foi-docreviewer is stable in the target environment.
+Apps that share no direct K8s service calls (only via public Routes) can be migrated in parallel once their shared dependencies are stable in the target environment.
 
 ---
 
@@ -517,4 +517,4 @@ an evidence-based analysis from a generic checklist.
 
 ## KNOWLEDGE
 
-- 2026-06-05: [FOI-analysis] Cross-namespace NPs (allow-from-d106d6-dev) detected during analysis — coupling matrix is essential for multi-app migrations to identify sequencing dependencies and shared infrastructure
+- 2026-06-05: [multi-app-engagement] Cross-namespace NPs detected during analysis — coupling matrix is essential for multi-app migrations to identify sequencing dependencies and shared infrastructure
