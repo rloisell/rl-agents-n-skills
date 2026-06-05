@@ -1,6 +1,6 @@
 ---
 name: bc-gov-foi-multi-app-orchestrator
-description: Multi-app BC Gov OCP analysis orchestrator — phases 0-5, coupling matrix, per-app deep-dive template, cross-cutting reports, and PDF packaging. Reference implementation: rloisell/FOI-analysis.
+description: Multi-app BC Gov OCP analysis orchestrator — phases 0-5, coupling matrix, per-app deep-dive template, cross-cutting reports, and PDF packaging.
 tools: Bash, Read, Write, Grep, Glob, agent
 user-invocable: true
 metadata:
@@ -14,9 +14,7 @@ compatibility: >
 
 # BC Gov FOI Multi-App Orchestrator
 
-Repeatable orchestration pattern for structured analysis of 2+ interconnected BC Gov OCP applications. Derived from the FOI tri-app engagement (foi-requests, foi-flow, foi-docreviewer).
-
-**Reference implementation:** `rloisell/FOI-analysis`
+Repeatable orchestration pattern for structured analysis of 2+ interconnected BC Gov OCP applications.
 
 ---
 
@@ -26,7 +24,7 @@ Before starting any phase, verify:
 
 - [ ] `oc whoami` succeeds on source cluster (Silver, Gold, or other)
 - [ ] `gh auth status` confirms GitHub CLI authenticated
-- [ ] Target namespace prefixes confirmed (e.g. `d106d6`, `d7abee`, `a6a9b4`)
+- [ ] Target namespace prefixes confirmed (e.g. `<prefix1>`, `<prefix2>`, `<prefix3>`)
 - [ ] GitHub repositories identified for each app
 - [ ] Output repo scaffolded (see Phase 0)
 - [ ] `ocp-migration-toolkit` cloned and `collect.sh` executable
@@ -133,7 +131,7 @@ The coupling matrix must be produced **before** Phase 2 per-app deep-dives and b
 
 ## Phase 2 — Parallel Per-App Deep-Dives
 
-For each application, produce a deep-dive report at `report/apps/<app>/FOI-<app>-deep-dive-v1.md`.
+For each application, produce a deep-dive report at `report/apps/<app>/<program-area>-<app>-deep-dive-v1.md`.
 
 Run per-app analyses **in parallel** where apps have no write-dependency on each other's output.
 
@@ -173,11 +171,11 @@ Produce these reports at `report/cross-cutting/`:
 
 | Report | File | Sub-agent(s) | Content |
 |---|---|---|---|
-| Network Connectivity | `FOI-network-connectivity-v1.md` | `bc-gov-network-architect` | All inter-app flows, cross-namespace NPs, cross-cluster paths, risk classification |
-| Emerald Migration | `FOI-emerald-migration-v1.md` | `ocp-migration-analyst` | Gap analysis across all 3 apps, migration sequencing from coupling matrix, phase plan |
-| Standards Deviation Matrix | `FOI-standards-deviation-v1.md` | `bc-gov-devops` | Side-by-side comparison of all apps against Emerald/DevOps standards |
-| Resiliency Rollup | `FOI-resiliency-rollup-v1.md` | `ocp-resilience-analyst` | R01-R15 grades across all apps in a single table |
-| Security Rollup | `FOI-security-rollup-v1.md` | `security-architect` | Cross-app security findings, image provenance, RBAC, PII risk, data residency |
+| Network Connectivity | `<program-area>-network-connectivity-v1.md` | `bc-gov-network-architect` | All inter-app flows, cross-namespace NPs, cross-cluster paths, risk classification |
+| Emerald Migration | `<program-area>-emerald-migration-v1.md` | `ocp-migration-analyst` | Gap analysis across all apps, migration sequencing from coupling matrix, phase plan |
+| Standards Deviation Matrix | `<program-area>-standards-deviation-v1.md` | `bc-gov-devops` | Side-by-side comparison of all apps against Emerald/DevOps standards |
+| Resiliency Rollup | `<program-area>-resiliency-rollup-v1.md` | `ocp-resilience-analyst` | R01-R15 grades across all apps in a single table |
+| Security Rollup | `<program-area>-security-rollup-v1.md` | `security-architect` | Cross-app security findings, image provenance, RBAC, PII risk, data residency |
 
 ---
 
@@ -190,12 +188,12 @@ For each candidate pattern:
 2. Document: the pattern observed, the concrete evidence, the generalised rule, and which skill to add it to
 3. After engagement completion, raise PRs against `rloisell/rl-agents-n-skills` for each accepted skill update
 
-Examples from FOI-analysis:
+Examples of reusable patterns extracted from past engagements:
 - Cross-namespace NP risk classification → `bc-gov-network-architect`
 - PII-in-logs checklist (Python/Go/Node.js) → `observability`
 - RBAC CronJob anti-pattern → `security-architect`
 - Image provenance risk tiers → `security-architect`
-- Azure data residency pattern → new `data-flow-lineage` skill
+- External cloud data residency pattern → new `data-flow-lineage` skill
 
 ---
 
@@ -203,7 +201,7 @@ Examples from FOI-analysis:
 
 ### Executive Summary
 
-Produce `report/FOI-executive-summary-v1.md` with a RAG (Red/Amber/Green) traffic-light table:
+Produce `report/<program-area>-executive-summary-v1.md` with a RAG (Red/Amber/Green) traffic-light table:
 
 ```markdown
 | Dimension | <App1> | <App2> | <App3> |
@@ -229,7 +227,7 @@ Produce `report/FOI-executive-summary-v1.md` with a RAG (Red/Amber/Green) traffi
 ## BC_GOV_FOI_ORCHESTRATOR_KNOWLEDGE
 
 <!-- agent-evolution appends discoveries here -->
-<!-- Format: - YYYY-MM-DD: [Project] <imperative statement> -->
-- 2026-06-05: [FOI-analysis] Parallel per-app deep-dives require coupling matrix first — sequencing without coupling matrix risks missing shared-infrastructure dependencies
-- 2026-06-05: [FOI-analysis] Phase 3 cross-cutting reports are higher value than per-app reports for executive stakeholders — prioritise these if time is constrained
-- 2026-06-05: [FOI-analysis] Skill extraction (Phase 4) is most effective when done continuously during the engagement, not as a post-engagement batch
+<!-- Format: - YYYY-MM-DD: [engagement] <imperative statement> -->
+- 2026-06-05: [multi-app-engagement] Parallel per-app deep-dives require coupling matrix first — sequencing without coupling matrix risks missing shared-infrastructure dependencies
+- 2026-06-05: [multi-app-engagement] Phase 3 cross-cutting reports are higher value than per-app reports for executive stakeholders — prioritise these if time is constrained
+- 2026-06-05: [multi-app-engagement] Skill extraction (Phase 4) is most effective when done continuously during the engagement, not as a post-engagement batch

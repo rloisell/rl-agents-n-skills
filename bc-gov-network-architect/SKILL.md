@@ -116,23 +116,23 @@ oc get networkpolicies -A -o json | jq '
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-from-foi-requests-api
-  namespace: d7abee-dev
+  name: allow-from-<source-app>-api
+  namespace: <target-ns>-dev
 spec:
   podSelector:
     matchLabels:
-      app: foi-flow-api          # target: only the receiver pods
+      app: <target-app>-api          # target: only the receiver pods
   ingress:
     - from:
         - namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: d106d6-dev   # source namespace
+              kubernetes.io/metadata.name: <source-ns>-dev   # source namespace
           podSelector:
             matchLabels:
-              app: foi-requests-api                     # source: specific sender pods only
+              app: <source-app>-api                          # source: specific sender pods only
       ports:
         - protocol: TCP
-          port: 8080                                    # only the required port
+          port: 8080                                         # only the required port
 ```
 
 ### Cross-Cluster Flows (Silver ↔ Emerald)
@@ -167,23 +167,22 @@ oc get pods -n <ns> -o json | jq '
 
 Flag NPs where the `podSelector` matchLabels matches **no running pods** — these are stale and accumulate silently after workload decommission.
 
-### FOI-Analysis Evidence (Concrete Patterns)
+### Common Cross-Namespace NP Anti-Patterns
 
-| NP Name | Namespace | Pattern | Risk |
+| Anti-Pattern | Namespace | Issue | Risk |
 |---|---|---|---|
-| `allow-from-d106d6-dev` | d7abee-dev | `namespaceSelector` only — no `podSelector`, no `ports` | 🔴 HIGH |
-| `allow-from-d7abee-dev` | d106d6-dev | `namespaceSelector` only — no `podSelector`, no `ports` | 🔴 HIGH |
-| 14 stale NPs | d7abee-dev | Pod selectors from decommissioned Patroni/Redis instances | Orphaned |
-| `rabbitmq-internal-access` | d7abee-dev | 3y+ old; no RabbitMQ deployment present | Orphaned |
+| `namespaceSelector` only (no `podSelector`, no `ports`) | `<ns>-dev` | Allows traffic from any pod in the source namespace on any port | 🔴 HIGH |
+| Stale NP — pod selector matches no running pods | `<ns>-dev` | Orphaned after workload decommission; silently accumulates | Orphaned |
+| NP for a service that no longer exists (e.g. old message broker) | `<ns>-dev` | Was created for a removed workload; no current enforcement value | Orphaned |
 
-**Source evidence:** `AI/OCP-CLI-CAPTURES/d7abee-dev/networkpolicies.yaml` and `AI/REPO-CAPTURES/coupling-matrix.md` in `rloisell/FOI-analysis`.
+These patterns have been observed in production BC Gov Silver namespaces. The stale NP pattern is especially common after Patroni-to-CloudNativePG migrations and Redis topology changes.
 
 ---
 
 ## BC_GOV_NETWORK_ARCHITECT_KNOWLEDGE
 
 <!-- agent-evolution appends discoveries here -->
-<!-- Format: - YYYY-MM-DD: [Project] <imperative statement> -->
-- 2026-06-05: [FOI-analysis] Cross-namespace NPs with no port/pod filtering are wide-open — always scope with podSelector + ports
-- 2026-06-05: [FOI-analysis] Stale NPs from decommissioned workloads accumulate silently — add NP cleanup to decommission checklists
-- 2026-06-05: [FOI-analysis] Cross-cluster flows (Silver↔Emerald) route via public Routes, not K8s networking — treat as external egress
+<!-- Format: - YYYY-MM-DD: [engagement] <imperative statement> -->
+- 2026-06-05: [multi-app-engagement] Cross-namespace NPs with no port/pod filtering are wide-open — always scope with podSelector + ports
+- 2026-06-05: [multi-app-engagement] Stale NPs from decommissioned workloads accumulate silently — add NP cleanup to decommission checklists
+- 2026-06-05: [multi-app-engagement] Cross-cluster flows (Silver↔Emerald) route via public Routes, not K8s networking — treat as external egress

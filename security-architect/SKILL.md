@@ -262,16 +262,14 @@ oc get pods -n <ns> -o json | jq '.items[] | select(.spec.serviceAccountName == 
 
 ### CronJob RBAC Anti-Pattern
 
-CronJobs that delete/restart pods (e.g. `restartpods` in foi-flow) require `delete` on `pods`. This is an anti-pattern:
+CronJobs that delete/restart pods require `delete` on `pods`. This is an anti-pattern:
 
 - **Risk:** If the CronJob SA is compromised, an attacker can delete any pod in the namespace
 - **Root cause:** Unhealthy pods that do not self-heal via liveness probes
 - **Remediation:** Fix the liveness probe and restart policy so pods self-recover — eliminate the need for the CronJob entirely
 - **If CronJob must exist:** Scope the SA to a Role that allows `delete` only on pods with a specific label selector
 
-### FOI Context
-
-foi-requests (28 RoleBindings), foi-flow (29 RoleBindings), foi-docreviewer (23 RoleBindings). High counts are typical of multi-service deployments but always audit for:
+Multi-service deployments typically accumulate 20–30 RoleBindings per namespace. High counts are expected but always audit for:
 - Any `cluster-admin` bindings
 - SAs shared across multiple workloads
 - Pods using the `default` SA
@@ -315,17 +313,17 @@ oc get deployments,statefulsets -n <ns> -o json | \
 4. Add the image to the Trivy image-scan pipeline step
 5. For production: add Cosign signing to the CI pipeline
 
-### FOI Context: RedisInsight Risk
+### High-Risk Image + Exposure Pattern
 
-`redis/redisinsight:latest` was found in **both** foi-flow and foi-docreviewer:
+When a **DockerHub `:latest` admin UI image** (e.g. a Redis or database admin tool) is deployed with a **public Route and no authentication**, this is the worst-case combination:
 
 | Risk Factor | Detail |
 |---|---|
 | Source | DockerHub (public) |
 | Tag | `:latest` — mutable, no provenance |
 | Exposure | Public Route with no authentication |
-| Data access | Redis admin UI — full read/write access to Redis data streams |
-| Classification | Redis streams carry Protected B FOI request data |
+| Data access | Admin UI — full read/write access to data store |
+| Classification | Data store may carry Protected B personal information |
 
 This is the worst-case combination: **public image + mutable tag + public admin UI + access to Protected B data**. Immediate remediation: remove the public Route, mirror to Artifactory, pin to SHA.
 
@@ -343,8 +341,8 @@ confirmed_facts:
   - "Trivy: exit-code 1 on CRITICAL/HIGH blocks the build step"
   - "Vault Agent Injector and External Secrets Operator both supported on Emerald"
   - "AllowPrivilegeEscalation: false enforced by Emerald cluster admission webhook"
-  - "2026-06-05: [FOI-analysis] RedisInsight deployed from DockerHub :latest with public route in 2/3 apps — mirror to Artifactory + remove public route as immediate remediation"
-  - "2026-06-05: [FOI-analysis] 28-29 RoleBindings per namespace is typical for multi-service deployments but always audit for cluster-admin bindings and shared ServiceAccounts"
+  - "2026-06-05: [multi-app-engagement] Admin UI images from DockerHub :latest with public routes found in multiple namespaces — mirror to Artifactory + remove public route as immediate remediation"
+  - "2026-06-05: [multi-app-engagement] 20-30 RoleBindings per namespace is typical for multi-service deployments but always audit for cluster-admin bindings and shared ServiceAccounts"
 common_pitfalls:
   - "FromSqlRaw does NOT parameterise — use FromSqlInterpolated for any raw SQL"
   - "Silent renew iframe fails if third-party cookies are blocked (Safari ITP) — use refresh_token grant instead"

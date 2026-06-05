@@ -221,8 +221,9 @@ Systems handling personal information (Protected B) must not write PII to logs. 
 - Email addresses
 - IP addresses (context-dependent — usually PII for Protected B systems)
 - FOI request content (subject matter, request description, requester details)
+- Other program-area-specific sensitive fields (configmap keys, request payloads, document content)
 
-### Python Checklist (foi-flow, foi-docreviewer Python services)
+### Python Checklist
 
 - [ ] No `logging.debug(request.json())` or `logging.info(vars(model))` — these dump full objects
 - [ ] No `f"Processing request for {user.name}"` — use opaque user ID only (e.g. `user.id`)
@@ -231,14 +232,14 @@ Systems handling personal information (Protected B) must not write PII to logs. 
 - [ ] SQLAlchemy: confirm `LOG_SQLALCHEMY=ERROR` (not `DEBUG` — DEBUG logs full queries with bound parameter values)
 - [ ] Structured log format (JSON output) confirmed — verify with `LOG_FORMAT=json` or equivalent env var
 
-### Go Checklist (foi-docreviewer Go services)
+### Go Checklist
 
 - [ ] No `log.Printf("%+v", document)` on full document structs — `%+v` dumps all fields including content
 - [ ] Use structured logging (`slog` or `zap`) with an explicit field allowlist
 - [ ] Never log document content (raw bytes, extracted text, OCR output)
 - [ ] Confirm log output is JSON-formatted (structured) not plain text
 
-### Node.js Checklist (foi-requests)
+### Node.js Checklist
 
 - [ ] No `console.log(req.body)` in middleware or request handlers
 - [ ] No `JSON.stringify(user)` in log statements
@@ -274,7 +275,7 @@ confirmed_facts:
   - "EF Core SQL logging at Information level may expose query parameters — use Warning"
   - "OpenTelemetry AddEntityFrameworkCoreInstrumentation requires EFCore instrumentation package"
   - "Health check at /api/health is used by OpenShift liveness probe; /api/health/details for readiness"
-  - "2026-06-05: [FOI-analysis] foi-docreviewer Python services use LOG_SQLALCHEMY=ERROR (correct) but structured log format unconfirmed — validate JSON output in all Python/Go services"
+  - "2026-06-05: [multi-app-engagement] Python services using LOG_SQLALCHEMY=ERROR is correct but structured log format must be confirmed — validate JSON output in all Python/Go services"
 common_pitfalls:
   - "Never log PII — user emails, names, or identifying numbers in structured properties"
   - "Metrics.CreateCounter must be static — creating per-request instances causes memory leaks"
