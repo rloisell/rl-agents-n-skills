@@ -224,7 +224,7 @@ Produce `report/<program-area>-executive-summary-v1.md` with a RAG (Red/Amber/Gr
 
 ---
 
-## BC_GOV_FOI_ORCHESTRATOR_KNOWLEDGE
+## BC_GOV_MULTI_APP_ANALYST_KNOWLEDGE
 
 <!-- agent-evolution appends discoveries here -->
 <!-- Format: - YYYY-MM-DD: [engagement] <imperative statement> -->
