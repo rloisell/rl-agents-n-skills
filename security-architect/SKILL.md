@@ -235,6 +235,102 @@ public IActionResult BackchannelLogout([FromForm] string logout_token)
 
 ---
 
+## RBAC Least-Privilege Audit
+
+### Audit Command Sequence
+
+```bash
+# List all RoleBindings and their subjects in a namespace
+oc get rolebindings -n <ns> -o json | jq '.items[] | {name: .metadata.name, role: .roleRef.name, subjects: [.subjects[]? | {kind, name}]}'
+
+# Find ServiceAccounts with cluster-level roles
+oc get clusterrolebindings -o json | jq '.items[] | select(.subjects[]?.namespace == "<ns>") | {name: .metadata.name, role: .roleRef.name}'
+
+# Find pods not using a dedicated ServiceAccount (using default)
+oc get pods -n <ns> -o json | jq '.items[] | select(.spec.serviceAccountName == "default" or .spec.serviceAccountName == null) | .metadata.name'
+```
+
+### Risk Tiers
+
+| Binding | Risk | Action |
+|---|---|---|
+| `cluster-admin` to any namespace SA | 🔴 CRITICAL | Remove immediately; escalate |
+| `edit` on a SA running an internet-facing pod | 🔴 HIGH | Downscope to minimum required verbs |
+| Multiple workloads sharing one SA | 🟡 MEDIUM | Blast radius on compromise — create dedicated SAs |
+| `default` SA used by a pod | 🟡 MEDIUM | No least-privilege — create a dedicated SA |
+| Dedicated SA per workload, `view` or custom role | 🟢 COMPLIANT | |
+
+### CronJob RBAC Anti-Pattern
+
+CronJobs that delete/restart pods (e.g. `restartpods` in foi-flow) require `delete` on `pods`. This is an anti-pattern:
+
+- **Risk:** If the CronJob SA is compromised, an attacker can delete any pod in the namespace
+- **Root cause:** Unhealthy pods that do not self-heal via liveness probes
+- **Remediation:** Fix the liveness probe and restart policy so pods self-recover — eliminate the need for the CronJob entirely
+- **If CronJob must exist:** Scope the SA to a Role that allows `delete` only on pods with a specific label selector
+
+### FOI Context
+
+foi-requests (28 RoleBindings), foi-flow (29 RoleBindings), foi-docreviewer (23 RoleBindings). High counts are typical of multi-service deployments but always audit for:
+- Any `cluster-admin` bindings
+- SAs shared across multiple workloads
+- Pods using the `default` SA
+- CronJob SAs with elevated pod permissions
+
+---
+
+## Image Provenance Checklist
+
+### Supply Chain Risk Tiers
+
+| Image Source | Risk | Action |
+|---|---|---|
+| Public DockerHub `:latest` | 🔴 CRITICAL | No provenance, mutable tag — mirror to Artifactory immediately |
+| Public DockerHub SHA-pinned | 🔴 HIGH | No BC Gov vulnerability scanning, not mirrored — remediate |
+| Internal registry mutable tag (`:dev`, `:main`) | 🟡 MEDIUM | Reproducibility risk — pin to SHA in non-dev environments |
+| Internal registry SHA-pinned | 🟢 COMPLIANT | |
+| Internal registry SHA-pinned + Trivy-scanned + Cosign-signed | 🟢 IDEAL | |
+
+### Audit Command
+
+```bash
+# Find all images NOT sourced from the internal OpenShift registry
+oc get deployments,statefulsets -n <ns> -o json | \
+  jq '.items[].spec.template.spec.containers[].image' | \
+  grep -v 'image-registry.openshift-image-registry.svc'
+```
+
+Also check `initContainers`:
+```bash
+oc get deployments,statefulsets -n <ns> -o json | \
+  jq '.items[].spec.template.spec.initContainers[]?.image' | \
+  grep -v 'image-registry.openshift-image-registry.svc'
+```
+
+### Remediation Steps
+
+1. Mirror the image to Artifactory (`docker pull → docker tag → docker push <artifactory>/...`)
+2. Update the deployment to reference the Artifactory image ref
+3. Pin to a specific SHA digest: `image: artifacts.developer.gov.bc.ca/my-repo/redis/redisinsight@sha256:<digest>`
+4. Add the image to the Trivy image-scan pipeline step
+5. For production: add Cosign signing to the CI pipeline
+
+### FOI Context: RedisInsight Risk
+
+`redis/redisinsight:latest` was found in **both** foi-flow and foi-docreviewer:
+
+| Risk Factor | Detail |
+|---|---|
+| Source | DockerHub (public) |
+| Tag | `:latest` — mutable, no provenance |
+| Exposure | Public Route with no authentication |
+| Data access | Redis admin UI — full read/write access to Redis data streams |
+| Classification | Redis streams carry Protected B FOI request data |
+
+This is the worst-case combination: **public image + mutable tag + public admin UI + access to Protected B data**. Immediate remediation: remove the public Route, mirror to Artifactory, pin to SHA.
+
+---
+
 ## SECURITY_KNOWLEDGE
 
 ```yaml
@@ -247,6 +343,8 @@ confirmed_facts:
   - "Trivy: exit-code 1 on CRITICAL/HIGH blocks the build step"
   - "Vault Agent Injector and External Secrets Operator both supported on Emerald"
   - "AllowPrivilegeEscalation: false enforced by Emerald cluster admission webhook"
+  - "2026-06-05: [FOI-analysis] RedisInsight deployed from DockerHub :latest with public route in 2/3 apps — mirror to Artifactory + remove public route as immediate remediation"
+  - "2026-06-05: [FOI-analysis] 28-29 RoleBindings per namespace is typical for multi-service deployments but always audit for cluster-admin bindings and shared ServiceAccounts"
 common_pitfalls:
   - "FromSqlRaw does NOT parameterise — use FromSqlInterpolated for any raw SQL"
   - "Silent renew iframe fails if third-party cookies are blocked (Safari ITP) — use refresh_token grant instead"

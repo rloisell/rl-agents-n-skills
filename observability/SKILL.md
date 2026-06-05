@@ -209,6 +209,62 @@ builder.Services.AddOpenTelemetry()
 
 ---
 
+## PII-in-Logs Validation Checklist
+
+Systems handling personal information (Protected B) must not write PII to logs. FOIPPA and the Privacy Act treat PII in application logs as a disclosure risk — logs are often retained longer than business records and may be accessed by ops staff without data steward approval.
+
+### Common PII Categories to Check
+
+- Full names, addresses, dates of birth
+- SIN, health card numbers, driver's licence numbers
+- BCeID / IDIR usernames (these are identifiers linked to real people)
+- Email addresses
+- IP addresses (context-dependent — usually PII for Protected B systems)
+- FOI request content (subject matter, request description, requester details)
+
+### Python Checklist (foi-flow, foi-docreviewer Python services)
+
+- [ ] No `logging.debug(request.json())` or `logging.info(vars(model))` — these dump full objects
+- [ ] No `f"Processing request for {user.name}"` — use opaque user ID only (e.g. `user.id`)
+- [ ] No full request body logging at `INFO` or `DEBUG` level
+- [ ] Flask: never log `request.data` or `request.form` at `INFO`
+- [ ] SQLAlchemy: confirm `LOG_SQLALCHEMY=ERROR` (not `DEBUG` — DEBUG logs full queries with bound parameter values)
+- [ ] Structured log format (JSON output) confirmed — verify with `LOG_FORMAT=json` or equivalent env var
+
+### Go Checklist (foi-docreviewer Go services)
+
+- [ ] No `log.Printf("%+v", document)` on full document structs — `%+v` dumps all fields including content
+- [ ] Use structured logging (`slog` or `zap`) with an explicit field allowlist
+- [ ] Never log document content (raw bytes, extracted text, OCR output)
+- [ ] Confirm log output is JSON-formatted (structured) not plain text
+
+### Node.js Checklist (foi-requests)
+
+- [ ] No `console.log(req.body)` in middleware or request handlers
+- [ ] No `JSON.stringify(user)` in log statements
+- [ ] Morgan (HTTP logger): use `:method :url :status :res[content-length] - :response-time ms` format only — no body logging
+- [ ] No `winston.debug(JSON.stringify(requestPayload))` patterns
+
+### Audit Command — Scan for PII-Risk Log Statements
+
+```bash
+# Python — flag logging calls that reference request bodies, user objects, or email/name fields
+grep -rn "logging\.\(info\|debug\|warning\)(.*\(request\|body\|user\|email\|name\))" \
+  --include="*.py" .
+
+# Go — flag log calls that reference document, user, email, or body variables
+grep -rn "log\.\(Print\|Info\|Debug\)(.*\(document\|user\|email\|body\))" \
+  --include="*.go" .
+
+# Node.js — flag console.log or logger calls referencing req.body or req.user
+grep -rn "console\.log\|logger\.\(info\|debug\)(.*req\.\(body\|user\))" \
+  --include="*.js" --include="*.ts" .
+```
+
+Review all matches manually — not all are violations, but each needs a justification.
+
+---
+
 ## OBSERVABILITY_KNOWLEDGE
 
 ```yaml
@@ -218,6 +274,7 @@ confirmed_facts:
   - "EF Core SQL logging at Information level may expose query parameters — use Warning"
   - "OpenTelemetry AddEntityFrameworkCoreInstrumentation requires EFCore instrumentation package"
   - "Health check at /api/health is used by OpenShift liveness probe; /api/health/details for readiness"
+  - "2026-06-05: [FOI-analysis] foi-docreviewer Python services use LOG_SQLALCHEMY=ERROR (correct) but structured log format unconfirmed — validate JSON output in all Python/Go services"
 common_pitfalls:
   - "Never log PII — user emails, names, or identifying numbers in structured properties"
   - "Metrics.CreateCounter must be static — creating per-request instances causes memory leaks"
