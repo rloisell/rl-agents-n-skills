@@ -22,7 +22,7 @@ This repo serves two toolchains from a single source:
 
 ---
 
-## Agents (20) — VS Code SKILL.md + Claude Code subagent
+## Agents (21) — VS Code SKILL.md + Claude Code subagent
 
 Each agent has two artefacts: a VS Code `SKILL.md` at the repo root (auto-discovered when
 this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `agents/`.
@@ -49,6 +49,7 @@ this repo is a submodule at `.github/agents/`) and a Claude Code subagent in `ag
 | `bc-gov-network-architect/` | BC Gov workload connectivity, NetworkPolicy authoring, SDN zone classification, cross-zone failure diagnosis |
 | `ocp-migration-analyst/` | Full OCP migration analysis pipeline — namespace discovery, gap analysis, network mapping, report generation |
 | `ocp-resilience-analyst/` | OpenShift namespace resilience posture — R01–R15 grading, PDB/HPA/replica analysis, prioritised remediation |
+| `bc-gov-deployment-cicd-analyst/` | Generic deployment and CI/CD governance assessment workflow — evidence mapping, control matrix, roadmap, executive packaging |
 
 ---
 
@@ -175,6 +176,7 @@ which is the org-level shared skills library used across BC Gov projects.
 | `bc-gov-rest-api/` | REST API Development Standard — 8 mandated minimums for public APIs |
 | `ocp-migration-analyst/` | OCP migration analysis pipeline |
 | `ocp-resilience-analyst/` | Namespace resilience posture reporting |
+| `bc-gov-deployment-cicd-analyst/` | Generic deployment and CI/CD analyst workflow for SaaS, OpenShift, and hybrid delivery models |
 
 **Skills that stay in this repo only** (personal workflow, project-specific):
 `session-workflow`, `agent-evolution`, `spec-kitty`, `spec-kit`, `ef-core`,
