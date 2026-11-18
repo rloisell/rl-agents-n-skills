@@ -1,0 +1,5 @@
+name: app-engineering
+version: 0.1.0
+description: "BC Gov .NET 10, EF Core, React, Design System, DIAM/OIDC IAM, observability, and local development."
+author: Your Name
+license: MIT
