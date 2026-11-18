@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "We have a Protected B database in OpenShift Emerald—which SDN zone and DataClass label should it use, and how should the API reach it?",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Write the two-policy NetworkPolicy YAML for a frontend pod talking to a backend API on port 8080, plus DNS egress.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Why is my pod in Emerald failing all outbound connections to the SDN Forward Proxy even though I added an Ingress policy?",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Audit an existing set of OpenShift namespaces and render a 6-section Markdown and PDF network posture report.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Set up OIDC PKCE authentication with oidc-client-ts in our React Vite frontend.",
+    "should_trigger": false
+  }
+]

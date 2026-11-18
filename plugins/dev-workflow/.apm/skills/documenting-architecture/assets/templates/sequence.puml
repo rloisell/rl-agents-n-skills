@@ -1,0 +1,30 @@
+@startuml
+title Feature Name — Key Operation Sequence
+
+actor User
+participant Frontend
+participant "API :Controller" as API
+participant "Service" as Svc
+database "MariaDB" as DB
+
+User -> Frontend : action
+activate Frontend
+
+Frontend -> API : POST /api/resource (dto)
+activate API
+
+API -> Svc : DoSomethingAsync(dto)
+activate Svc
+
+Svc -> DB : INSERT / SELECT
+DB --> Svc : result
+Svc --> API : dto
+deactivate Svc
+
+API --> Frontend : 200 OK { ... }
+deactivate API
+
+Frontend --> User : updated UI
+deactivate Frontend
+
+@enduml

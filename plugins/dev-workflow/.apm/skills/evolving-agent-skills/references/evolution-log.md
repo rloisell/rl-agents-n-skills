@@ -1,0 +1,49 @@
+# Agent Evolution Log
+
+Records all changes to the agent skill library. Maintained by `agent-evolution`
+at session end.
+
+## Format
+
+```markdown
+## YYYY-MM-DD — Session: <branch or feature name>
+
+**Skills updated:** <skill1, skill2, ...>
+**Shared skills created/updated:** <or "none">
+**Agents split:** <or "none">
+**Summary:** <1-2 sentences>
+```
+
+---
+
+## 2026-04-22 — Session: migration-analysis-versioning
+
+**Skills updated:** none
+**Shared skills created/updated:** doc-versioning/SKILL.md (new)
+**Agents split:** none
+**Summary:** Discovered copy-first versioning failure mode while producing a
+migration analysis v6 — `v5.md` was edited in-place before being copied,
+silently overwriting the archival source. Resolved by restoring the v1-v6 chain,
+re-rendering missing PDFs, and encoding copy-first, header consistency,
+un-numbered file classification, PDF parity, and chain integrity rules.
+
+---
+
+## 2026-04-22 — Session: agent-evolution-hermes-improvements
+
+**Skills updated:** CLAUDE.md, agent-evolution/SKILL.md, session-workflow/SKILL.md, agents/agent-evolution.md, README.md
+**Shared skills created/updated:** bc-gov-network-architect/SKILL.md (new), sysadmin/SKILL.md (new)
+**Agents split:** none
+**Summary:** Applied Hermes-inspired improvements to `agent-evolution` (mid-session
+retain nudges, `[CONTEXT: type]` tags, evolution-log in Step 0 recall, and push
+verification in shutdown).
+
+---
+
+## 2026-02-27 — Session: agent-skills-migration
+
+**Skills updated:** all
+**Shared skills created/updated:** ai-session-files, git-conventions, bc-gov-emerald, containerfile-standards (all new)
+**Agents split:** diagram-generation (`plantuml-templates.md`), bc-gov-devops (`networkpolicy-patterns.md`)
+**Summary:** Migrated agent team from flat `.agent.md` format to `SKILL.md`
+directory format, extracted shared skills, and created `agent-evolution`.

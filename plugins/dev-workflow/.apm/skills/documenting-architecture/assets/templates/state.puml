@@ -1,0 +1,27 @@
+@startuml
+title Entity Lifecycle — <EntityName>
+
+[*] --> Draft : created
+
+Draft --> PendingReview : submit()
+Draft --> Cancelled : cancel()
+
+PendingReview --> Active : approve()
+PendingReview --> Draft : requestChanges()
+PendingReview --> Cancelled : cancel()
+
+Active --> Suspended : suspend()
+Active --> Completed : complete()
+
+Suspended --> Active : reinstate()
+Suspended --> Cancelled : cancel()
+
+Completed --> [*]
+Cancelled --> [*]
+
+note right of PendingReview
+  Notifications sent to
+  assignee on entry
+end note
+
+@enduml

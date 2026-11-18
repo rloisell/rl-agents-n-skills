@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Start the development session: read AI/nextSteps.md, check git status and Dependabot PRs, and orient on the branch.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Wrap up the session: update AI/WORKLOG.md, AI/CHANGES.csv, AI/COMMANDS.sh, AI/COMMIT_INFO.txt, and verify everything is pushed.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "What are the required formats for AI/WORKLOG.md and AI/CHANGES.csv in this repository?",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Configure a GitHub Ruleset requiring status checks on main and squash-merge PR #42.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Draft a spec.md and plan.md using Spec-Kit before writing any implementation code.",
+    "should_trigger": false
+  }
+]

@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0.0",
+  "graph_id": "apm-domain-refactor",
+  "version": "1.0.0",
+  "caller": {
+    "repo": "rl-agents-n-skills",
+    "goal": "Domain analysis, skill consolidation, APM multi-plugin restructuring, and root docs (AGENTS.md, architecture.md, install.md)"
+  },
+  "budget": {
+    "token_ceiling_total": 500000,
+    "max_parallel_concurrency": 5,
+    "max_retries_per_node": 1
+  },
+  "nodes": [
+    {
+      "id": "approval_gate",
+      "role": "approval",
+      "type": "verifier_gate",
+      "tier": "deterministic_script",
+      "command_or_eval": "python3 -c \"print('Plan approved by user')\"",
+      "verifier_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "input_bindings": [],
+      "output_contract": { "type": "object" },
+      "depends_on": [],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "analyze_cluster_workflow_dev",
+      "role": "worker",
+      "type": "parallel_read",
+      "tier": "fast_engine",
+      "command_or_eval": "echo 'Subagent: analyze session-workflow, github-workflow, git-conventions, ai-session-files, doc-versioning, diagram-generation, spec-kit, spec-kitty, agent-evolution'",
+      "input_bindings": [],
+      "output_contract": { "type": "object" },
+      "depends_on": ["approval_gate"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "analyze_cluster_dotnet_app",
+      "role": "worker",
+      "type": "parallel_read",
+      "tier": "fast_engine",
+      "command_or_eval": "echo 'Subagent: analyze ef-core, local-dev, observability, bc-gov-rest-api, bc-gov-design-system, bc-gov-iam, data-flow-lineage'",
+      "input_bindings": [],
+      "output_contract": { "type": "object" },
+      "depends_on": ["approval_gate"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "analyze_cluster_devops_ocp",
+      "role": "worker",
+      "type": "parallel_read",
+      "tier": "fast_engine",
+      "command_or_eval": "echo 'Subagent: analyze ci-cd-pipeline, bc-gov-devops, bc-gov-emerald, containerfile-standards, bc-gov-deployment-cicd-analyst, ocp-migration-analyst, bc-migrate-service, ocp-resilience-analyst, bc-resilience-service, bc-gov-multi-app-analyst'",
+      "input_bindings": [],
+      "output_contract": { "type": "object" },
+      "depends_on": ["approval_gate"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "analyze_cluster_security_net",
+      "role": "worker",
+      "type": "parallel_read",
+      "tier": "fast_engine",
+      "command_or_eval": "echo 'Subagent: analyze security-architect, vault-secrets, bc-gov-database-security, zero-trust-architect, network-security, network-architect, bc-gov-network-architect, bc-gov-networkpolicy, bc-gov-sdn-zones, container-network-analyst'",
+      "input_bindings": [],
+      "output_contract": { "type": "object" },
+      "depends_on": ["approval_gate"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "analyze_cluster_infra_sysadmin",
+      "role": "worker",
+      "type": "parallel_read",
+      "tier": "fast_engine",
+      "command_or_eval": "echo 'Subagent: analyze sysadmin, linux-rhel, solaris, dns-tools, cisco-ios'",
+      "input_bindings": [],
+      "output_contract": { "type": "object" },
+      "depends_on": ["approval_gate"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "barrier_domain_consolidation",
+      "role": "barrier",
+      "type": "sync_barrier",
+      "tier": "frontier_engine",
+      "command_or_eval": "echo 'Synthesize 5 cluster reports into domain taxonomy, consolidated gerund skill map, and subagent retention list'",
+      "input_bindings": [
+        "analyze_cluster_workflow_dev",
+        "analyze_cluster_dotnet_app",
+        "analyze_cluster_devops_ocp",
+        "analyze_cluster_security_net",
+        "analyze_cluster_infra_sysadmin"
+      ],
+      "output_contract": { "type": "object" },
+      "depends_on": [
+        "analyze_cluster_workflow_dev",
+        "analyze_cluster_dotnet_app",
+        "analyze_cluster_devops_ocp",
+        "analyze_cluster_security_net",
+        "analyze_cluster_infra_sysadmin"
+      ],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "setup_worktree_and_scaffolds",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "deterministic_script",
+      "command_or_eval": "echo 'Create isolated git worktree and scaffold plugins/<domain>/ via authoring-plugins'",
+      "mutation_targets": ["plugins/", "apm.yml"],
+      "reversible": true,
+      "input_bindings": ["barrier_domain_consolidation"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["barrier_domain_consolidation"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "build_domain_plugins",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "frontier_engine",
+      "command_or_eval": "echo 'Dispatch domain builder subagents to author consolidated skills (<=100L SKILL.md + references/) and .apm/agents/ in plugins/<domain>/'",
+      "mutation_targets": ["plugins/"],
+      "reversible": true,
+      "input_bindings": ["setup_worktree_and_scaffolds"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["setup_worktree_and_scaffolds"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "cutover_legacy_and_root_docs",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "frontier_engine",
+      "command_or_eval": "echo 'Remove legacy root skill/agent dirs, write root apm.yml, AGENTS.md, CLAUDE.md bridge, architecture.md, install.md, update README.md'",
+      "mutation_targets": ["AGENTS.md", "CLAUDE.md", "architecture.md", "install.md", "README.md", "apm.yml"],
+      "reversible": true,
+      "input_bindings": ["build_domain_plugins"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["build_domain_plugins"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "verify_apm_and_skills",
+      "role": "verifier",
+      "type": "verifier_gate",
+      "tier": "deterministic_script",
+      "command_or_eval": "echo 'Run audit_plugin_structure.py, audit_skill.py --mode source, audit_agents_md.py, and validate_apm_package.py'",
+      "verifier_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "input_bindings": ["cutover_legacy_and_root_docs"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["cutover_legacy_and_root_docs"],
+      "failure_escalation": "rollback_and_halt"
+    }
+  ]
+}

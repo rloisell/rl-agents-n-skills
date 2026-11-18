@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Build a BC Gov React Vite frontend using @bcgov/design-system-react-components, self-hosted BC Sans, and design tokens.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Configure oidc-client-ts with PKCE S256 for Common SSO Keycloak and validate the JWT bearer token in our .NET API.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Replace our custom header and footer markup with the official BC Gov Header and Footer components and fix FooterLinks.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Set up EF Core migrations with Pomelo MariaDB for our .NET 10 backend.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Configure Serilog CompactJsonFormatter and Prometheus /metrics on OpenShift.",
+    "should_trigger": false
+  }
+]

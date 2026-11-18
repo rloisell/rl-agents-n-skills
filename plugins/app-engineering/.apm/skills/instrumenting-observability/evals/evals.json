@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Configure Serilog with CompactJsonFormatter in Program.cs and suppress EF Core SQL parameter logging in production.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Add /api/health, /api/health/details, and prometheus-net /metrics with OpenTelemetry tracing to our .NET API.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Audit our Python, Go, and .NET service logs to make sure no PII or bearer tokens are being written.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Create a new EF Core migration and preview the idempotent SQL script.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Configure Keycloak backchannel logout and PKCE in React.",
+    "should_trigger": false
+  }
+]

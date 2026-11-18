@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Configure External Secrets Operator SecretStore and ExternalSecret to sync secrets from HashiCorp Vault into OpenShift.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Review our .NET 10 and React workload against OWASP Top 10, OIDC PKCE, and the 23 BC Gov Database Security Standard controls.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Audit our OpenShift namespaces for cluster-admin ServiceAccount bindings, pods using the default SA, and :latest images.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Classify OpenShift NetworkPolicies and render a 6-section PDF network posture report.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Configure HSRP and QoS DSCP markings on Cisco Catalyst distribution switches.",
+    "should_trigger": false
+  }
+]
