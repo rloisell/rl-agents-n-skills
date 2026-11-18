@@ -9,6 +9,7 @@ Domain-organized [APM](https://github.com/microsoft/apm)-native collection of re
 - [architecture.md](architecture.md) — Future-state APM topology, plugins, skills, references, and subagents
 - [install.md](install.md) — APM installation, target harnesses, update, and troubleshooting guide
 - [migration-map.md](migration-map.md) — Transition guide: legacy 41 skills & 24 agents → new plugin paths
+- [docs/SKILL-STRUCTURE-STANDARD.md](docs/SKILL-STRUCTURE-STANDARD.md) — Agent Skills Open Standard & `authoring-skills` contract
 
 ## Domain Plugins (`plugins/`)
 

@@ -41,9 +41,11 @@ rl-agents-n-skills/
         └── .apm/
             ├── skills/
             │   └── <gerund-skill>/
-            │       ├── SKILL.md   # <= 100-line router
-            │       └── references/
-            └── agents/            # Optional justified subagents (*.md)
+            │       ├── SKILL.md           # <= 100-line router
+            │       ├── references/        # Deep guides & acceptance-criteria.md
+            │       ├── assets/templates/  # Optional standalone templates
+            │       └── evals/evals.json   # Routing verification cases
+            └── agents/                    # Optional justified subagents (*.md)
 ```
 
 ---
@@ -64,10 +66,12 @@ Software engineering lifecycle, GitHub workflows, spec-driven development, archi
   - `driving-spec-development` — Spec-first development gates before implementation.
     - `references/spec-kit.md` — GitHub Spec-Kit (`specify-cli`) phases, extensions, and presets.
     - `references/spec-kitty.md` — Spec-Kitty work-package (`WP`) lifecycle, validation, and BC Gov §1 requirements mapping.
+    - `assets/templates/{spec,plan,work-package}.md.j2` — Jinja templates for SDD specs, plans, and work packages.
   - `documenting-architecture` — Architecture/UML diagramming, CLI exports, and copy-first document versioning.
     - `references/ten-diagram-suite.md` — Canonical 10-diagram production suite.
-    - `references/plantuml-templates.md` — Sequence, Class, State, C4 Context, and Mermaid skeletons.
+    - `references/plantuml-templates.md` — Index of diagram template skeletons.
     - `references/doc-versioning.md` — Copy-first versioning rules and `.md`/`.pdf` parity checks.
+    - `assets/templates/{sequence,class,state,c4-context}.puml`, `architecture.{mmd,drawio}` — Standalone PlantUML, Mermaid, and draw.io XML templates.
   - `evolving-agent-skills` — Pre-session knowledge recall and post-session skill promotion/auditing.
     - `references/evolution-log.md` — Cross-session evolution log.
     - `references/knowledge-and-promotion.md` — `CAUSE`/`FIX` capture rules, promotion thresholds, and health checks.
@@ -112,6 +116,7 @@ BC Gov Emerald OpenShift deployment, Option 2 CI/CD, platform migration & resili
     - `references/emerald-platform-mechanics.md` — AVI InfraSettings, `DataClass`, `PriorityClass`, `StorageClass`, split-DNS.
     - `references/ag-helm-and-policy-gate.md` — `ag-helm-templates`, Datree/Polaris/kube-linter/Conftest gate, ArgoCD CRDs.
     - `references/networkpolicy-patterns.md` — `ag-template.networkpolicy` intent API and raw NetworkPolicy patterns.
+    - `assets/templates/Containerfile.{dotnet,react}` — Non-root port-8080 .NET 10 and React/Nginx Containerfile templates.
   - `analyzing-ocp-platforms` — Single-app migration readiness, resilience posture (`R01`–`R15`), and multi-app program assessments.
     - `references/oc-collection-and-toolkits.md` — Phase 1 `oc` collection and analysis toolkit usage.
     - `references/migration-gaps-g1-g12.md` — Migration gap criteria (`G1`–`G12`) and remediation tasks.
@@ -134,6 +139,7 @@ Application security, Vault secrets, database security, data lineage/STRA/PIA, Z
     - `references/vault-secrets.md` — Vault KV v2 paths, `vault-action@v3`, ESO CRDs, and Pod Injector annotations.
     - `references/database-security-standard.md` — 23 mandatory BC Gov Database Security Standard controls.
     - `references/ocp-rbac-and-image-audit.md` — `oc`/`jq` RBAC least-privilege, image provenance, and STRA/PIA checks.
+    - `assets/templates/{secretstore,externalsecret}.yaml` — External Secrets Operator (ESO) Vault CRD templates.
   - `mapping-data-lineage` — ISCF classification, cross-boundary data flow ledgers, FOIPPA s.30.1 residency, and PIA triggers.
     - `references/iscf-and-risk-matrix.md` — ISCF data classification and cross-boundary risk matrix.
     - `references/foippa-residency-and-pia.md` — External AI/OCR residency rules, MISA DPA, and PIA trigger checklist.
@@ -146,6 +152,7 @@ Application security, Vault secrets, database security, data lineage/STRA/PIA, Z
   - `designing-bc-gov-networks` — 6-step BC Gov OCP connectivity reasoning, SDN zone classification, and NetworkPolicy authoring.
     - `references/sdn-zones-and-imit-standards.md` — ISCF→SDN→IMIT 6.13 mapping, guardrails, Forward Proxy, Public VIPs, 3PG.
     - `references/networkpolicy-patterns.md` — Two-policy rule, DNS egress, `ag-helm` intent API, Conftest rules, `oc` debug.
+    - `assets/templates/{allow-egress-dns,allow-frontend-to-api,allow-ingress-from-router,allow-egress-external-cidr,allow-cross-namespace}.yaml` — Standalone NetworkPolicy YAML templates.
   - `auditing-ocp-network-posture` — 4-phase live OCP container network posture audit and PDF report pipeline.
     - `references/collection-commands.md` — Phase 1 `oc`/`jq` collection for NPs, Services, Routes, and egress URLs.
     - `references/gap-analysis-rubrics.md` — Cross-NS NP risk matrix, stale NP (`>365d`) detection, Route TLS/Admin UI checks.
