@@ -43,3 +43,4 @@ Drives application security architecture, secrets management, database security 
 - [vault-secrets.md](references/vault-secrets.md) — Vault path conventions, ESO `SecretStore`/`ExternalSecret` CRDs, Vault Agent Injector annotations, shape-only Helm Secrets, and GitHub Actions integration.
 - [database-security-standard.md](references/database-security-standard.md) — BC Gov Database Security Standard (23 mandatory controls), Emerald/EF Core application notes, and companion IMIT standards.
 - [ocp-rbac-and-image-audit.md](references/ocp-rbac-and-image-audit.md) — OpenShift RBAC least-privilege audit commands, CronJob anti-pattern, image provenance risk tiers, and remediation steps.
+- Templates: [secretstore.yaml](assets/templates/secretstore.yaml) • [externalsecret.yaml](assets/templates/externalsecret.yaml)

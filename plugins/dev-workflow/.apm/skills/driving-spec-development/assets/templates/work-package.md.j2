@@ -1,0 +1,28 @@
+---
+work_package_id: "{{ work_package_id | default('WP01') }}"
+title: "{{ title | default('Short description (imperative, < 10 words)') }}"
+lane: "{{ lane | default('planned') }}"
+subtasks:
+  - "{{ work_package_id | default('WP01') }}"
+phase: "{{ phase | default('Phase 1 — Backend') }}"
+assignee: "{{ assignee | default('') }}"
+agent: "{{ agent | default('') }}"
+shell_pid: ""
+review_status: ""
+reviewed_by: ""
+history:
+  - timestamp: "{{ timestamp | default('YYYY-MM-DDTHH:MM:SSZ') }}"
+    lane: "planned"
+    agent: "system"
+    action: "Created for feature spec"
+---
+
+## Work Package: {{ work_package_id | default('WP01') }} — {{ title | default('Title') }}
+
+### Goal
+
+### Deliverables
+
+- [ ] `src/<Project>.Api/Entities/<Entity>.cs`
+
+### Acceptance Criteria

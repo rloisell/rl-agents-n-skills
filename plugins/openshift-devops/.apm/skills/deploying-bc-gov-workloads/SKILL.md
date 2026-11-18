@@ -64,3 +64,4 @@ oc rollout status deployment/<name> -n <ns-prefix>-dev
 - [emerald-platform-mechanics.md](references/emerald-platform-mechanics.md) — AVI InfraSettings, DataClass, SCC, StorageClass, SSO, `oc` reference
 - [ag-helm-and-policy-gate.md](references/ag-helm-and-policy-gate.md) — `ag-helm-templates`, Datree/Polaris/kube-linter/Conftest gate, ArgoCD CRD
 - [networkpolicy-patterns.md](references/networkpolicy-patterns.md) — Intent-based `ag-template.networkpolicy` and raw NetworkPolicy YAML
+- Templates: [Containerfile.dotnet](assets/templates/Containerfile.dotnet) • [Containerfile.react](assets/templates/Containerfile.react)

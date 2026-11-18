@@ -1,0 +1,25 @@
+graph TB
+    subgraph "Client"
+        U[User Browser]
+    end
+    subgraph "Container Platform"
+        subgraph "Tools Namespace"
+            GH[CI Runner]
+        end
+        subgraph "DEV / TEST / PROD Namespace"
+            FE[Frontend :8080]
+            API[API :8080]
+            DB[(Database :3306)]
+        end
+    end
+    subgraph "External"
+        IDP[OIDC Provider]
+        REG[Container Registry]
+    end
+
+    U -->|HTTPS| FE
+    FE -->|REST| API
+    API -->|SQL| DB
+    FE -->|OIDC| IDP
+    GH -->|push image| REG
+    API -->|pull image| REG

@@ -54,5 +54,6 @@ ls *.md *.pdf 2>/dev/null | sed 's/\.md$//' | sed 's/\.pdf$//' | sort | uniq -c 
 ## References
 
 - [Ten-Diagram Suite](references/ten-diagram-suite.md) — unified 10-diagram suite, folder layout, VS Code extensions, and CLI export commands
-- [PlantUML Templates](references/plantuml-templates.md) — sequence, class, state, C4, and Mermaid quickview skeletons
+- [PlantUML Templates](references/plantuml-templates.md) — index of diagram template skeletons
+- [Diagram Templates](assets/templates/sequence.puml) — `.puml` (`sequence`, `class`, `state`, `c4-context`), `.mmd` (`architecture.mmd`), and `.drawio` (`architecture.drawio`) templates
 - [Document Versioning](references/doc-versioning.md) — copy-first rule, header consistency, un-numbered file classification, and PDF parity

@@ -39,3 +39,4 @@ Synthesises BC Gov SDN zone classification, IMIT standards, and OpenShift Networ
 
 - [sdn-zones-and-imit-standards.md](references/sdn-zones-and-imit-standards.md) — ISCF-to-SDN mapping, IMIT 6.13 v5 & 5.08 (3PG) controls, SDN guardrails, Forward Proxy egress, and multi-segment vs single-segment patterns.
 - [networkpolicy-patterns.md](references/networkpolicy-patterns.md) — Two-policy rule, DNS egress, same/cross-namespace YAML, `ag-helm` intent API, common ports, and debugging checklist.
+- Templates: [allow-egress-dns.yaml](assets/templates/allow-egress-dns.yaml) • [allow-frontend-to-api.yaml](assets/templates/allow-frontend-to-api.yaml) • [allow-ingress-from-router.yaml](assets/templates/allow-ingress-from-router.yaml) • [allow-egress-external-cidr.yaml](assets/templates/allow-egress-external-cidr.yaml) • [allow-cross-namespace.yaml](assets/templates/allow-cross-namespace.yaml)
