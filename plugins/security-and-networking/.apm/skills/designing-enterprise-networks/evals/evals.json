@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Design a single-vendor SASE and Zero Trust Network Access architecture with inline Policy Enforcement Points.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Write an IOS-XE IKEv2 site-to-site IPsec VPN and Zone-Based Firewall configuration with AES-256-GCM and DH Group 19.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "How should we harden L2 access switches against VLAN hopping, ARP spoofing, and rogue DHCP servers?",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Write OpenShift NetworkPolicy YAML for a pod-to-pod flow in BC Gov Emerald.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Discover external cloud endpoints in OpenShift ConfigMaps and evaluate FOIPPA s.30.1 residency.",
+    "should_trigger": false
+  }
+]

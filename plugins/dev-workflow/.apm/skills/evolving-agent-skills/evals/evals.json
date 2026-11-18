@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "We just finished our dev session; review AI/WORKLOG.md and append any causal discoveries to the relevant skill.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Scan existing skills and the evolution log for past lessons related to our current feature branch before we start.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "This pattern showed up in three separate sessions—promote it to a shared skill and log it in evolution-log.md.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Check git status, triage open Dependabot PRs, and summarize AI/nextSteps.md to start the session.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Diagnose why the GitHub Actions build-and-test workflow failed on our pull request.",
+    "should_trigger": false
+  }
+]

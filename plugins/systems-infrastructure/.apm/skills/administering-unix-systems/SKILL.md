@@ -8,7 +8,22 @@ compatibility: Solaris 9/10/11 SPARC & x86, RHEL 7/8/9, Rocky/AlmaLinux, BIND-ut
 
 Platform-spanning Unix/Linux systems administration covering Solaris (9/10/11 SPARC/x86), RHEL (7/8/9), and DNS diagnostics.
 
-## Platform Decision Table
+## Contents
+
+- [Constraints](#constraints)
+- [Quick start](#quick-start)
+- [Workflow](#workflow)
+- [Verification](#verification)
+- [References](#references)
+
+## Constraints
+
+- Label the target platform (`Solaris 9/10/11` or `RHEL 7/8/9`) at the top of any command sequence or configuration.
+- Provide both the diagnostic command and the resolution command.
+- Include inline comments explaining each probe in DTrace scripts.
+- Always pair destructive or resizing storage operations with a post-change verification command (`zpool status`, `lvs`, `df -hT`).
+
+## Quick start
 
 | Task | Solaris | RHEL / Linux |
 |---|---|---|
@@ -25,7 +40,7 @@ Platform-spanning Unix/Linux systems administration covering Solaris (9/10/11 SP
 | Boot environment | OBP (`ok` prompt) -> `grub`/kernel | GRUB2 -> kernel -> systemd |
 | Crash dump | `dumpadm` / `savecore` / `mdb` | `kdump` / `crash` |
 
-## Decision Rules
+## Workflow
 
 | Scenario | Action |
 |---|---|
@@ -41,13 +56,11 @@ Platform-spanning Unix/Linux systems administration covering Solaris (9/10/11 SP
 | SELinux blocking (RHEL) | `ausearch -m avc -ts recent` -> `audit2allow` -> `semanage` / `restorecon` |
 | DNS resolution / propagation issue | `dig +trace <name>` -> compare `dig @<auth-ns>` vs local resolver |
 
-## Output & Verification Rules
+## Verification
 
-When producing commands or configurations:
-- Label the target platform (`Solaris 9/10/11` or `RHEL 7/8/9`) at the top.
-- Provide both the diagnostic command and the resolution command.
-- For DTrace scripts, include inline comments explaining each probe.
-- For storage operations, always include a verification command (`zpool status`, `lvs`, `df -hT`) after every destructive or resizing step.
+- **Services**: Confirm `online` state via `svcs <svc>` (Solaris) or `active (running)` via `systemctl is-active <unit>` (RHEL).
+- **Storage**: Confirm pool/volume health and capacity with `zpool status -v` / `zfs list` or `lvs` / `df -hT`.
+- **Networking & DNS**: Confirm link/address state (`ipadm show-addr` / `nmcli device status`) and authoritative DNS answers (`dig +short @<auth-ns> <name>`).
 
 ## References
 

@@ -15,7 +15,7 @@ specification, technical plan, and validated task breakdown exist.
 
 ## Contents
 
-- [Constraints](#constraints) • [Tool selection](#tool-selection) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
+- [Constraints](#constraints) • [Quick start](#quick-start) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
 
 ## Constraints
 
@@ -24,7 +24,7 @@ specification, technical plan, and validated task breakdown exist.
 3. **Commit scaffolding and ignore Python cache**: commit `.specify/` or `.kittify/` alongside `.github/prompts/` and add `__pycache__/`, `*.pyc`, `*.pyo` to `.gitignore`.
 4. **BC Gov §1 compliance**: public-sector projects must map requirements, assumptions, uncertainties, approvals, and owners per [spec-kitty.md](references/spec-kitty.md#bc-gov-requirements-management-standard).
 
-## Tool selection
+## Quick start
 
 Choose one SDD toolchain per project:
 

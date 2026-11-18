@@ -14,7 +14,7 @@ Structured, evidence-based analysis for OpenShift platform migrations, workload 
 
 ## Contents
 
-- [Constraints](#constraints) • [Modes](#modes) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
+- [Constraints](#constraints) • [Quick start](#quick-start) • [Modes](#modes) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
 
 ## Constraints
 
@@ -24,6 +24,12 @@ Structured, evidence-based analysis for OpenShift platform migrations, workload 
 4. **Traceable standards**: Every G1–G12 gap, R01–R15 check, and remediation task must cite its standard ID from [standards-catalog.md](references/standards-catalog.md).
 5. **Versioned report + PDF parity**: Never overwrite prior report versions; every `v<N>.md` must have a matching `v<N>.pdf` rendered with `report-style.css`.
 6. **Coupling matrix first**: For 2+ interconnected apps, complete the coupling matrix before per-app deep-dives or migration sequencing.
+
+## Quick start
+
+1. Confirm cluster and GitHub access: `oc whoami && gh auth status`.
+2. Select an analysis mode from the table below and capture namespace YAML manifests without secret values.
+3. Offload raw `workloads.yaml`, `pdbs.yaml`, and `pods.yaml` parsing to `ocp-migration-analyst` or `ocp-resilience-analyst`.
 
 ## Modes
 

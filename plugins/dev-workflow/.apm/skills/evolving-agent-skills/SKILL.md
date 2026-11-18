@@ -14,7 +14,7 @@ Grows and maintains the agent skill library from lived session experience.
 
 ## Contents
 
-- [Constraints](#constraints) • [Pre-session recall](#pre-session-recall) • [Session-end evolution workflow](#session-end-evolution-workflow) • [Verification](#verification) • [References](#references)
+- [Constraints](#constraints) • [Quick start](#quick-start) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
 
 ## Constraints
 
@@ -23,7 +23,7 @@ Grows and maintains the agent skill library from lived session experience.
 3. **Lean `SKILL.md` discipline**: flag any `SKILL.md` exceeding 100 lines for splitting into `references/`.
 4. **Promote recurring patterns**: extract patterns appearing across 2+ skills in one session or 3+ log entries into a shared skill.
 
-## Pre-session recall
+## Quick start
 
 Before implementation begins, scan skills and the evolution log for entries
 matching the active branch or feature topic:
@@ -34,7 +34,7 @@ grep -ril "$TOPIC" .apm/skills/ --include="SKILL.md" --include="*.md"
 grep -i "$TOPIC" .apm/skills/evolving-agent-skills/references/evolution-log.md
 ```
 
-## Session-end evolution workflow
+## Workflow
 
 1. **Read session logs**: inspect `AI/WORKLOG.md`, `AI/CHANGES.csv`, and `AI/COMMANDS.sh`.
 2. **Match and append knowledge**: locate the target skill's knowledge section (or `references/*-knowledge.md`) and append concise causal entries per [knowledge-and-promotion.md](references/knowledge-and-promotion.md).

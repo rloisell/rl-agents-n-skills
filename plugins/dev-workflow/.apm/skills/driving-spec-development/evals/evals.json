@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "We are starting a new feature; initialize Spec-Kit, draft the spec and plan, and break it into tasks before coding.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Validate our Spec-Kitty work packages and check that all WP files pass spec-kitty validate-tasks --all.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Map our feature requirements to BC Gov OCIO Section 1 Requirements Management owners and assumptions.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Export our PlantUML architecture diagrams to SVG and bump the architecture report to v4.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Run the end-of-session shutdown protocol and update AI/WORKLOG.md and AI/CHANGES.csv.",
+    "should_trigger": false
+  }
+]

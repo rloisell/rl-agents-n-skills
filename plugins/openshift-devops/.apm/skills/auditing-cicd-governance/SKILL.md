@@ -14,7 +14,7 @@ Platform-agnostic, evidence-traceable governance assessment workflow for SaaS, c
 
 ## Contents
 
-- [Constraints](#constraints) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
+- [Constraints](#constraints) • [Quick start](#quick-start) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
 
 ## Constraints
 
@@ -23,6 +23,12 @@ Platform-agnostic, evidence-traceable governance assessment workflow for SaaS, c
 3. **Actionable Critical/High findings**: Every Critical or High finding must include a concrete remediation action and an owner suggestion.
 4. **Explicit assumptions**: Document boundary conditions and assumption gaps (e.g., missing branch-protection exports) and mark affected findings as provisional.
 5. **Edge-case handling**: Require OCR or machine-readable exports for image-only PDFs; split findings by platform context for mixed delivery models.
+
+## Quick start
+
+1. Confirm delivery model (SaaS, OpenShift, or hybrid) and scope boundaries (pipeline/process vs. application code).
+2. Extract machine-readable pipeline configs and governance docs into a line-referenced evidence map.
+3. Evaluate controls against `CM-01..CM-05` in [control-matrix-and-deliverables.md](references/control-matrix-and-deliverables.md).
 
 ## Workflow
 

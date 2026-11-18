@@ -7,13 +7,26 @@ description: Builds BC Government React/Vite web applications using the BC Gov D
 
 Combines the BC Government Design System for React/Vite with DIAM and Common SSO Keycloak OIDC PKCE authentication and .NET JWT validation.
 
-## Core Constraints
+## Contents
+
+- [Constraints](#constraints)
+- [Quick start](#quick-start)
+- [Workflow](#workflow)
+- [Verification](#verification)
+- [References](#references)
+
+## Constraints
 
 - **Self-hosted BC Sans:** Always import `@bcgov/bc-sans/css/BC_Sans.css` from npm; never import fonts from `fonts2.gov.bc.ca`.
 - **Import order in `main.jsx`:** Import `BC_Sans.css`, then `@bcgov/design-tokens/css/variables.css`, then app `./index.css` last.
 - **Official components & tokens:** Use `<Header>`, `<Footer>`, and `var(--surface-color-*, fallback)` tokens instead of manual header/footer markup or hard-coded hex values.
 - **PKCE S256 mandatory:** Public SPA clients must use Authorization Code + PKCE (`S256`); implicit flow is disabled and tokens must stay in `oidc-client-ts` memory (never `localStorage`).
 - **JwtBearer validation:** Validate issuer, audience, lifetime, and `ClockSkew >= 30s` (60s recommended) on the .NET API.
+
+## Quick start
+
+1. Install `@bcgov/design-system-react-components`, `@bcgov/bc-sans`, `@bcgov/design-tokens`, `oidc-client-ts`, and `react-oidc-context`.
+2. Import CSS in `main.jsx` (`BC_Sans.css` -> `variables.css` -> `./index.css`), wrap the app in `<AuthProvider>`, and render `<Header>` / `<Footer>`.
 
 ## Workflow
 

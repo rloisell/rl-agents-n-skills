@@ -15,7 +15,7 @@ so context persists across stateless AI invocations.
 
 ## Contents
 
-- [Constraints](#constraints) • [Startup protocol](#startup-protocol) • [Shutdown protocol](#shutdown-protocol) • [Verification](#verification) • [References](#references)
+- [Constraints](#constraints) • [Quick start](#quick-start) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
 
 ## Constraints
 
@@ -25,7 +25,14 @@ so context persists across stateless AI invocations.
 4. **Log everything**: maintain `AI/WORKLOG.md`, `AI/CHANGES.csv`, `AI/COMMANDS.sh`, and `AI/COMMIT_INFO.txt`.
 5. **End every session with a push**: nothing should remain local-only at session end.
 
-## Startup protocol
+## Quick start
+
+Read `AI/nextSteps.md`, `CODING_STANDARDS.md`, and `git status`, then open with
+one sentence summarizing the current state before starting work.
+
+## Workflow
+
+### Startup protocol
 
 Run silently at session start (note any missing files and continue):
 
@@ -39,7 +46,7 @@ Run silently at session start (note any missing files and continue):
 4. **Branch state**: if on `main` with active work in `AI/nextSteps.md`, create or switch to the feature branch.
 5. **Surface past knowledge**: derive `<topic>` from branch or `AI/nextSteps.md` and scan `SKILL.md` files and evolution logs for matching entries before implementing.
 
-## Shutdown protocol
+### Shutdown protocol
 
 Run at session end before closing the conversation:
 

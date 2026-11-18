@@ -11,6 +11,7 @@ Maps personal information movement across services, namespaces, clusters, and cl
 ## Contents
 
 - [Constraints](#constraints)
+- [Quick start](#quick-start)
 - [Workflow](#workflow)
 - [Verification](#verification)
 - [References](#references)
@@ -22,6 +23,12 @@ Maps personal information movement across services, namespaces, clusters, and cl
 3. **PIA before production**: any new cross-cloud flow, third-party processor, AI/ML processing (e.g., OCR/Document Intelligence), or automated decision-making involving personal data must not deploy to production until a PIA is reviewed.
 4. **Stream/queue visibility**: message stream, topic, and queue keys in ConfigMaps indicate cross-namespace flows that must be recorded in the data flow ledger.
 5. **Zone alignment**: map ISCF classifications to SDN zones using `designing-bc-gov-networks`.
+
+## Quick start
+
+1. Run the `oc` and `jq` discovery commands in [oc-discovery-commands.md](references/oc-discovery-commands.md) against the target namespaces.
+2. Populate the Data Flow Ledger and Cross-Boundary Risk Matrix with each discovered endpoint and ISCF classification.
+3. Check external AI/OCR or cross-cloud flows against FOIPPA s.30.1 and the PIA Trigger Checklist.
 
 ## Workflow
 

@@ -14,7 +14,7 @@ End-to-end deployment workflow for BC Government Emerald OpenShift workloads, fr
 
 ## Contents
 
-- [Constraints](#constraints) • [Platform Reference](#platform-reference) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
+- [Constraints](#constraints) • [Quick start](#quick-start) • [Platform Reference](#platform-reference) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
 
 ## Constraints
 
@@ -25,6 +25,12 @@ End-to-end deployment workflow for BC Government Emerald OpenShift workloads, fr
 5. **Policy-as-code gate**: Render Helm to a single `rendered.yaml` and pass Datree, Polaris, kube-linter, and Conftest before deploying to any environment.
 6. **Zero-trust NetworkPolicies**: Emerald default-denies both Ingress and Egress; use `ag-template.networkpolicy` or explicit allow rules (no empty `podSelector: {}` peers or missing `ports`).
 7. **No hardcoded secrets or floating tags**: Store secrets in OpenShift Secrets; pin images by immutable tag or `sha256:` digest.
+
+## Quick start
+
+1. Expose port `8080` as non-root `appuser` in your Containerfile (see [Containerfile.dotnet](assets/templates/Containerfile.dotnet) / [Containerfile.react](assets/templates/Containerfile.react)).
+2. Set `global.openshift: true`, `DataClass: Medium`, `owner`, `environment`, and `priorityClassName` in Helm values.
+3. Render `rendered.yaml` with `helm template` and pass the policy-as-code gate before deploying to `<ns-prefix>-dev`.
 
 ## Platform Reference
 

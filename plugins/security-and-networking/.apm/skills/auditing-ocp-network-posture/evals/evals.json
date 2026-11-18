@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Audit the NetworkPolicies, Routes, and third-party egress across our three dev/test OpenShift namespaces and produce a posture report.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Check which NetworkPolicies in <ns-prefix>-dev are stale or allow wide-open cross-namespace traffic before we migrate to Emerald.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Generate a PDF network security posture report with RAG ratings and NET-NN remediation tasks from our collected oc artifacts.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Write a .NET 10 minimal API endpoint with EF Core migrations for our new case management service.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Configure Cisco IOS-XE DHCP snooping and Dynamic ARP Inspection on our campus access switches.",
+    "should_trigger": false
+  }
+]

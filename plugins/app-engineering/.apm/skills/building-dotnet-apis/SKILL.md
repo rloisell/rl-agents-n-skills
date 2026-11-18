@@ -7,13 +7,26 @@ description: Builds BC Government .NET 10 APIs with Entity Framework Core (Pomel
 
 Guides EF Core data-layer implementation with Pomelo MariaDB and conformance to the BC Government REST API Development Standard.
 
-## Core Constraints
+## Contents
+
+- [Constraints](#constraints)
+- [Quick start](#quick-start)
+- [Workflow](#workflow)
+- [Verification](#verification)
+- [References](#references)
+
+## Constraints
 
 - **Startup migrations:** Always call `db.Database.Migrate()` on startup; never call `EnsureCreated()`.
 - **Parameterised queries:** Use EF Core LINQ queries; never pass raw user input to `FromSqlRaw`.
 - **Service layer:** Keep controllers thin; place business logic and `DbContext` access in scoped services using primary constructors behind interfaces.
 - **Linux LINQ compatibility:** Always declare collections for `.Contains()` as `List<string>`, never `string[]` (avoids the Linux `ReadOnlySpan` runtime overload bug).
 - **REST API compliance:** Public APIs must follow all 8 BC Gov REST API mandates (RESTful resources, RFC 7231 verbs, single-resource URLs, response metadata with ISO 8601 timestamp + licence, HTTP status errors, and versioning).
+
+## Quick start
+
+1. Register `ApplicationDbContext` with `UseMySql(..., ServerVersion.AutoDetect(connStr))` and call `db.Database.Migrate()` during startup.
+2. Add a migration with `dotnet ef migrations add InitialCreate`, preview with `--idempotent`, and expose versioned REST endpoints.
 
 ## Workflow
 

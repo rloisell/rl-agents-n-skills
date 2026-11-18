@@ -11,6 +11,7 @@ Covers Zero Trust Architecture (ZTA) / SASE, core routing/switching/WAN engineer
 ## Contents
 
 - [Constraints](#constraints)
+- [Quick start](#quick-start)
 - [Workflow](#workflow)
 - [Verification](#verification)
 - [References](#references)
@@ -22,6 +23,12 @@ Covers Zero Trust Architecture (ZTA) / SASE, core routing/switching/WAN engineer
 3. **Strong crypto only**: IPsec requires IKEv2, AES-256-GCM (or AES-256-CBC), SHA-256+, DH Group 14+ (19/20 ECDH preferred), PFS, and DPD; prohibit DES, 3DES, MD5, and DH 1/2/5.
 4. **L2 hardening**: disable DTP (`switchport nonegotiate`), move native VLAN off VLAN 1, enable PortFast + BPDU Guard on access ports, and deploy DHCP snooping + DAI + 802.1X.
 5. **BC Gov IMIT alignment**: map enterprise network designs to IMIT 6.28 (network/comms security), IMIT 6.13 (zones), and IMIT 5.08 (3PG N2N, ≥ 13-month log retention).
+
+## Quick start
+
+1. Identify the target scope: Zero Trust/SASE architecture, L2/L3/WAN routing, or IOS/IOS-XE perimeter hardening.
+2. Apply the matching design patterns and CLI configurations from `references/`.
+3. Validate control alignment against BC Gov IMIT 6.28, 6.13, and 5.08 where applicable.
 
 ## Workflow
 

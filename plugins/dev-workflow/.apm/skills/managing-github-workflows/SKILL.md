@@ -15,7 +15,7 @@ commits, ruleset-enforced status checks, and clean squash merges.
 
 ## Contents
 
-- [Constraints](#constraints) • [Standard PR lifecycle](#standard-pr-lifecycle) • [CI failure diagnosis](#ci-failure-diagnosis) • [Verification](#verification) • [References](#references)
+- [Constraints](#constraints) • [Quick start](#quick-start) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
 
 ## Constraints
 
@@ -25,7 +25,13 @@ commits, ruleset-enforced status checks, and clean squash merges.
 4. **Squash merge and delete branch**: use `gh pr merge <number> --squash --delete-branch` once required checks pass.
 5. **BC Gov compliance**: repositories under public-sector Open Source organizations must satisfy OCIO §2.1 and OSS guidelines in [rulesets-and-ci.md](references/rulesets-and-ci.md).
 
-## Standard PR lifecycle
+## Quick start
+
+Create a feature branch, commit with a conventional message, open a PR with `gh pr create`, and squash-merge once required checks pass.
+
+## Workflow
+
+### Standard PR lifecycle
 
 ```bash
 # 1. Create feature branch from updated main
@@ -45,7 +51,7 @@ gh pr merge <number> --squash --delete-branch
 git checkout main && git pull origin main
 ```
 
-## CI failure diagnosis
+### CI failure diagnosis
 
 ```bash
 # Fetch latest failed run and inspect failed step logs

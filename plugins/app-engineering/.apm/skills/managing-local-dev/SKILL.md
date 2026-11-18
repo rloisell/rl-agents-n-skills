@@ -7,12 +7,25 @@ description: Manages local development environments for BC Gov .NET, React, and 
 
 Sets up, runs, and troubleshoots local development environments across native, `dev-ctl`, and `podman-compose` workflows.
 
-## Core Constraints
+## Contents
+
+- [Constraints](#constraints)
+- [Quick start](#quick-start)
+- [Workflow](#workflow)
+- [Verification](#verification)
+- [References](#references)
+
+## Constraints
 
 - **Never commit `.Development.json`:** Copy `appsettings.Development.json.example` to `appsettings.Development.json` locally and keep it gitignored.
 - **CORS matches Vite port:** Ensure `Cors:AllowedOrigins` in `appsettings.Development.json` includes the active Vite dev server port (default `5173`).
 - **Password-auth dev user for MariaDB:** macOS Homebrew MariaDB defaults to socket auth for `root`; create a dedicated `<project>_dev` database and password-authenticated user for TCP `Server=localhost;Port=3306;`.
 - **EF Core migrations:** Do not duplicate migration steps here — use the `building-dotnet-apis` skill (`ef-core-migrations.md`) for `dotnet ef` commands, naming conventions, and startup `Migrate()`.
+
+## Quick start
+
+1. Copy `appsettings.Development.json.example` to `appsettings.Development.json` and verify `Cors:AllowedOrigins` matches your Vite port.
+2. Start the stack with `dev-ctl up` or `podman-compose up -d`, then check health via `dev-ctl status`.
 
 ## Workflow
 

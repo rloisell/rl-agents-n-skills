@@ -11,6 +11,7 @@ Produces evidence-based, 6-section network posture reports for any group of Open
 ## Contents
 
 - [Constraints](#constraints)
+- [Quick start](#quick-start)
 - [Workflow](#workflow)
 - [Verification](#verification)
 - [References](#references)
@@ -22,6 +23,12 @@ Produces evidence-based, 6-section network posture reports for any group of Open
 3. **Never leave egress `Unknown`**: classify every entry in `egress-candidates.txt` before finalising the report.
 4. **Versioned outputs**: save reports with `-v<N>` suffixes (`<LABEL>-Network-Report-v1.md` and `.pdf`); copy `v(N-1)` to `v(N)` before editing (see `doc-versioning`).
 5. **Cross-skill alignment**: use `designing-bc-gov-networks` for scoped NP remediation YAML and `mapping-data-lineage` for PIA/FOIPPA triggers on cloud egress.
+
+## Quick start
+
+1. Log in to the target OpenShift cluster (`oc login`) and set `OUTPUT` and `LABEL` environment variables.
+2. Run Phase 1 collection commands from [collection-commands.md](references/collection-commands.md) for each target namespace.
+3. Classify findings and generate `<LABEL>-Network-Report-v1.md` and `.pdf`.
 
 ## Workflow
 

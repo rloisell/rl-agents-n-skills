@@ -15,7 +15,7 @@ discipline for numbered markdown and PDF deliverables.
 
 ## Contents
 
-- [Constraints](#constraints) • [Tool selection](#tool-selection) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
+- [Constraints](#constraints) • [Quick start](#quick-start) • [Workflow](#workflow) • [Verification](#verification) • [References](#references)
 
 ## Constraints
 
@@ -24,7 +24,9 @@ discipline for numbered markdown and PDF deliverables.
 3. **Copy first, edit second (BLOCKING)**: never edit `REPORT-vN.md` in-place to create `v(N+1)`; copy `vN.md` to `v(N+1).md` first per [doc-versioning.md](references/doc-versioning.md).
 4. **PDF parity**: every versioned `.md` file must have a matching `.pdf` rendered after all renames and edits are finalized.
 
-## Tool selection
+## Quick start
+
+Select the diagramming tool for your artifact, then follow [Workflow](#workflow) for diagram exports or versioned reports:
 
 | Use draw.io when... | Use PlantUML when... | Use Mermaid when... |
 |---------------------|----------------------|---------------------|

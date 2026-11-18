@@ -8,7 +8,23 @@ compatibility: Cisco IOS 12.x/15.x, IOS-XE 16.x/17.x, NX-OS 7.x/9.x, GNS3/EVE-NG
 
 Cisco IOS, IOS-XE, and NX-OS configuration, troubleshooting, and recovery reference.
 
-## Domain Coverage
+## Contents
+
+- [Constraints](#constraints)
+- [Quick start](#quick-start)
+- [Workflow](#workflow)
+- [Verification](#verification)
+- [References](#references)
+
+## Constraints
+
+- Produce complete, paste-ready Cisco IOS/NX-OS syntax with inline `!` comments.
+- Group configuration blocks logically: `global -> interfaces -> routing -> security -> lines`.
+- Append `end` and `write memory` at the close of configuration blocks.
+- List `show` commands first when troubleshooting and explain what to inspect; use `debug` only briefly and always pair with `undebug all`.
+- Use ASCII diagrams with interface labels and IP addresses for topology diagrams.
+
+## Quick start
 
 | Area | IOS / IOS-XE | NX-OS |
 |------|--------------|-------|
@@ -19,7 +35,7 @@ Cisco IOS, IOS-XE, and NX-OS configuration, troubleshooting, and recovery refere
 | HA | HSRP, VRRP, GLBP | vPC, HSRP |
 | Management | IOS image upgrades, password recovery, logging | NX-OS features, VDC |
 
-## Decision Rules
+## Workflow
 
 | Scenario | Action |
 |----------|--------|
@@ -32,13 +48,11 @@ Cisco IOS, IOS-XE, and NX-OS configuration, troubleshooting, and recovery refere
 | `% Login invalid` on console | `line con 0` with `login local` requires a valid local `username` |
 | IOS image upgrade | `verify /md5` before setting `boot system`; retain old image until first clean reload |
 
-## Output & Configuration Rules
+## Verification
 
-- Produce complete, paste-ready Cisco IOS/NX-OS syntax with inline `!` comments.
-- Group configuration blocks logically: `global -> interfaces -> routing -> security -> lines`.
-- Append `end` and `write memory` at the close of configuration blocks.
-- When troubleshooting, list `show` commands first and explain what to inspect in the output; use `debug` only briefly and always pair with `undebug all`.
-- For topology diagrams, use ASCII with interface labels and IP addresses.
+- **Switching & HA**: Verify trunking (`show interfaces trunk`), EtherChannel (`show etherchannel summary`), or HSRP/vPC (`show standby brief` / `show vpc`).
+- **Routing & Traffic**: Confirm neighbour adjacency (`show ip ospf neighbor`), routing table (`show ip route`), and ACL/NAT counters (`show ip access-lists`, `show ip nat translations`).
+- **Images & Persistence**: Confirm `verify /md5` on target IOS image, `show boot` variable, and saved startup config (`write memory`).
 
 ## References
 

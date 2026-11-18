@@ -7,13 +7,26 @@ description: Instruments BC Government .NET, React, and OpenShift applications w
 
 Standardises structured JSON logging, health checks, Prometheus metrics, OpenTelemetry tracing, and PII-in-logs auditing across BC Gov applications.
 
-## Core Constraints
+## Contents
+
+- [Constraints](#constraints)
+- [Quick start](#quick-start)
+- [Workflow](#workflow)
+- [Verification](#verification)
+- [References](#references)
+
+## Constraints
 
 - **Structured JSON to stdout:** Use Serilog with `CompactJsonFormatter` so OpenShift log aggregation ingests single-line JSON.
 - **EF Core SQL level:** Keep `Microsoft.EntityFrameworkCore.Database.Command` at `Warning` in production so query parameters containing PII are never logged.
 - **PII-free logs:** Never log names, emails, SIN/DL/health numbers, BCeID/IDIR usernames, tokens, connection strings, or full request/response bodies. Log opaque `sub`/GUIDs only.
 - **Static Prometheus counters:** Declare `Metrics.CreateCounter` as `static readonly` at class level; call `MapMetrics()` with `UseHttpMetrics()` cleanly.
 - **Health endpoints:** Expose `/api/health` (liveness) and `/api/health/details` (readiness with DB check).
+
+## Quick start
+
+1. Bootstrap Serilog with `CompactJsonFormatter` in `Program.cs` and set `Microsoft.EntityFrameworkCore.Database.Command` to `Warning`.
+2. Map `/api/health`, `/api/health/details`, and Prometheus `/metrics`, then run the PII-free log audit.
 
 ## Workflow
 

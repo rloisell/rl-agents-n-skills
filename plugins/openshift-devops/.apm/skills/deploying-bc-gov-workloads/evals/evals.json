@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Create a non-root Containerfile on port 8080 and ISB EA Option 2 GitHub Actions CI/CD workflows for our .NET API.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Configure AVI Route annotations, DataClass labels, and zero-trust NetworkPolicies for Emerald OpenShift.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Run the Datree, Polaris, kube-linter, and Conftest policy-as-code gate on our rendered Helm manifests.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Perform a G1-G12 migration gap analysis and generate a versioned PDF report for our Silver namespace.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Assess our GitLab CI governance controls and produce an IMIT 6.28 executive brief.",
+    "should_trigger": false
+  }
+]

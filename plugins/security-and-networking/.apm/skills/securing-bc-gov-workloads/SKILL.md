@@ -11,6 +11,7 @@ Drives application security architecture, secrets management, database security 
 ## Contents
 
 - [Constraints](#constraints)
+- [Quick start](#quick-start)
 - [Workflow](#workflow)
 - [Verification](#verification)
 - [References](#references)
@@ -23,6 +24,12 @@ Drives application security architecture, secrets management, database security 
 4. **Container security baseline**: non-root user, `allowPrivilegeEscalation: false`, `drop: [ALL]`, `readOnlyRootFilesystem: true`, port `8080`, SHA-pinned internal/Artifactory images in non-dev environments.
 5. **Database Security Standard (23 MUST controls)**: segregate prod from non-prod, sanitise test data (Medium/High), enforce TLS in transit, test backups, and audit privileged/bulk access.
 6. **STRA/PIA gate**: workloads storing Protected B+ or Medium/High data require a STRA before TEST and a PIA if collecting/disclosing personal information.
+
+## Quick start
+
+1. Confirm the workload's ISCF classification and STRA/PIA status before designing controls.
+2. Apply OWASP Top 10, OIDC PKCE, Vault/ESO secrets, and BC Gov Database Security Standard controls from `references/`.
+3. Run static/CI security gates and OpenShift RBAC/image provenance checks before promoting to non-dev environments.
 
 ## Workflow
 

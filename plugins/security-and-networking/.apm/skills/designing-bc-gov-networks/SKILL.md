@@ -11,6 +11,7 @@ Synthesises BC Gov SDN zone classification, IMIT standards, and OpenShift Networ
 ## Contents
 
 - [Constraints](#constraints)
+- [Quick start](#quick-start)
 - [Workflow](#workflow)
 - [Verification](#verification)
 - [References](#references)
@@ -23,6 +24,12 @@ Synthesises BC Gov SDN zone classification, IMIT standards, and OpenShift Networ
 4. **DNS egress first**: Emerald default-denies egress; every pod needs `allow-egress-dns` targeting `openshift-dns` (UDP/TCP 53).
 5. **No direct internet egress**: Medium/High workloads must use the SDN Forward Proxy (whitelist) or 3PG CIDR (for external partners); CIDR policies to `0.0.0.0/0` are silently dropped at the SDN guardrail unless explicitly approved.
 6. **Least-privilege NetworkPolicies**: never omit `podSelector` or `ports` on cross-namespace rules; Conftest hard-denies allow-all `{}` rules. For Emerald AVI/pod-label mechanics, see `bc-gov-emerald`.
+
+## Quick start
+
+1. Classify the workload's data at rest (`Low` / `Medium` / `High`) and map it to an IMIT 6.13 SDN zone (`DMZ`, `Zone B`, or `Zone A`).
+2. Copy `allow-egress-dns.yaml` and the matching flow template from `assets/templates/`, then tailor pod labels and ports.
+3. Verify both sender Egress and receiver Ingress policies with `oc describe networkpolicy`.
 
 ## Workflow
 
