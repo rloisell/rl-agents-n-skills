@@ -62,3 +62,4 @@ Before delivering any report:
 - [multi-app-orchestration.md](references/multi-app-orchestration.md) — Phases 0–5, coupling matrix, sequencing rules, cross-cutting rollups
 - [report-format-and-pdf.md](references/report-format-and-pdf.md) — Versioning, headers, section templates, `report-style.css`, Pandoc + Chrome PDF
 - [standards-catalog.md](references/standards-catalog.md) — Authoritative `PS-*`, `AD-*`, `ISB-*`, `OCP-*`, `K8S-*`, `SEC-*` catalog
+- [Acceptance Criteria](references/acceptance-criteria.md) — Observable pass/fail criteria for migration, resilience, multi-app, and PDF outputs

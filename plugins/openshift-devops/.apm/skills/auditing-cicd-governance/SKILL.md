@@ -48,3 +48,4 @@ Before finalizing the assessment package:
 ## References
 
 - [control-matrix-and-deliverables.md](references/control-matrix-and-deliverables.md) — Control domains (`CM-01..CM-05`), standard output filenames, examples, and IMIT/security references
+- [Acceptance Criteria](references/acceptance-criteria.md) — Observable pass/fail criteria for evidence mapping, control coverage, findings, and deliverables

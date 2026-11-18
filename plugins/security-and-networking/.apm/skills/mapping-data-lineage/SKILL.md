@@ -47,3 +47,4 @@ Maps personal information movement across services, namespaces, clusters, and cl
 - [iscf-and-risk-matrix.md](references/iscf-and-risk-matrix.md) — ISCF classification quick reference, Data Flow Ledger template, and Cross-Boundary Risk Matrix.
 - [foippa-residency-and-pia.md](references/foippa-residency-and-pia.md) — External AI/OCR service pattern, FOIPPA s.30.1 residency rules, and PIA Trigger Checklist.
 - [oc-discovery-commands.md](references/oc-discovery-commands.md) — `oc` + `jq` commands to discover cross-service URLs, stream/queue keys, and cloud endpoints.
+- [Acceptance Criteria](references/acceptance-criteria.md) — Observable pass/fail criteria for endpoint discovery, data flow ledgers, FOIPPA s.30.1 residency, and PIA gates.

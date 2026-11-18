@@ -57,3 +57,4 @@ git status --short
 - [Evolution Log](references/evolution-log.md) — chronological record of skill library updates
 - [Knowledge Format & Promotion Rules](references/knowledge-and-promotion.md) — causal entry schema, shared skill extraction, health indicators, and naming rules
 - [Seven-Section Skill Template](assets/templates/seven-section-skill-template.md) — standard 7-section skeleton for authoring new skills
+- [Acceptance Criteria](references/acceptance-criteria.md) — observable pass/fail criteria for skill retrieval, causal capture, and promotion

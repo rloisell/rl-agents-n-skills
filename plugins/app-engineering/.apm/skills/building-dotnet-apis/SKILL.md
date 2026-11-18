@@ -47,3 +47,4 @@ Guides EF Core data-layer implementation with Pomelo MariaDB and conformance to 
 - [EF Core Migrations](references/ef-core-migrations.md) — `dotnet ef` commands, naming conventions, and startup `Migrate()` pattern.
 - [BC Gov REST API Standard](references/bc-gov-rest-api-standard.md) — 8 mandated minimums, verb conformance, metadata template, anti-patterns, and OCIO compliance links.
 - [EF Knowledge](references/ef-knowledge.md) — recorded EF Core and MariaDB discoveries.
+- [Acceptance Criteria](references/acceptance-criteria.md) — observable pass/fail criteria for EF Core, migrations, and REST API compliance.

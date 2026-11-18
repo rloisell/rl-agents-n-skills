@@ -58,4 +58,5 @@ Cisco IOS, IOS-XE, and NX-OS configuration, troubleshooting, and recovery refere
 
 - [IOS Routing & Switching](references/ios-routing-switching.md) — initial setup, interfaces, VLANs/trunking, VTP, STP, EtherChannel, static routing, OSPF, HSRP, NAT/PAT, DHCP, ACLs, and `show`/`debug` commands.
 - [NX-OS, Image Management & Recovery](references/nxos-and-recovery.md) — ROMmon/Catalyst password recovery, IOS TFTP/SCP upgrades, NX-OS features/vPC/VDC, and GNS3/EVE-NG lab tips.
+- [Acceptance Criteria](references/acceptance-criteria.md) — observable pass/fail criteria for Cisco IOS/IOS-XE/NX-OS configuration and troubleshooting outputs.
 - For DNS resolution diagnostics (`dig`, `nslookup`, `host`) on network segments, invoke the sibling `administering-unix-systems` skill.

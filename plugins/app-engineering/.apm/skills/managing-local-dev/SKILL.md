@@ -43,3 +43,4 @@ Sets up, runs, and troubleshoots local development environments across native, `
 - [dev-ctl Guide](references/dev-ctl-guide.md) — `dev-ctl` commands, cron monitor, `.dev-env` scaffolding, and wrapper scripts.
 - [Podman & MariaDB Setup](references/podman-and-mariadb-setup.md) — port conventions, native vs `podman-compose`, `.Development.json`, MariaDB user setup, and test commands.
 - [Troubleshooting & Knowledge](references/troubleshooting-and-knowledge.md) — common local-dev issues and recorded environment discoveries.
+- [Acceptance Criteria](references/acceptance-criteria.md) — observable pass/fail criteria for local stack, MariaDB auth, and test verification.

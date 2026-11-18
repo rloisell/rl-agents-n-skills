@@ -67,3 +67,4 @@ Platform-spanning Unix/Linux systems administration covering Solaris (9/10/11 SP
 - [Linux RHEL Administration](references/linux-rhel.md) — systemd, LVM, SELinux, `nmcli`, `firewalld`, DNF/RPM, performance, `kdump`, security hardening, and log locations.
 - [Solaris & SPARC Administration](references/solaris-sparc.md) — SMF, ZFS, Zones, IPMP, `dladm`/`ipadm`, DTrace, SPARC hardware/OBP, LDoms, Jumpstart/AI, VxVM/VxFS, and log locations.
 - [DNS Diagnostics](references/dns-diagnostics.md) — `dig`, `nslookup`, `host`, SPF/DKIM/DMARC, DNSSEC, AXFR/IXFR, reverse PTR, and split-horizon troubleshooting.
+- [Acceptance Criteria](references/acceptance-criteria.md) — observable pass/fail criteria for Solaris, RHEL, and DNS administration outputs.

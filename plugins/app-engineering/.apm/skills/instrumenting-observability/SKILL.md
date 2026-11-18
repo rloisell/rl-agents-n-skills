@@ -47,3 +47,4 @@ Standardises structured JSON logging, health checks, Prometheus metrics, OpenTel
 - [Prometheus & OpenTelemetry](references/prometheus-and-opentelemetry.md) — Emerald pod annotations, `/metrics`, OTel tracing, and alert baseline.
 - [PII-in-Logs Audit](references/pii-in-logs-audit.md) — PII-free rules, Python/Go/Node.js checklists, and `grep` scan commands.
 - [Observability Knowledge](references/observability-knowledge.md) — confirmed facts and common pitfalls.
+- [Acceptance Criteria](references/acceptance-criteria.md) — observable pass/fail criteria for logging, health checks, metrics, and PII audits.

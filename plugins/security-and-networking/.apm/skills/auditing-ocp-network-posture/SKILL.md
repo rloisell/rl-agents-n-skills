@@ -48,3 +48,4 @@ Produces evidence-based, 6-section network posture reports for any group of Open
 - [collection-commands.md](references/collection-commands.md) — Phase 1 `oc` and `jq` commands for NPs, Services, Routes, Workloads, Egress candidates, `summary.md`, and `cross-namespace-matrix.md`.
 - [gap-analysis-rubrics.md](references/gap-analysis-rubrics.md) — Cross-namespace NP risk tiers, stale/orphaned NP detection, Route TLS & admin UI rubrics, and egress classification table.
 - [report-and-pdf-rendering.md](references/report-and-pdf-rendering.md) — 6-section report specification, RAG criteria, `NET-NN` task format, `pandoc` + Chrome headless PDF rendering, and toolkit invocation.
+- [Acceptance Criteria](references/acceptance-criteria.md) — Observable pass/fail criteria for Phase 1 collection, gap analysis, and report/PDF deliverables.

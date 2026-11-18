@@ -71,3 +71,4 @@ git log --oneline origin/$(git branch --show-current)..HEAD
 
 - [AI Session Files Schema](references/ai-session-files.md) — formats for `WORKLOG.md`, `CHANGES.csv`, `COMMANDS.sh`, and `COMMIT_INFO.txt`
 - [Process Knowledge](references/process-knowledge.md) — session workflow rules and accumulated process findings
+- [Acceptance Criteria](references/acceptance-criteria.md) — observable pass/fail criteria for session startup and shutdown discipline

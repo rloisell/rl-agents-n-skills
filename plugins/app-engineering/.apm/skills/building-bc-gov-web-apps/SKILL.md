@@ -50,3 +50,4 @@ Combines the BC Government Design System for React/Vite with DIAM and Common SSO
 - [React `oidc-client-ts`](references/react-oidc-client-ts.md) — `authConfig.js`, `AuthProvider`, callback/silent-renew, and axios interceptor.
 - [.NET JWT & Backchannel Logout](references/dotnet-jwt-and-backchannel-logout.md) — `JwtBearer` setup, claims extraction, and `/logout/backchannel`.
 - [IAM Knowledge](references/iam-knowledge.md) — confirmed facts and common OIDC pitfalls.
+- [Acceptance Criteria](references/acceptance-criteria.md) — observable pass/fail criteria for Design System, OIDC, and JWT outputs.

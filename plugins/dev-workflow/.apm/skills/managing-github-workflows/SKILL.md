@@ -77,3 +77,4 @@ git status --short
 - [Git Conventions](references/git-conventions.md) — branch naming, commit types, and message examples
 - [Rulesets, CI, and BC Gov Standards](references/rulesets-and-ci.md) — ruleset CLI management, failure diagnosis, Dependabot order, and OCIO §2.1 & OSS compliance
 - [Workflow Knowledge](references/workflow-knowledge.md) — accumulated GitHub Actions and ruleset findings
+- [Acceptance Criteria](references/acceptance-criteria.md) — observable pass/fail criteria for PR lifecycle, rulesets, and CI diagnosis

@@ -48,3 +48,4 @@ Covers Zero Trust Architecture (ZTA) / SASE, core routing/switching/WAN engineer
 - [routing-switching-wan.md](references/routing-switching-wan.md) — VLSM/IPv6, OSPF/BGP/EIGRP, STP/VLANs/EtherChannel, MPLS/IPsec/DMVPN/SD-WAN, QoS DSCP, HSRP/VRRP/GLBP, and OSI troubleshooting.
 - [ios-security-controls.md](references/ios-security-controls.md) — IOS/IOS-XE ACLs, NAT/PAT, IKEv2 site-to-site IPsec, Zone-Based Firewall, L2 hardening (DHCP snooping, DAI, 802.1X), attack mitigations, and firewall principles.
 - [bc-gov-imit-network-mapping.md](references/bc-gov-imit-network-mapping.md) — IMIT 6.28, 6.13, and 5.08 control mapping table for BC Gov designs and STRA submissions.
+- [Acceptance Criteria](references/acceptance-criteria.md) — Observable pass/fail criteria for Zero Trust/SASE, routing/WAN, perimeter/L2 controls, and IMIT alignment.

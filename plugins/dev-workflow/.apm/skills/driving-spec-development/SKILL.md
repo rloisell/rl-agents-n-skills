@@ -71,3 +71,4 @@ spec-kitty validate-tasks --all
 - [GitHub Spec-Kit Guide](references/spec-kit.md) — `specify` CLI setup, SDD slash commands, extensions, presets, and pre-merge checklist
 - [Spec-Kitty & BC Gov §1 Guide](references/spec-kitty.md) — `spec-kitty` directory layout, `spec.md`/`plan.md`/WP schemas, and OCIO §1 Requirements Management table
 - Templates: [spec.md.j2](assets/templates/spec.md.j2) • [plan.md.j2](assets/templates/plan.md.j2) • [work-package.md.j2](assets/templates/work-package.md.j2)
+- [Acceptance Criteria](references/acceptance-criteria.md) — observable pass/fail criteria for SDD phase gates and toolchain validation

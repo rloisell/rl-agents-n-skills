@@ -59,3 +59,4 @@ ls *.md *.pdf 2>/dev/null | sed 's/\.md$//' | sed 's/\.pdf$//' | sort | uniq -c 
 - [PlantUML Templates](references/plantuml-templates.md) — index of diagram template skeletons
 - [Diagram Templates](assets/templates/sequence.puml) — `.puml` (`sequence`, `class`, `state`, `c4-context`), `.mmd` (`architecture.mmd`), and `.drawio` (`architecture.drawio`) templates
 - [Document Versioning](references/doc-versioning.md) — copy-first rule, header consistency, un-numbered file classification, and PDF parity
+- [Acceptance Criteria](references/acceptance-criteria.md) — observable pass/fail criteria for diagram exports and report versioning
