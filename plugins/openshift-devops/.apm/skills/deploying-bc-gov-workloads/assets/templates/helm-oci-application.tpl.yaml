@@ -1,0 +1,31 @@
+# Multi-source Argo CD Application for Docker Helm OCI charts via Artifactory helm-oci-virtual
+# Requires manifest creation (the Argo CD UI does not support multi-source creation directly).
+# Note: Apps in Any Namespace allows placing this in <license-plate>-{dev,test,prod,tools}.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: @@APP_NAME@@-helm-@@ENV@@
+  namespace: @@LICENSE_PLATE@@-tools
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: @@LICENSE_PLATE@@
+  destination:
+    namespace: @@LICENSE_PLATE@@-@@ENV@@
+    server: https://kubernetes.default.svc
+  sources:
+    - chart: @@CHART_GROUP@@/@@CHART_NAME@@
+      repoURL: artifacts.developer.gov.bc.ca/helm-oci-virtual
+      targetRevision: @@CHART_VERSION@@
+      helm:
+        valueFiles:
+          - $values/@@CHART_NAME@@/values-@@ENV@@.yaml
+    - ref: values
+      repoURL: https://github.com/bcgov-c/tenant-gitops-@@LICENSE_PLATE@@.git
+      targetRevision: @@GITOPS_BRANCH@@
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false

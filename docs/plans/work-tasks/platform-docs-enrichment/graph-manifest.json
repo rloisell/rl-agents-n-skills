@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0.0",
+  "graph_id": "platform-docs-enrichment",
+  "version": "1.0.0",
+  "caller": {
+    "repo": "rl-agents-n-skills",
+    "source_repo": "temp/repos/platform-developer-docs",
+    "goal": "Mine official bcgov/platform-developer-docs to fix factual mismatches (Vault/ESO, ArgoCD, Kyverno, OVN-K8s) and enrich skills, references, and templates across openshift-devops, security-and-networking, and app-engineering"
+  },
+  "budget": {
+    "token_ceiling_total": 450000,
+    "max_parallel_concurrency": 4,
+    "max_retries_per_node": 1
+  },
+  "nodes": [
+    {
+      "id": "approval_gate",
+      "role": "approval",
+      "type": "verifier_gate",
+      "tier": "deterministic_script",
+      "command_or_eval": "python -c \"print('Platform docs enrichment plan approved')\"",
+      "verifier_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "input_bindings": [],
+      "output_contract": { "type": "object" },
+      "depends_on": [],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "setup_worktree",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "deterministic_script",
+      "command_or_eval": "git worktree add .worktrees/platform-docs-enrichment -b feat/platform-docs-enrichment HEAD",
+      "mutation_targets": [".worktrees/platform-docs-enrichment/"],
+      "reversible": true,
+      "input_bindings": ["approval_gate"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["approval_gate"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "enrich_secrets_and_security",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "frontier_engine",
+      "command_or_eval": "echo 'Fix Vault/ESO (platform-services, -nonprod/-prod, auth/k8s-*, v1 ESO, Agent Injector) + ACS/Xray/TLS/PCI/SIEM/backup-container in securing-bc-gov-workloads'",
+      "mutation_targets": ["plugins/security-and-networking/.apm/skills/securing-bc-gov-workloads/"],
+      "reversible": true,
+      "input_bindings": ["setup_worktree"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["setup_worktree"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "enrich_networking_tiers_porter",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "fast_engine",
+      "command_or_eval": "echo 'Add Hosting Tiers, SDN vs NSX-T, Porter TransportServerClaim (Feb 2026 NodePort), and fix allow-ingress-from-router.yaml in designing-bc-gov-networks'",
+      "mutation_targets": ["plugins/security-and-networking/.apm/skills/designing-bc-gov-networks/"],
+      "reversible": true,
+      "input_bindings": ["enrich_secrets_and_security"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["enrich_secrets_and_security"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "enrich_openshift_deploy_and_argocd",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "frontier_engine",
+      "command_or_eval": "echo 'Fix ArgoCD CRD/GitOpsTeam/URLs, add gitopsteam.tpl.yaml & helm-oci-application.tpl.yaml, Kyverno, netapp-file-backup/S3, CPU limits guidance, and monitoring NP in deploying-bc-gov-workloads'",
+      "mutation_targets": ["plugins/openshift-devops/.apm/skills/deploying-bc-gov-workloads/"],
+      "reversible": true,
+      "input_bindings": ["enrich_networking_tiers_porter"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["enrich_networking_tiers_porter"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "enrich_ocp_resilience_and_migration",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "fast_engine",
+      "command_or_eval": "echo 'Update analyzing-ocp-platforms with PDB AlwaysAllow, 600s termination cap, Tue 8PM scale-down, 3-pod HA DB/Patroni 90% PVC, CronJob/Jenkins migration gaps'",
+      "mutation_targets": ["plugins/openshift-devops/.apm/skills/analyzing-ocp-platforms/"],
+      "reversible": true,
+      "input_bindings": ["enrich_openshift_deploy_and_argocd"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["enrich_openshift_deploy_and_argocd"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "enrich_app_monitoring_and_services",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "fast_engine",
+      "command_or_eval": "echo 'Add SysdigTeam, User-Defined Monitoring, Loki, Uptime.com to instrumenting-observability and CSS/Reusable Services to building-bc-gov-web-apps'",
+      "mutation_targets": [
+        "plugins/app-engineering/.apm/skills/instrumenting-observability/",
+        "plugins/app-engineering/.apm/skills/building-bc-gov-web-apps/"
+      ],
+      "reversible": true,
+      "input_bindings": ["enrich_ocp_resilience_and_migration"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["enrich_ocp_resilience_and_migration"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "update_architecture_and_verify",
+      "role": "verifier",
+      "type": "verifier_gate",
+      "tier": "deterministic_script",
+      "command_or_eval": "echo 'Update architecture.md, run pytest, audit_plugin_structure.py, audit.py, audit_skill.py, and confidentiality scan'",
+      "verifier_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "input_bindings": ["enrich_app_monitoring_and_services"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["enrich_app_monitoring_and_services"],
+      "failure_escalation": "rollback_and_halt"
+    }
+  ]
+}

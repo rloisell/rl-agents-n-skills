@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Create a feat/ branch, commit these changes with a conventional commit message, and open a PR against main.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Our PR check is failing in GitHub Actions; inspect the failed workflow run logs and diagnose the issue.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Configure a GitHub Ruleset for main and verify the job name matches the workflow YAML.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Update AI/nextSteps.md and AI/WORKLOG.md at the end of our development session.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Generate a Mermaid and draw.io architecture diagram and version the design report to v2.",
+    "should_trigger": false
+  }
+]

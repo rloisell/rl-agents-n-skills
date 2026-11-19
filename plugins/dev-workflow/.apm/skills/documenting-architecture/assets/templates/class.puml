@@ -1,0 +1,52 @@
+@startuml
+title Domain Class Model — <Project>
+
+package "Domain" {
+    class Entity {
+        +Id : Guid
+        +Name : string
+        +CreatedAt : DateTime
+        +UpdatedAt : DateTime?
+        +IsActive : bool
+        +Deactivate() : void
+    }
+
+    class RelatedEntity {
+        +Id : Guid
+        +EntityId : Guid
+        +Value : string
+    }
+
+    Entity "1" --> "0..*" RelatedEntity : contains
+}
+
+package "API" {
+    class EntityController {
+        -_service : IEntityService
+        +GetAll() : Task<IActionResult>
+        +GetById(id : Guid) : Task<IActionResult>
+        +Create(dto : CreateRequest) : Task<IActionResult>
+        +Update(id : Guid, dto : UpdateRequest) : Task<IActionResult>
+        +Delete(id : Guid) : Task<IActionResult>
+    }
+
+    interface IEntityService {
+        +GetAllAsync() : Task<EntityDto[]>
+        +GetByIdAsync(id : Guid) : Task<EntityDto>
+        +CreateAsync(r : CreateRequest) : Task<EntityDto>
+        +UpdateAsync(id : Guid, r : UpdateRequest) : Task<EntityDto>
+        +DeleteAsync(id : Guid) : Task<EntityDto>
+    }
+
+    EntityController --> IEntityService
+}
+
+package "Infrastructure" {
+    class EntityService {
+        -_db : ApplicationDbContext
+    }
+
+    EntityService ..|> IEntityService
+}
+
+@enduml

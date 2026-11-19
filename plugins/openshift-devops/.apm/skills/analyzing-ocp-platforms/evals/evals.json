@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Run a G1-G12 migration gap analysis for our Silver OpenShift namespace before moving to Emerald.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Assess PodDisruptionBudget and HA resilience (R01-R15) for our production OCP workloads and generate a versioned PDF report.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Map cross-namespace coupling and migration sequencing across three interconnected apps in our program area.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Write a GitHub Actions workflow to build a .NET 10 container image and push it to Artifactory.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Audit our Salesforce deployment pipeline against BC Gov IMIT 6.28 governance controls.",
+    "should_trigger": false
+  }
+]

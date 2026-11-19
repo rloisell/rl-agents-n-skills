@@ -14,3 +14,7 @@
 __pycache__/
 *.pyc
 .venv/
+
+# Local scratch / reference exports
+temp/
+.worktrees/

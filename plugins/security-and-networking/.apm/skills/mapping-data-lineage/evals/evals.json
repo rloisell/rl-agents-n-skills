@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Map all personal information flows across our OpenShift namespaces and external APIs for a PIA and STRA submission.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Our app sends Protected B documents to a cloud OCR endpoint—check FOIPPA s.30.1 residency rules and whether a PIA is triggered.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Extract all external URLs and message queue/topic keys from ConfigMaps and Deployments in <ns-prefix>-prod.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Configure HashiCorp Vault and External Secrets Operator to sync database credentials into OpenShift.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Design OSPF area summarization and BGP route reflectors for our enterprise WAN.",
+    "should_trigger": false
+  }
+]

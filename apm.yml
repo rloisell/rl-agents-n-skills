@@ -1,0 +1,16 @@
+name: rl-agents-n-skills
+version: 2.0.0
+description: 'Domain-organized APM plugins and skills for software engineering, BC Gov .NET/React/OpenShift DevOps, security/networking, and systems infrastructure.'
+targets:
+  - claude
+  - copilot
+  - codex
+  - antigravity
+dependencies:
+  apm:
+    - ./plugins/dev-workflow
+    - ./plugins/app-engineering
+    - ./plugins/openshift-devops
+    - ./plugins/security-and-networking
+    - ./plugins/systems-infrastructure
+  mcp: []

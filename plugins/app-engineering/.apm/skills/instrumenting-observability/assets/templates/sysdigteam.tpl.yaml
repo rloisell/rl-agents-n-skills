@@ -1,0 +1,16 @@
+apiVersion: ops.gov.bc.ca/v1alpha1
+kind: SysdigTeam
+metadata:
+  # Deploy ONLY in <license>-tools (and on Gold only if using Gold/GoldDR)
+  name: <license>-sysdigteam
+  namespace: <license>-tools
+spec:
+  team:
+    description: "The Sysdig Team for OpenShift Project Set <app-name>"
+    users:
+      - name: <sysdig-admin-email@gov.bc.ca>
+        role: ROLE_TEAM_EDIT
+      - name: <sysdig-developer-email@gov.bc.ca>
+        role: ROLE_TEAM_STANDARD
+      - name: <sysdig-po-email@gov.bc.ca>
+        role: ROLE_TEAM_READ

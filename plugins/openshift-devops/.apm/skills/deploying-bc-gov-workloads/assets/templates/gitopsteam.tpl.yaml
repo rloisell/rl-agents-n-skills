@@ -1,0 +1,45 @@
+# GitOpsTeam - create in <license-plate>-tools to enable Argo CD and tenant-gitops-<license-plate>
+apiVersion: warden.devops.gov.bc.ca/v1alpha1
+kind: GitOpsTeam
+metadata:
+  name: gitopsteam-@@LICENSE_PLATE@@
+  namespace: @@LICENSE_PLATE@@-tools
+spec:
+  # gitOpsMembers defines access to the GitHub repo (bcgov-c/tenant-gitops-<license-plate>).
+  # Rules:
+  #   - Plain GitHub IDs only (do NOT append "@github"; no IDIRs).
+  #   - GitHub teams go in the corresponding "*Teams" lists (e.g., adminTeams).
+  #   - Users not yet in the bcgov-c GitHub org must accept the email invitation.
+  gitOpsMembers:
+    admins:
+      - @@GITHUB_ADMIN_ID@@
+    adminTeams: []
+    writers:
+      - @@GITHUB_WRITER_ID@@
+    writerTeams: []
+    maintainers: []
+    maintainerTeams: []
+    readers: []
+    readerTeams: []
+    triage: []
+    triageTeams: []
+
+  # projectMembers defines access to the shared Argo CD UI via Keycloak groups.
+  # Rules:
+  #   - GitHub IDs MUST have "@github" appended (e.g., myid@github).
+  #   - IDIR email addresses (UPN, e.g., first.last@gov.bc.ca) are supported.
+  #   - Individual IDs only (no GitHub teams); case-insensitive for GitHub IDs.
+  #   - Prerequisite: every user must log in to the cluster's Argo CD UI once
+  #     to register their Keycloak ID before role assignment takes effect.
+  projectMembers:
+    # Full read/write access to both default (including prod) and nonprod Argo CD projects
+    maintainers:
+      - @@TECH_LEAD_IDIR@@
+    # Read/write access to nonprod Argo CD project only (dev, test, tools; not prod).
+    # Cannot overwrite GitOpsTeam or GitOpsAlliance resources in tools.
+    nonprod:
+      - @@DEV_IDIR@@
+      - @@DEV_GITHUB_ID@@
+    # Read-only access to Argo CD projects (including prod visibility)
+    readers:
+      - @@PO_IDIR@@

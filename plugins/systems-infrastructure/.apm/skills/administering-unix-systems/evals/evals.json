@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Our Solaris 11 host has a degraded ZFS pool and an SMF service stuck in maintenance mode. How do I diagnose and recover both?",
+    "should_trigger": true
+  },
+  {
+    "prompt": "On RHEL 8, /var is 98% full on an LVM XFS volume and SELinux is blocking a custom daemon from writing logs. Walk me through extending the volume and fixing the AVC denial.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "A domain's MX and SPF records aren't resolving consistently across resolvers. How do I trace DNS delegation and compare authoritative vs local resolver responses with dig?",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Configure an 802.1Q trunk port and LACP EtherChannel between two Cisco Catalyst switches, then verify OSPF adjacency.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Add an EF Core migration for a new PostgreSQL table in our .NET 10 Web API.",
+    "should_trigger": false
+  }
+]

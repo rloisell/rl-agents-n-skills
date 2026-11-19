@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Audit our GitHub Actions and Azure DevOps release pipelines against BC Gov IMIT governance controls.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Evaluate our Salesforce CI/CD delivery process by control intent and produce a phased 0-30-90 day remediation roadmap.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Create an evidence-mapped control matrix and executive brief for our hybrid Bitbucket and OpenShift deployment pipelines.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Fix the syntax error on line 42 of my GitHub Actions build.yml workflow.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Run a R01-R15 resilience check on our Emerald OpenShift pods and PDBs.",
+    "should_trigger": false
+  }
+]

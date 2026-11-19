@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "OSPF adjacency between two Cisco IOS-XE routers is stuck in EXSTART. How do I check for an MTU mismatch and resolve it?",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Configure HSRP with preemption and MD5 authentication on two distribution switches, plus an 802.1Q trunk with allowed VLANs.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "We need to upgrade a Catalyst switch IOS image over SCP, verify its MD5 checksum, and perform password recovery on a lab router in ROMmon.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Troubleshoot a Solaris SMF service failure and check why a ZFS pool is reporting checksum errors.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Write an OpenShift NetworkPolicy allowing ingress from the ingress-router namespace on port 8080.",
+    "should_trigger": false
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Scaffold a .dev-env file for dev-ctl and start our local .NET, React, and MariaDB stack.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Fix MariaDB root socket authentication on macOS Homebrew by creating a password-authenticated dev user for TCP localhost.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Resolve a local CORS error between our Vite dev server on port 5173 and appsettings.Development.json.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Add OpenTelemetry tracing and Prometheus alert thresholds to our .NET service.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Design a versioned REST API endpoint with BC Gov metadata wrappers and RFC 7807 ProblemDetails.",
+    "should_trigger": false
+  }
+]

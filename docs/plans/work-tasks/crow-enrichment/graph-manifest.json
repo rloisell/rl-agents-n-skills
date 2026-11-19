@@ -1,0 +1,71 @@
+{
+  "manifest_version": "1.0.0",
+  "name": "crow-enrichment",
+  "strategy": "graph",
+  "nodes": [
+    {
+      "id": "dev-workflow-crow",
+      "role": "Dev-Workflow Crow Enricher",
+      "deps": [],
+      "outputs": [
+        "plugins/dev-workflow/.apm/skills/managing-github-workflows/references/sast-and-release-ci.md",
+        "plugins/dev-workflow/.apm/skills/managing-github-workflows/references/rulesets-and-ci.md",
+        "plugins/dev-workflow/.apm/skills/managing-dev-sessions/SKILL.md",
+        "plugins/dev-workflow/.apm/skills/managing-dev-sessions/references/process-knowledge.md",
+        "plugins/dev-workflow/.apm/skills/managing-dev-sessions/references/project-context-manifest.md"
+      ]
+    },
+    {
+      "id": "openshift-devops-crow",
+      "role": "OpenShift-DevOps Crow Enricher",
+      "deps": [],
+      "outputs": [
+        "plugins/openshift-devops/.apm/skills/auditing-cicd-governance/references/control-matrix-and-deliverables.md",
+        "plugins/openshift-devops/.apm/skills/analyzing-ocp-platforms/references/resilience-checks-r01-r15.md",
+        "plugins/openshift-devops/.apm/skills/deploying-bc-gov-workloads/references/github-actions-option2.md"
+      ]
+    },
+    {
+      "id": "security-crow",
+      "role": "Security Crow Enricher",
+      "deps": [],
+      "outputs": [
+        "plugins/security-and-networking/.apm/skills/securing-bc-gov-workloads/SKILL.md",
+        "plugins/security-and-networking/.apm/skills/securing-bc-gov-workloads/references/owasp-dotnet-react-oidc.md",
+        "plugins/security-and-networking/.apm/skills/securing-bc-gov-workloads/references/llm-and-markdown-security.md",
+        "plugins/security-and-networking/.apm/skills/securing-bc-gov-workloads/references/acceptance-criteria.md"
+      ]
+    },
+    {
+      "id": "app-engineering-crow",
+      "role": "App-Engineering Crow Enricher",
+      "deps": [],
+      "outputs": [
+        "plugins/app-engineering/.apm/skills/building-dotnet-apis/references/bc-gov-rest-api-standard.md",
+        "plugins/app-engineering/.apm/skills/building-dotnet-apis/references/ef-core-pomelo-patterns.md",
+        "plugins/app-engineering/.apm/skills/building-bc-gov-web-apps/SKILL.md",
+        "plugins/app-engineering/.apm/skills/building-bc-gov-web-apps/references/ux-and-accessibility-patterns.md",
+        "plugins/app-engineering/.apm/skills/building-bc-gov-web-apps/references/dotnet-engineering-standards.md",
+        "plugins/app-engineering/.apm/skills/building-bc-gov-web-apps/references/acceptance-criteria.md",
+        "plugins/app-engineering/.apm/skills/instrumenting-observability/SKILL.md",
+        "plugins/app-engineering/.apm/skills/instrumenting-observability/references/application-diagnostics-and-errors.md",
+        "plugins/app-engineering/.apm/skills/instrumenting-observability/references/acceptance-criteria.md"
+      ]
+    },
+    {
+      "id": "docs-and-attribution",
+      "role": "Coordinator",
+      "deps": [
+        "dev-workflow-crow",
+        "openshift-devops-crow",
+        "security-crow",
+        "app-engineering-crow"
+      ],
+      "outputs": [
+        "README.md",
+        "architecture.md",
+        "migration-map.md"
+      ]
+    }
+  ]
+}

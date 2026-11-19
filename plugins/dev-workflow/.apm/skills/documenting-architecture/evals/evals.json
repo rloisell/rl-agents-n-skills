@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Set up the 10-diagram architecture folder structure and export our PlantUML and draw.io diagrams to SVG.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "We need to bump REPORT-v2.md to REPORT-v3.md and regenerate the matching PDF deliverable.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Create a C4 context diagram and sequence diagram for the new order service using PlantUML.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Write a specification and work package breakdown before we start implementing the new feature.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Open a feature branch, commit these changes with conventional commits, and create a pull request.",
+    "should_trigger": false
+  }
+]

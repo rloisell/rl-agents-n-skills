@@ -1,0 +1,12 @@
+{
+  "name": "openshift-devops",
+  "version": "0.1.0",
+  "description": "BC Gov Emerald OpenShift deployment, CI/CD pipelines, platform migration, resilience, and governance audits.",
+  "author": {
+    "name": "Your Name"
+  },
+  "license": "MIT",
+  "keywords": [
+    "openshift-devops"
+  ]
+}

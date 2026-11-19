@@ -1,0 +1,27 @@
+# applications/argocd/<license-plate>-gitops-@@ENV@@.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: @@PROJECT@@-@@ENV@@
+  namespace: @@NAMESPACE_TOOLS@@
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: @@ARGOCD_PROJECT@@
+  source:
+    repoURL: https://github.com/<org>/tenant-gitops-@@LICENSE_PLATE@@.git
+    targetRevision: @@GITOPS_BRANCH@@   # develop | test | main
+    path: charts/@@PROJECT@@-gitops
+    helm:
+      valueFiles:
+        - ../../deploy/@@ENV@@_values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: @@LICENSE_PLATE@@-@@ENV@@
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+      - ApplyOutOfSyncOnly=true

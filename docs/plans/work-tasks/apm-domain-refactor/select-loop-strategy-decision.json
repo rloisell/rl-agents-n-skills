@@ -1,0 +1,19 @@
+{
+  "status": "success",
+  "pattern": "graph",
+  "rationale": "Task exhibits distinct dependent phases, parallel fan-out join barriers, or ordered mutations.",
+  "rejected": [
+    {
+      "pattern": "agent-swarm",
+      "reason": "Swarm cannot manage join barriers, topological ordering, or dependency graphs"
+    },
+    {
+      "pattern": "dual-loop",
+      "reason": "Dual-loop cannot orchestrate parallel fan-out reads or multi-step mutation sequences"
+    }
+  ],
+  "next_skill": "orchestrating-agent-work",
+  "next_step": "graph-planning",
+  "plan_artifact": "docs/plans/work-tasks/<task-id>/<task-id>-graph-manifest.json",
+  "override_requested": null
+}

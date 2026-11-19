@@ -1,39 +1,39 @@
 # Skill Structure Standard
 
-This repository adopts a seven-section skill structure to improve consistency, reviewability, and upstream alignment.
+All skills in `rl-agents-n-skills` follow the [Agent Skills Open Standard](https://agentskills.io/specification.md) and the `authoring-skills` contract inside the APM-native plugin layout (`plugins/<domain>/.apm/skills/<skill-name>/`).
 
-## Required sections
+## Directory Layout
 
-All new skills should include these sections in this order:
+```text
+plugins/<domain>/.apm/skills/<gerund-skill-name>/
+├── SKILL.md           # Required: <= 100 lines; YAML frontmatter + lean router
+├── references/        # Optional: deep guides, schemas, and KNOWLEDGE logs
+├── assets/
+│   └── templates/     # Optional: standalone templates (.j2, .yaml, .puml, .mmd, .drawio, Containerfile)
+├── scripts/           # Optional: executable helper/validation scripts
+└── evals/             # Recommended: evals/evals.json routing & quality checks
+```
 
-1. Use When
-2. Don't Use When
-3. Workflow
-4. Rules
-5. Examples
-6. Edge Cases
-7. References
+- **Self-contained**: All `references/`, `assets/`, and `scripts/` live inside the skill that uses them; never embed standalone file templates inside `references/` or share files across skills via relative `../` links.
+- **Naming**: Use gerund names (`managing-*`, `building-*`, `deploying-*`, `securing-*`, `auditing-*`). Directory name must equal frontmatter `name` (`^[a-z0-9-]+$`).
 
-## Phase adoption policy
+## `SKILL.md` Contract
 
-### Phase 1 (now)
+1. **Frontmatter**: `name` and third-person `description` stating what the skill does and when to use it.
+2. **Line budget**: `<= 100` lines; move deep material to `references/` and templates to `assets/templates/`.
+3. **Canonical sections** (per `authoring-skills`):
+   - `## Contents` — local navigation links
+   - `## Constraints` — non-negotiable rules (`MUST` / `NEVER`)
+   - `## Quick start` (or `## Modes`) — primary commands or mode table
+   - `## Workflow` — ordered execution steps
+   - `## Verification` — deterministic checks / validation commands
+   - `## References` — links to `references/*.md` and `assets/templates/*`
+4. **Long references**: Any `references/*.md` over ~100 lines should open with a `## Contents` list.
 
-1. Define and publish this standard.
-2. Require new skills to follow the seven-section structure.
-3. Keep existing legacy skills unchanged unless they are being actively edited.
+## Validation
 
-### Phase 2 (now)
+Validate every skill against the `authoring-skills` contract before merging:
 
-1. Apply the seven-section structure to newly created skills.
-2. Start with `bc-gov-deployment-cicd-analyst` as the reference implementation.
-
-### Phase 3 (next)
-
-1. Add a lightweight validation script/check for required sections.
-2. Add CI enforcement once false-positive risk is low.
-
-## Notes on compatibility
-
-1. Existing frontmatter fields remain supported.
-2. Existing folder layout remains valid during transition.
-3. This standard is designed to align with the emerging BC Gov agent-skills direction.
+```bash
+python <path-to-authoring-skills>/scripts/audit_skill.py plugins/<domain>/.apm/skills/<skill-name> --mode source
+```

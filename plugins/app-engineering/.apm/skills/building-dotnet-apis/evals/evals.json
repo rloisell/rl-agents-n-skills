@@ -1,0 +1,22 @@
+[
+  {
+    "prompt": "Set up ApplicationDbContext with Pomelo MariaDB UseMySql and configure startup db.Database.Migrate().",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Fix a Linux LINQ ReadOnlySpan runtime error when using .Contains() in an EF Core query.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Audit our public .NET 10 endpoints against the 8 BC Gov REST API Development Standard mandates.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Wire up @bcgov/design-tokens and react-oidc-context in our React Vite app.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Start the local dev stack with dev-ctl and fix MariaDB socket auth on macOS.",
+    "should_trigger": false
+  }
+]

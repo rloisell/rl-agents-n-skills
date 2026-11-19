@@ -1,0 +1,51 @@
+# .github/workflows/promote-@@TARGET_ENV@@.yml
+# Build-once, retag-to-promote workflow for Artifactory + GitOps Option 2
+name: Promote to @@TARGET_ENV@@
+
+on:
+  push:
+    branches:
+      - @@SOURCE_BRANCH@@   # test | main
+
+jobs:
+  retag-and-update-gitops:
+    name: Retag @@SOURCE_TAG@@ -> @@TARGET_TAG@@ and update GitOps
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Login to Artifactory
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ARTIFACTORY_URL }}
+          username: ${{ secrets.ARTIFACTORY_SERVICE_ACCOUNT }}
+          password: ${{ secrets.ARTIFACTORY_SERVICE_ACCOUNT_TOKEN }}
+
+      - name: Retag image without rebuilding
+        run: |
+          SRC="${{ secrets.ARTIFACTORY_URL }}/@@ARTIFACTORY_REPO@@/@@PROJECT@@:@@SOURCE_TAG@@"
+          DST="${{ secrets.ARTIFACTORY_URL }}/@@ARTIFACTORY_REPO@@/@@PROJECT@@:@@TARGET_TAG@@"
+          docker pull "$SRC"
+          docker tag "$SRC" "$DST"
+          docker push "$DST"
+
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: <org>/tenant-gitops-@@LICENSE_PLATE@@
+          ref: @@GITOPS_TARGET_BRANCH@@   # test (for test) | stage (for prod PR -> main)
+          token: ${{ secrets.GITOPS_TOKEN }}
+          path: gitops
+
+      - name: Update values tag and SHA with yq
+        run: |
+          SHA="${GITHUB_SHA::7}"
+          yq -i '.@@PROJECT@@.image.tag = "@@TARGET_TAG@@"' gitops/deploy/@@TARGET_ENV@@_values.yaml
+          yq -i ".@@PROJECT@@.image.commit = \"$SHA\"" gitops/deploy/@@TARGET_ENV@@_values.yaml
+
+      - name: Commit and push GitOps update
+        working-directory: gitops
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add deploy/@@TARGET_ENV@@_values.yaml
+          git diff --cached --quiet || git commit -m "chore(@@TARGET_ENV@@): promote @@PROJECT@@ to @@TARGET_TAG@@ (${GITHUB_SHA::7})"
+          git push origin @@GITOPS_TARGET_BRANCH@@

@@ -1,0 +1,57 @@
+# Argo CD PostSync Job to patch an OpenShift Route with a TLS cert/key from Vault.
+# Prerequisites:
+#   - Vault secret at <vault-role>/<secret-key> with keys `certificate` and `key`
+#   - ServiceAccount <license-plate>-vault bound to a Role allowing get/patch/update on routes
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: route-patcher-
+  namespace: <license-plate>-<env>
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    argocd.argoproj.io/sync-wave: "3"
+  labels:
+    jobType: patch
+spec:
+  activeDeadlineSeconds: 60
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        jobType: patch
+        DataClass: Medium
+        owner: <team-or-ticket>
+        environment: <environment>
+      annotations:
+        vault.hashicorp.com/namespace: platform-services
+        vault.hashicorp.com/role: <vault-role>
+        vault.hashicorp.com/auth-path: auth/k8s-<cluster>
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-inject-token: "true"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
+        vault.hashicorp.com/agent-inject-secret-<secret-key>: <vault-role>/<secret-key>
+        vault.hashicorp.com/agent-inject-template-<secret-key>: |
+          {{ with secret "<vault-role>/<secret-key>" -}}
+          export TLS_CERT="{{ .Data.data.certificate }}"
+          export TLS_KEY="{{ .Data.data.key }}"
+          {{- end }}
+    spec:
+      serviceAccountName: <license-plate>-vault
+      restartPolicy: Never
+      containers:
+        - name: route-patcher
+          image: artifacts.developer.gov.bc.ca/bcgov-docker-local/argocd-route-patcher:latest
+          args:
+            - "sh"
+            - "-c"
+            - ". /vault/secrets/<secret-key> && /patches/script/route-patcher.sh"
+          volumeMounts:
+            - name: route-patcher
+              mountPath: /patches/script
+      volumes:
+        - name: route-patcher
+          configMap:
+            name: route-patcher
+            defaultMode: 0754

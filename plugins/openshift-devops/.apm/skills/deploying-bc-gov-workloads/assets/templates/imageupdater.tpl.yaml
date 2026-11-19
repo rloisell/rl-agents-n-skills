@@ -1,0 +1,48 @@
+# Argo CD ImageUpdater CR + RBAC for private Artifactory repositories
+# Prerequisites:
+#   - Argo CD Application is in your own namespace (Apps in Any Namespace)
+#   - Application uses Helm or Kustomize
+#   - Only the `argocd` update method is supported (not `git`)
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: image-updater-secrets
+  namespace: <ns-prefix>-tools
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: image-updater-secrets
+  namespace: <ns-prefix>-tools
+subjects:
+  - kind: ServiceAccount
+    name: gitops-shared-argocd-image-updater-controller
+    namespace: openshift-bcgov-gitops-shared
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: image-updater-secrets
+---
+apiVersion: argocd-image-updater.argoproj.io/v1alpha1
+kind: ImageUpdater
+metadata:
+  name: <app-name>-image-updater
+  namespace: <ns-prefix>-tools
+spec:
+  applicationRefs:
+    - namePattern: <argocd-app-name>
+      images:
+        - alias: <image-alias>
+          imageName: artifacts.developer.gov.bc.ca/<artifactory-repo>/<image>:<tag-pattern>
+          commonUpdateSettings:
+            pullSecret: pullsecret:<ns-prefix>-tools/<artifactory-pull-secret>
+            updateStrategy: semver   # semver | newest-build | digest | alphabetical
+          # Uncomment for Kustomize apps:
+          # manifestTargets:
+          #   kustomize:
+          #     name: artifacts.developer.gov.bc.ca/<artifactory-repo>/<image>

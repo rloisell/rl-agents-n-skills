@@ -1,0 +1,5 @@
+name: security-and-networking
+version: 0.1.0
+description: "BC Gov application security, Vault secrets, data lineage/STRA/PIA, Zero Trust, enterprise & OpenShift networking."
+author: Your Name
+license: MIT

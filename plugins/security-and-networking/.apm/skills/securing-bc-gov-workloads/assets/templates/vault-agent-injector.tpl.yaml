@@ -1,0 +1,49 @@
+# gitops/charts/<app>/templates/deployment.yaml (Vault Agent Injector pattern)
+# Standard KSA-based secrets integration for BC Gov Private Cloud Vault.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "app.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  # Do NOT place vault.hashicorp.com/* annotations on Deployment metadata.
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "app.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "app.name" . }}
+      annotations:
+        vault.hashicorp.com/agent-inject: "true"
+        vault.hashicorp.com/agent-inject-token: "false"
+        vault.hashicorp.com/agent-pre-populate-only: "true"
+        # Set sidecar/init-container quotas to avoid inheriting 256Mi LimitRange defaults
+        vault.hashicorp.com/agent-requests-cpu: "10m"
+        vault.hashicorp.com/agent-limits-cpu: "50m"
+        vault.hashicorp.com/agent-requests-mem: "25Mi"
+        vault.hashicorp.com/agent-limits-mem: "100Mi"
+        # Cluster-specific auth path: auth/k8s-silver | auth/k8s-gold | auth/k8s-golddr | auth/k8s-emerald
+        vault.hashicorp.com/auth-path: "{{ .Values.vaultAuthPath }}"
+        vault.hashicorp.com/namespace: platform-services
+        # Pre-provisioned role: <license-plate>-nonprod or <license-plate>-prod
+        vault.hashicorp.com/role: "{{ .Values.licenseplate }}-{{ .Values.vaultEngine }}"
+        vault.hashicorp.com/agent-inject-secret-app-secrets: "{{ .Values.licenseplate }}-{{ .Values.vaultEngine }}/app-secrets"
+        # Do NOT use hyphens in Vault secret keys (use underscores, e.g. db_password).
+        vault.hashicorp.com/agent-inject-template-app-secrets: |
+          {{`{{- with secret `}}"{{ .Values.licenseplate }}-{{ .Values.vaultEngine }}/app-secrets"{{` }}
+          export DB_PASSWORD="{{ .Data.data.db_password }}"
+          export CONNECTION_STRING="{{ .Data.data.connection_string }}"
+          {{- end }}`}}
+    spec:
+      # Pre-provisioned KSA: <license-plate>-vault.
+      # Gotcha: pods also pull images with this SA — add ImagePuller RoleBinding for tools
+      # namespace images or imagePullSecrets for Artifactory.
+      serviceAccountName: "{{ .Values.licenseplate }}-vault"
+      containers:
+        - name: app
+          image: "{{ .Values.image.repository }}@{{ .Values.image.digest }}"
+          args: ["sh", "-c", "source /vault/secrets/app-secrets && exec <entrypoint>"]
+          ports:
+            - containerPort: 8080

@@ -1,0 +1,5 @@
+name: systems-infrastructure
+version: 0.1.0
+description: "Unix/Linux/Solaris administration, DNS diagnostics, and Cisco IOS/NX-OS networking."
+author: Your Name
+license: MIT

@@ -1,0 +1,6 @@
+{
+  "task": "crow-enrichment",
+  "selected_strategy": "graph",
+  "rationale": "Work decomposes cleanly into 4 disjoint plugin/domain enrichment nodes (dev-workflow, openshift-devops, security-and-networking, app-engineering) followed by a docs/attribution fan-in node.",
+  "source_repo": "https://github.com/bcgov/crow (MIT)"
+}

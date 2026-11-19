@@ -1,0 +1,57 @@
+# go-crond Deployment workaround for Kyverno no-fast-cronjob policy
+# Use instead of a CronJob when schedule < 5m (or < 1h with a mounted PVC).
+# Stop the original CronJob before testing if using a RWO PVC.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: @@APP_NAME@@-cron
+  namespace: @@LICENSE_PLATE@@-@@ENV@@
+  labels:
+    app: @@APP_NAME@@-cron
+    owner: @@OWNER@@
+    environment: @@ENV_FULL@@
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: @@APP_NAME@@-cron
+  template:
+    metadata:
+      labels:
+        app: @@APP_NAME@@-cron
+        DataClass: "Medium"
+        Internet-Ingress: "DENY"
+        owner: @@OWNER@@
+        environment: @@ENV_FULL@@
+    spec:
+      priorityClassName: @@APP_NAME@@-priority
+      restartPolicy: Always
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: go-crond
+          image: artifacts.developer.gov.bc.ca/@@ARTIFACTORY_PROJECT@@/@@APP_NAME@@:@@IMAGE_TAG@@
+          imagePullPolicy: Always
+          # --allow-unprivileged is required on OpenShift because SCC assigns a random UID
+          command: ["go-crond", "--allow-unprivileged", "/etc/crontab"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: @@PVC_NAME@@

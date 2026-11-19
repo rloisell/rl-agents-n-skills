@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "graph_id": "ag-devops-enrichment",
+  "version": "1.0.0",
+  "caller": {
+    "repo": "rl-agents-n-skills",
+    "source_repo": "ag-devops",
+    "goal": "Enrich rl-agents-n-skills with sanitized scripts, Helm/CI templates, policy-as-code assets, and references from ag-devops on a new feature branch"
+  },
+  "budget": {
+    "token_ceiling_total": 350000,
+    "max_parallel_concurrency": 4,
+    "max_retries_per_node": 1
+  },
+  "nodes": [
+    {
+      "id": "approval_gate",
+      "role": "approval",
+      "type": "verifier_gate",
+      "tier": "deterministic_script",
+      "command_or_eval": "python -c \"print('Enrichment plan approved by user')\"",
+      "verifier_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "input_bindings": [],
+      "output_contract": { "type": "object" },
+      "depends_on": [],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "setup_branch_and_worktree",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "deterministic_script",
+      "command_or_eval": "git worktree add .worktrees/ag-devops-enrichment -b feat/ag-devops-enrichment",
+      "mutation_targets": [".worktrees/ag-devops-enrichment/"],
+      "reversible": true,
+      "input_bindings": ["approval_gate"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["approval_gate"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "enrich_openshift_devops",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "frontier_engine",
+      "command_or_eval": "echo 'Subagent: port sanitized scaffold.py, validate.py, tests/, 20 Helm/CI templates, 6 policy files, and ag-helm/remediation references into deploying-bc-gov-workloads'",
+      "mutation_targets": ["plugins/openshift-devops/.apm/skills/deploying-bc-gov-workloads/"],
+      "reversible": true,
+      "input_bindings": ["setup_branch_and_worktree"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["setup_branch_and_worktree"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "enrich_security_networking",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "fast_engine",
+      "command_or_eval": "echo 'Subagent: update designing-bc-gov-networks networkpolicy-patterns.md with AllowIngressFrom.namespaces and Rego cross-NS rules'",
+      "mutation_targets": ["plugins/security-and-networking/.apm/skills/designing-bc-gov-networks/"],
+      "reversible": true,
+      "input_bindings": ["enrich_openshift_devops"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["enrich_openshift_devops"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "enrich_app_and_dev_workflow",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "fast_engine",
+      "command_or_eval": "echo 'Subagent: add dotnet-ci-automation.md to building-dotnet-apis and sast-and-release-ci.md to managing-github-workflows'",
+      "mutation_targets": [
+        "plugins/app-engineering/.apm/skills/building-dotnet-apis/",
+        "plugins/dev-workflow/.apm/skills/managing-github-workflows/"
+      ],
+      "reversible": true,
+      "input_bindings": ["enrich_security_networking"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["enrich_security_networking"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "update_architecture_docs",
+      "role": "worker",
+      "type": "sequential_mutation",
+      "tier": "fast_engine",
+      "command_or_eval": "echo 'Update architecture.md and plugin READMEs with new scripts, assets/templates, assets/policies, and references'",
+      "mutation_targets": ["architecture.md", "plugins/"],
+      "reversible": true,
+      "input_bindings": ["enrich_app_and_dev_workflow"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["enrich_app_and_dev_workflow"],
+      "failure_escalation": "rollback_and_halt"
+    },
+    {
+      "id": "verify_enrichment",
+      "role": "verifier",
+      "type": "verifier_gate",
+      "tier": "deterministic_script",
+      "command_or_eval": "echo 'Run pytest on deploying-bc-gov-workloads/tests, audit_skill.py, audit_plugin_structure.py, audit.py, and confidentiality scan'",
+      "verifier_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "input_bindings": ["update_architecture_docs"],
+      "output_contract": { "type": "object" },
+      "depends_on": ["update_architecture_docs"],
+      "failure_escalation": "rollback_and_halt"
+    }
+  ]
+}
